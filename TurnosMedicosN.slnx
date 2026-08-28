@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BE/BE.csproj" Id="3ca0798d-d019-4f2f-8fa1-df1154e2af87" />
+  <Project Path="BLL/BLL.csproj" Id="e2f56021-01c0-4b9d-bee7-fab3e405cb68" />
+  <Project Path="DAL/DAL.csproj" Id="366dd2eb-0d2f-42be-a831-07862be9c329" />
+  <Project Path="Servicios/Servicios.csproj" Id="d84e75c9-6ded-4bae-b587-94e3e26327d3" />
+  <Project Path="Vista/Vista.csproj" Id="4bb91882-e36e-4aaf-91fb-cd1cd1f5ef61" />
+</Solution>
