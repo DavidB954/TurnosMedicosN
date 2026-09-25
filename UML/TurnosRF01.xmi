@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1">
+<xmi:Documentation exporter="Claude Code" exporterVersion="1.0" exporterID="TurnosMedicosN-RF01"/>
+<uml:Model xmi:type="uml:Model" xmi:id="model_root" name="TurnosMedicosN">
+<packagedElement xmi:type="uml:Package" xmi:id="pkg_rf01" name="RF 01 - Turnos">
+<packagedElement xmi:type="uml:Package" xmi:id="pkg_tipos" name="Tipos">
+<packagedElement xmi:type="uml:DataType" xmi:id="dt_int" name="int"/>
+<packagedElement xmi:type="uml:DataType" xmi:id="dt_string" name="string"/>
+<packagedElement xmi:type="uml:DataType" xmi:id="dt_bool" name="bool"/>
+<packagedElement xmi:type="uml:DataType" xmi:id="dt_datetime" name="DateTime"/>
+<packagedElement xmi:type="uml:DataType" xmi:id="dt_timespan" name="TimeSpan"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Package" xmi:id="pkg_be" name="BE">
+<packagedElement xmi:type="uml:Class" xmi:id="BE_Turno" name="BE_Turno">
+  <ownedAttribute xmi:id="attr_1" name="IdTurno" visibility="public" type="dt_int" isID="true"/>
+  <ownedAttribute xmi:id="attr_2" name="IdPaciente" visibility="public" type="dt_int"/>
+  <ownedAttribute xmi:id="attr_3" name="IdHorario" visibility="public" type="dt_int"/>
+  <ownedAttribute xmi:id="attr_4" name="Fecha" visibility="public" type="dt_datetime"/>
+  <ownedAttribute xmi:id="attr_5" name="Estado" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_6" name="IdMedico" visibility="public" type="dt_int"/>
+  <ownedAttribute xmi:id="attr_7" name="HoraInicio" visibility="public" type="dt_timespan"/>
+  <ownedAttribute xmi:id="attr_8" name="HoraFin" visibility="public" type="dt_timespan"/>
+  <ownedAttribute xmi:id="attr_9" name="NombreApellidoPaciente" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_10" name="NombreApellidoMedico" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_11" name="Especialidades" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_12" name="FechaTexto" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_13" name="RangoHorario" visibility="public" type="dt_string"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="BE_MedicoHorario" name="BE_MedicoHorario">
+  <ownedAttribute xmi:id="attr_14" name="IdHorario" visibility="public" type="dt_int" isID="true"/>
+  <ownedAttribute xmi:id="attr_15" name="IdMedico" visibility="public" type="dt_int"/>
+  <ownedAttribute xmi:id="attr_16" name="DiaSemana" visibility="public" type="dt_int"/>
+  <ownedAttribute xmi:id="attr_17" name="HoraInicio" visibility="public" type="dt_timespan"/>
+  <ownedAttribute xmi:id="attr_18" name="HoraFin" visibility="public" type="dt_timespan"/>
+  <ownedAttribute xmi:id="attr_19" name="Activo" visibility="public" type="dt_bool"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="BE_Usuario" name="BE_Usuario">
+  <ownedAttribute xmi:id="attr_20" name="IdUsuario" visibility="public" type="dt_int" isID="true"/>
+  <ownedAttribute xmi:id="attr_21" name="Nombre" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_22" name="Apellido" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_23" name="Email" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_24" name="Activo" visibility="public" type="dt_bool"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="BE_Bitacora" name="BE_Bitacora">
+  <ownedAttribute xmi:id="attr_25" name="IdBitacora" visibility="public" type="dt_int" isID="true"/>
+  <ownedAttribute xmi:id="attr_26" name="IdUsuario" visibility="public" type="dt_int"/>
+  <ownedAttribute xmi:id="attr_27" name="FechaHora" visibility="public" type="dt_datetime"/>
+  <ownedAttribute xmi:id="attr_28" name="Accion" visibility="public" type="AccionBitacora_ENUM"/>
+  <ownedAttribute xmi:id="attr_29" name="Modulo" visibility="public" type="dt_string"/>
+  <ownedAttribute xmi:id="attr_30" name="Descripcion" visibility="public" type="dt_string"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Enumeration" xmi:id="AccionBitacora_ENUM" name="AccionBitacora">
+  <ownedLiteral xmi:id="lit_31" name="TURNO_SOLICITADO"/>
+  <ownedLiteral xmi:id="lit_32" name="TURNO_CANCELADO"/>
+  <ownedLiteral xmi:id="lit_33" name="TURNO_MODIFICADO"/>
+  <ownedLiteral xmi:id="lit_34" name="TURNO_AUSENTE"/>
+</packagedElement>
+</packagedElement>
+<packagedElement xmi:type="uml:Package" xmi:id="pkg_dal" name="DAL">
+<packagedElement xmi:type="uml:Class" xmi:id="DAL_Conexion" name="DAL_Conexion">
+  <ownedOperation xmi:id="op_35" name="ObtenerConexion" visibility="public">
+    <ownedParameter xmi:id="param_36" type="dt_string" direction="return"></ownedParameter>
+  </ownedOperation>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="DAL_MedicoHorario" name="DAL_MedicoHorario">
+  <ownedAttribute xmi:id="attr_37" name="conex" visibility="private" type="DAL_Conexion"/>
+  <ownedOperation xmi:id="op_38" name="ObtenerPorId" visibility="public">
+    <ownedParameter xmi:id="param_39" name="idHorario" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_40" type="BE_MedicoHorario" direction="return"></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_41" name="ListarDisponibles" visibility="public">
+    <ownedParameter xmi:id="param_42" name="idMedico" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_43" name="diaSemana" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_44" name="fecha" type="dt_datetime" direction="in"/>
+    <ownedParameter xmi:id="param_45" type="BE_MedicoHorario" direction="return"><upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="uv_46" value="*"/></ownedParameter>
+  </ownedOperation>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="DAL_Turno" name="DAL_Turno">
+  <ownedAttribute xmi:id="attr_47" name="conex" visibility="private" type="DAL_Conexion"/>
+  <ownedOperation xmi:id="op_48" name="ExisteTurnoActivo" visibility="public">
+    <ownedParameter xmi:id="param_49" name="idHorario" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_50" name="fecha" type="dt_datetime" direction="in"/>
+    <ownedParameter xmi:id="param_51" type="dt_bool" direction="return"></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_52" name="Insertar" visibility="public">
+    <ownedParameter xmi:id="param_53" name="turno" type="BE_Turno" direction="in"/>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_54" name="CambiarEstado" visibility="public">
+    <ownedParameter xmi:id="param_55" name="idTurno" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_56" name="estado" type="dt_string" direction="in"/>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_57" name="ObtenerPorId" visibility="public">
+    <ownedParameter xmi:id="param_58" name="idTurno" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_59" type="BE_Turno" direction="return"></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_60" name="ListarPorPaciente" visibility="public">
+    <ownedParameter xmi:id="param_61" name="idPaciente" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_62" type="BE_Turno" direction="return"><upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="uv_63" value="*"/></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_64" name="Filtrar" visibility="public">
+    <ownedParameter xmi:id="param_65" name="idTurno" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_66" name="desde" type="dt_datetime" direction="in"/>
+    <ownedParameter xmi:id="param_67" name="hasta" type="dt_datetime" direction="in"/>
+    <ownedParameter xmi:id="param_68" name="estado" type="dt_string" direction="in"/>
+    <ownedParameter xmi:id="param_69" type="BE_Turno" direction="return"><upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="uv_70" value="*"/></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_71" name="ListarVencidosParaMarcarAusente" visibility="public">
+    <ownedParameter xmi:id="param_72" type="dt_int" direction="return"><upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="uv_73" value="*"/></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_74" name="MarcarAusenteSiConfirmado" visibility="public">
+    <ownedParameter xmi:id="param_75" name="idTurno" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_76" type="dt_bool" direction="return"></ownedParameter>
+  </ownedOperation>
+</packagedElement>
+</packagedElement>
+<packagedElement xmi:type="uml:Package" xmi:id="pkg_bll" name="BLL">
+<packagedElement xmi:type="uml:Class" xmi:id="BLL_Bitacora" name="BLL_Bitacora">
+  <ownedAttribute xmi:id="attr_77" name="dal_bitacora" visibility="private" type="dt_string"/>
+  <ownedOperation xmi:id="op_78" name="RegistrarEvento" visibility="public">
+    <ownedParameter xmi:id="param_79" name="idUsuario" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_80" name="accion" type="AccionBitacora_ENUM" direction="in"/>
+    <ownedParameter xmi:id="param_81" name="modulo" type="dt_string" direction="in"/>
+    <ownedParameter xmi:id="param_82" name="descripcion" type="dt_string" direction="in"/>
+  </ownedOperation>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="Sesion" name="Sesion">
+  <ownedAttribute xmi:id="attr_83" name="UsuarioActual" visibility="public" type="BE_Usuario"/>
+  <ownedOperation xmi:id="op_84" name="Instancia" visibility="public">
+    <ownedParameter xmi:id="param_85" type="Sesion" direction="return"></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_86" name="TieneRol" visibility="public">
+    <ownedParameter xmi:id="param_87" name="nombreRol" type="dt_string" direction="in"/>
+    <ownedParameter xmi:id="param_88" type="dt_bool" direction="return"></ownedParameter>
+  </ownedOperation>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="BLL_Turno" name="BLL_Turno">
+  <ownedAttribute xmi:id="attr_89" name="dal_turno" visibility="private" type="DAL_Turno"/>
+  <ownedAttribute xmi:id="attr_90" name="dal_medicoHorario" visibility="private" type="DAL_MedicoHorario"/>
+  <ownedAttribute xmi:id="attr_91" name="bll_bitacora" visibility="private" type="BLL_Bitacora"/>
+  <ownedOperation xmi:id="op_92" name="SolicitarTurno" visibility="public">
+    <ownedParameter xmi:id="param_93" name="idPaciente" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_94" name="idHorario" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_95" name="fecha" type="dt_datetime" direction="in"/>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_96" name="CancelarTurno" visibility="public">
+    <ownedParameter xmi:id="param_97" name="idTurno" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_98" name="idUsuarioQueCancela" type="dt_int" direction="in"/>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_99" name="ModificarTurno" visibility="public">
+    <ownedParameter xmi:id="param_100" name="idTurno" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_101" name="nuevoIdHorario" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_102" name="nuevaFecha" type="dt_datetime" direction="in"/>
+    <ownedParameter xmi:id="param_103" name="idPaciente" type="dt_int" direction="in"/>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_104" name="Filtrar" visibility="public">
+    <ownedParameter xmi:id="param_105" name="idTurno" type="dt_int" direction="in"/>
+    <ownedParameter xmi:id="param_106" name="desde" type="dt_datetime" direction="in"/>
+    <ownedParameter xmi:id="param_107" name="hasta" type="dt_datetime" direction="in"/>
+    <ownedParameter xmi:id="param_108" name="estado" type="dt_string" direction="in"/>
+    <ownedParameter xmi:id="param_109" type="BE_Turno" direction="return"><upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="uv_110" value="*"/></ownedParameter>
+  </ownedOperation>
+  <ownedOperation xmi:id="op_111" name="ProcesarVencimientos" visibility="public">
+    <ownedParameter xmi:id="param_112" type="dt_int" direction="return"></ownedParameter>
+  </ownedOperation>
+</packagedElement>
+</packagedElement>
+<packagedElement xmi:type="uml:Package" xmi:id="pkg_vista" name="Vista">
+<packagedElement xmi:type="uml:Class" xmi:id="frm_AccesoPaciente" name="frm_AccesoPaciente">
+  <ownedAttribute xmi:id="attr_113" name="bll_turno" visibility="private" type="BLL_Turno"/>
+  <ownedOperation xmi:id="op_114" name="btnReservarTurno_Click" visibility="public">
+  </ownedOperation>
+  <ownedOperation xmi:id="op_115" name="btnModificarTurno_Click" visibility="public">
+  </ownedOperation>
+  <ownedOperation xmi:id="op_116" name="btnCancelarTurnos_Click" visibility="public">
+  </ownedOperation>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="frmGestionTurnos" name="frmGestionTurnos">
+  <ownedAttribute xmi:id="attr_117" name="bll_turno" visibility="private" type="BLL_Turno"/>
+  <ownedOperation xmi:id="op_118" name="btnCancelarTurno_Click" visibility="public">
+  </ownedOperation>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="frmPrincipal" name="frmPrincipal">
+  <ownedAttribute xmi:id="attr_119" name="timerVencimientoTurnos" visibility="private" type="dt_string"/>
+  <ownedOperation xmi:id="op_120" name="timerVencimientoTurnos_Tick" visibility="public">
+  </ownedOperation>
+</packagedElement>
+<packagedElement xmi:type="uml:Class" xmi:id="frmLogin" name="frmLogin">
+  <ownedOperation xmi:id="op_121" name="btnIngresar_Click" visibility="public">
+  </ownedOperation>
+</packagedElement>
+</packagedElement>
+<packagedElement xmi:type="uml:Association" xmi:id="assoc_122" name="conex">
+  <ownedEnd xmi:id="end_123" type="DAL_Turno" aggregation="none"/>
+  <ownedEnd xmi:id="end_124" name="conex" type="DAL_Conexion" aggregation="composite"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Association" xmi:id="assoc_125" name="conex">
+  <ownedEnd xmi:id="end_126" type="DAL_MedicoHorario" aggregation="none"/>
+  <ownedEnd xmi:id="end_127" name="conex" type="DAL_Conexion" aggregation="composite"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Association" xmi:id="assoc_128" name="dal_turno">
+  <ownedEnd xmi:id="end_129" type="BLL_Turno" aggregation="none"/>
+  <ownedEnd xmi:id="end_130" name="dal_turno" type="DAL_Turno" aggregation="composite"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Association" xmi:id="assoc_131" name="dal_medicoHorario">
+  <ownedEnd xmi:id="end_132" type="BLL_Turno" aggregation="none"/>
+  <ownedEnd xmi:id="end_133" name="dal_medicoHorario" type="DAL_MedicoHorario" aggregation="composite"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Association" xmi:id="assoc_134" name="bll_bitacora">
+  <ownedEnd xmi:id="end_135" type="BLL_Turno" aggregation="none"/>
+  <ownedEnd xmi:id="end_136" name="bll_bitacora" type="BLL_Bitacora" aggregation="composite"/>
+</packagedElement>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_137" name="crea / devuelve" client="DAL_Turno" supplier="BE_Turno"/>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_138" name="crea / devuelve" client="DAL_MedicoHorario" supplier="BE_MedicoHorario"/>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_139" name="crea" client="BLL_Bitacora" supplier="BE_Bitacora"/>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_140" name="TieneRol() en CancelarTurno" client="BLL_Turno" supplier="Sesion"/>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_141" name="usa" client="frm_AccesoPaciente" supplier="BLL_Turno"/>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_142" name="usa" client="frmGestionTurnos" supplier="BLL_Turno"/>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_143" name="Timer cada 5 min" client="frmPrincipal" supplier="BLL_Turno"/>
+<packagedElement xmi:type="uml:Dependency" xmi:id="dep_144" name="al loguear Administrativo/Administrador" client="frmLogin" supplier="BLL_Turno"/>
+<packagedElement xmi:type="uml:Package" xmi:id="pkg_seq" name="Secuencia">
+<packagedElement xmi:type="uml:Interaction" xmi:id="seq1" name="RF01.1 - Solicitar Turno">
+  <lifeline xmi:id="ll_145" name="Paciente"/>
+  <lifeline xmi:id="ll_146" name="frm_AccesoPaciente"/>
+  <lifeline xmi:id="ll_147" name="BLL_Turno"/>
+  <lifeline xmi:id="ll_148" name="DAL_MedicoHorario"/>
+  <lifeline xmi:id="ll_149" name="DAL_Turno"/>
+  <lifeline xmi:id="ll_150" name="SQL Server (Turno)"/>
+  <lifeline xmi:id="ll_151" name="BLL_Bitacora"/>
+<message xmi:id="msg_154" name="Elige especialidad, medico, fecha y horario" messageSort="asynchCall" sendEvent="occ_152" receiveEvent="occ_153"/>
+<message xmi:id="msg_157" name="SolicitarTurno(idPaciente, idHorario, fecha)" messageSort="synchCall" sendEvent="occ_155" receiveEvent="occ_156"/>
+<message xmi:id="msg_160" name="ObtenerPorId(idHorario)" messageSort="synchCall" sendEvent="occ_158" receiveEvent="occ_159"/>
+<message xmi:id="msg_163" name="horario (Activo, DiaSemana)" messageSort="reply" sendEvent="occ_161" receiveEvent="occ_162"/>
+<message xmi:id="msg_166" name="ExisteTurnoActivo(idHorario, fecha)" messageSort="synchCall" sendEvent="occ_164" receiveEvent="occ_165"/>
+<message xmi:id="msg_169" name="SELECT COUNT(1) WHERE Estado='Confirmado'" messageSort="synchCall" sendEvent="occ_167" receiveEvent="occ_168"/>
+<message xmi:id="msg_172" name="0" messageSort="reply" sendEvent="occ_170" receiveEvent="occ_171"/>
+<message xmi:id="msg_175" name="false" messageSort="reply" sendEvent="occ_173" receiveEvent="occ_174"/>
+<message xmi:id="msg_182" name="Insertar(turno)" messageSort="synchCall" sendEvent="occ_180" receiveEvent="occ_181"/>
+<message xmi:id="msg_185" name="INSERT Turno (Estado='Confirmado')" messageSort="synchCall" sendEvent="occ_183" receiveEvent="occ_184"/>
+<message xmi:id="msg_188" name="OK" messageSort="reply" sendEvent="occ_186" receiveEvent="occ_187"/>
+<message xmi:id="msg_191" name="RegistrarEvento(idPaciente, TURNO_SOLICITADO, 'TURNOS')" messageSort="asynchCall" sendEvent="occ_189" receiveEvent="occ_190"/>
+<message xmi:id="msg_194" name="turno confirmado" messageSort="reply" sendEvent="occ_192" receiveEvent="occ_193"/>
+<message xmi:id="msg_197" name="Turno reservado correctamente" messageSort="reply" sendEvent="occ_195" receiveEvent="occ_196"/>
+<message xmi:id="msg_203" name="Insertar(turno)" messageSort="synchCall" sendEvent="occ_201" receiveEvent="occ_202"/>
+<message xmi:id="msg_206" name="INSERT Turno (Estado='Confirmado')" messageSort="synchCall" sendEvent="occ_204" receiveEvent="occ_205"/>
+<message xmi:id="msg_209" name="error 2601/2627 (UQ_Turno_HorarioFecha_Confirmado)" messageSort="reply" sendEvent="occ_207" receiveEvent="occ_208"/>
+<message xmi:id="msg_212" name="SqlException" messageSort="reply" sendEvent="occ_210" receiveEvent="occ_211"/>
+<message xmi:id="msg_215" name="ArgumentException: horario ya no disponible" messageSort="reply" sendEvent="occ_213" receiveEvent="occ_214"/>
+<message xmi:id="msg_218" name="mensaje claro, sin error crudo de SQL" messageSort="reply" sendEvent="occ_216" receiveEvent="occ_217"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_152" name="send" covered="ll_145" message="msg_154"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_153" name="recv" covered="ll_146" message="msg_154"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_155" name="send" covered="ll_146" message="msg_157"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_156" name="recv" covered="ll_147" message="msg_157"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_158" name="send" covered="ll_147" message="msg_160"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_159" name="recv" covered="ll_148" message="msg_160"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_161" name="send" covered="ll_148" message="msg_163"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_162" name="recv" covered="ll_147" message="msg_163"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_164" name="send" covered="ll_147" message="msg_166"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_165" name="recv" covered="ll_149" message="msg_166"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_167" name="send" covered="ll_149" message="msg_169"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_168" name="recv" covered="ll_150" message="msg_169"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_170" name="send" covered="ll_150" message="msg_172"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_171" name="recv" covered="ll_149" message="msg_172"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_173" name="send" covered="ll_149" message="msg_175"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_174" name="recv" covered="ll_147" message="msg_175"/>
+<fragment xmi:type="uml:CombinedFragment" xmi:id="cf_176" interactionOperator="alt" covered="ll_145 ll_146 ll_147 ll_148 ll_149 ll_150 ll_151">
+  <operand xmi:type="uml:InteractionOperand" xmi:id="operand_177" name="Camino feliz">
+    <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_178">
+      <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_179" body="Camino feliz"/>
+    </guard>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_180" name="send" covered="ll_147" message="msg_182"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_181" name="recv" covered="ll_149" message="msg_182"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_183" name="send" covered="ll_149" message="msg_185"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_184" name="recv" covered="ll_150" message="msg_185"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_186" name="send" covered="ll_150" message="msg_188"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_187" name="recv" covered="ll_149" message="msg_188"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_189" name="send" covered="ll_147" message="msg_191"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_190" name="recv" covered="ll_151" message="msg_191"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_192" name="send" covered="ll_147" message="msg_194"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_193" name="recv" covered="ll_146" message="msg_194"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_195" name="send" covered="ll_146" message="msg_197"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_196" name="recv" covered="ll_145" message="msg_197"/>
+  </operand>
+  <operand xmi:type="uml:InteractionOperand" xmi:id="operand_198" name="Camino alternativo: otro paciente reservo el mismo horario+fecha antes">
+    <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_199">
+      <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_200" body="Camino alternativo: otro paciente reservo el mismo horario+fecha antes"/>
+    </guard>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_201" name="send" covered="ll_147" message="msg_203"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_202" name="recv" covered="ll_149" message="msg_203"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_204" name="send" covered="ll_149" message="msg_206"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_205" name="recv" covered="ll_150" message="msg_206"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_207" name="send" covered="ll_150" message="msg_209"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_208" name="recv" covered="ll_149" message="msg_209"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_210" name="send" covered="ll_149" message="msg_212"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_211" name="recv" covered="ll_147" message="msg_212"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_213" name="send" covered="ll_147" message="msg_215"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_214" name="recv" covered="ll_146" message="msg_215"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_216" name="send" covered="ll_146" message="msg_218"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_217" name="recv" covered="ll_145" message="msg_218"/>
+  </operand>
+</fragment>
+</packagedElement>
+<packagedElement xmi:type="uml:Interaction" xmi:id="seq2" name="RF01.2 - Cancelar Turno">
+  <lifeline xmi:id="ll_219" name="Paciente / Administrativo"/>
+  <lifeline xmi:id="ll_220" name="frm_AccesoPaciente / frmGestionTurnos"/>
+  <lifeline xmi:id="ll_221" name="BLL_Turno"/>
+  <lifeline xmi:id="ll_222" name="DAL_Turno"/>
+  <lifeline xmi:id="ll_223" name="SQL Server (Turno)"/>
+  <lifeline xmi:id="ll_224" name="Sesion"/>
+  <lifeline xmi:id="ll_225" name="BLL_Bitacora"/>
+<message xmi:id="msg_228" name="Selecciona el turno a cancelar" messageSort="asynchCall" sendEvent="occ_226" receiveEvent="occ_227"/>
+<message xmi:id="msg_231" name="CancelarTurno(idTurno, idUsuarioQueCancela)" messageSort="synchCall" sendEvent="occ_229" receiveEvent="occ_230"/>
+<message xmi:id="msg_234" name="ObtenerPorId(idTurno)" messageSort="synchCall" sendEvent="occ_232" receiveEvent="occ_233"/>
+<message xmi:id="msg_237" name="SELECT ... WHERE IdTurno" messageSort="synchCall" sendEvent="occ_235" receiveEvent="occ_236"/>
+<message xmi:id="msg_240" name="fila" messageSort="reply" sendEvent="occ_238" receiveEvent="occ_239"/>
+<message xmi:id="msg_243" name="turno (Estado, IdPaciente)" messageSort="reply" sendEvent="occ_241" receiveEvent="occ_242"/>
+<message xmi:id="msg_250" name="ArgumentException: turno ya no esta activo" messageSort="reply" sendEvent="occ_248" receiveEvent="occ_249"/>
+<message xmi:id="msg_253" name="mensaje de error" messageSort="reply" sendEvent="occ_251" receiveEvent="occ_252"/>
+<message xmi:id="msg_259" name="TieneRol(&quot;Administrativo&quot;) / TieneRol(&quot;Administrador&quot;)" messageSort="synchCall" sendEvent="occ_257" receiveEvent="occ_258"/>
+<message xmi:id="msg_262" name="true / false" messageSort="reply" sendEvent="occ_260" receiveEvent="occ_261"/>
+<message xmi:id="msg_269" name="ArgumentException: no pertenece al paciente logueado" messageSort="reply" sendEvent="occ_267" receiveEvent="occ_268"/>
+<message xmi:id="msg_272" name="mensaje de error" messageSort="reply" sendEvent="occ_270" receiveEvent="occ_271"/>
+<message xmi:id="msg_278" name="CambiarEstado(idTurno, 'Cancelado')" messageSort="synchCall" sendEvent="occ_276" receiveEvent="occ_277"/>
+<message xmi:id="msg_281" name="UPDATE Turno SET Estado='Cancelado'" messageSort="synchCall" sendEvent="occ_279" receiveEvent="occ_280"/>
+<message xmi:id="msg_284" name="OK" messageSort="reply" sendEvent="occ_282" receiveEvent="occ_283"/>
+<message xmi:id="msg_287" name="RegistrarEvento(idUsuarioQueCancela, TURNO_CANCELADO, 'TURNOS')" messageSort="asynchCall" sendEvent="occ_285" receiveEvent="occ_286"/>
+<message xmi:id="msg_290" name="OK" messageSort="reply" sendEvent="occ_288" receiveEvent="occ_289"/>
+<message xmi:id="msg_293" name="Turno cancelado" messageSort="reply" sendEvent="occ_291" receiveEvent="occ_292"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_226" name="send" covered="ll_219" message="msg_228"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_227" name="recv" covered="ll_220" message="msg_228"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_229" name="send" covered="ll_220" message="msg_231"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_230" name="recv" covered="ll_221" message="msg_231"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_232" name="send" covered="ll_221" message="msg_234"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_233" name="recv" covered="ll_222" message="msg_234"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_235" name="send" covered="ll_222" message="msg_237"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_236" name="recv" covered="ll_223" message="msg_237"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_238" name="send" covered="ll_223" message="msg_240"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_239" name="recv" covered="ll_222" message="msg_240"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_241" name="send" covered="ll_222" message="msg_243"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_242" name="recv" covered="ll_221" message="msg_243"/>
+<fragment xmi:type="uml:CombinedFragment" xmi:id="cf_244" interactionOperator="alt" covered="ll_219 ll_220 ll_221 ll_222 ll_223 ll_224 ll_225">
+  <operand xmi:type="uml:InteractionOperand" xmi:id="operand_245" name="Turno inexistente o no esta Confirmado (Atendido/Ausente/Cancelado)">
+    <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_246">
+      <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_247" body="Turno inexistente o no esta Confirmado (Atendido/Ausente/Cancelado)"/>
+    </guard>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_248" name="send" covered="ll_221" message="msg_250"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_249" name="recv" covered="ll_220" message="msg_250"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_251" name="send" covered="ll_220" message="msg_253"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_252" name="recv" covered="ll_219" message="msg_253"/>
+  </operand>
+  <operand xmi:type="uml:InteractionOperand" xmi:id="operand_254" name="Turno Confirmado">
+    <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_255">
+      <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_256" body="Turno Confirmado"/>
+    </guard>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_257" name="send" covered="ll_221" message="msg_259"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_258" name="recv" covered="ll_224" message="msg_259"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_260" name="send" covered="ll_224" message="msg_262"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_261" name="recv" covered="ll_221" message="msg_262"/>
+    <fragment xmi:type="uml:CombinedFragment" xmi:id="cf_263" interactionOperator="alt" covered="ll_219 ll_220 ll_221 ll_222 ll_223 ll_224 ll_225">
+      <operand xmi:type="uml:InteractionOperand" xmi:id="operand_264" name="No es el dueno y no tiene rol habilitado">
+        <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_265">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_266" body="No es el dueno y no tiene rol habilitado"/>
+        </guard>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_267" name="send" covered="ll_221" message="msg_269"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_268" name="recv" covered="ll_220" message="msg_269"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_270" name="send" covered="ll_220" message="msg_272"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_271" name="recv" covered="ll_219" message="msg_272"/>
+      </operand>
+      <operand xmi:type="uml:InteractionOperand" xmi:id="operand_273" name="Autorizado: dueno, o Administrativo/Administrador">
+        <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_274">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_275" body="Autorizado: dueno, o Administrativo/Administrador"/>
+        </guard>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_276" name="send" covered="ll_221" message="msg_278"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_277" name="recv" covered="ll_222" message="msg_278"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_279" name="send" covered="ll_222" message="msg_281"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_280" name="recv" covered="ll_223" message="msg_281"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_282" name="send" covered="ll_223" message="msg_284"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_283" name="recv" covered="ll_222" message="msg_284"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_285" name="send" covered="ll_221" message="msg_287"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_286" name="recv" covered="ll_225" message="msg_287"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_288" name="send" covered="ll_221" message="msg_290"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_289" name="recv" covered="ll_220" message="msg_290"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_291" name="send" covered="ll_220" message="msg_293"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_292" name="recv" covered="ll_219" message="msg_293"/>
+      </operand>
+    </fragment>
+  </operand>
+</fragment>
+</packagedElement>
+<packagedElement xmi:type="uml:Interaction" xmi:id="seq3" name="RF01.3 - Vencimiento Automatico">
+  <lifeline xmi:id="ll_294" name="frmPrincipal (Timer 5 min)"/>
+  <lifeline xmi:id="ll_295" name="frmLogin (login Administrativo/Administrador)"/>
+  <lifeline xmi:id="ll_296" name="BLL_Turno"/>
+  <lifeline xmi:id="ll_297" name="DAL_Turno"/>
+  <lifeline xmi:id="ll_298" name="SQL Server (Turno)"/>
+  <lifeline xmi:id="ll_299" name="BLL_Bitacora"/>
+<message xmi:id="msg_306" name="ProcesarVencimientos()" messageSort="asynchCall" sendEvent="occ_304" receiveEvent="occ_305"/>
+<message xmi:id="msg_312" name="ProcesarVencimientos()" messageSort="asynchCall" sendEvent="occ_310" receiveEvent="occ_311"/>
+<message xmi:id="msg_315" name="ListarVencidosParaMarcarAusente()" messageSort="synchCall" sendEvent="occ_313" receiveEvent="occ_314"/>
+<message xmi:id="msg_318" name="SELECT IdTurno WHERE Confirmado AND HoraFin+1h &lt; GETDATE()" messageSort="synchCall" sendEvent="occ_316" receiveEvent="occ_317"/>
+<message xmi:id="msg_321" name="[idTurno1, idTurno2, ...]" messageSort="reply" sendEvent="occ_319" receiveEvent="occ_320"/>
+<message xmi:id="msg_324" name="lista de vencidos" messageSort="reply" sendEvent="occ_322" receiveEvent="occ_323"/>
+<message xmi:id="msg_329" name="MarcarAusenteSiConfirmado(idTurno)" messageSort="synchCall" sendEvent="occ_327" receiveEvent="occ_328"/>
+<message xmi:id="msg_332" name="UPDATE Turno SET Estado='Ausente' WHERE IdTurno AND Estado='Confirmado'" messageSort="synchCall" sendEvent="occ_330" receiveEvent="occ_331"/>
+<message xmi:id="msg_335" name="filas afectadas" messageSort="reply" sendEvent="occ_333" receiveEvent="occ_334"/>
+<message xmi:id="msg_342" name="true" messageSort="reply" sendEvent="occ_340" receiveEvent="occ_341"/>
+<message xmi:id="msg_345" name="RegistrarEvento(null, TURNO_AUSENTE, 'TURNOS')" messageSort="asynchCall" sendEvent="occ_343" receiveEvent="occ_344"/>
+<message xmi:id="msg_351" name="false" messageSort="reply" sendEvent="occ_349" receiveEvent="occ_350"/>
+<message xmi:id="msg_355" name="cantidad de turnos marcados" messageSort="reply" sendEvent="occ_353" receiveEvent="occ_354"/>
+<fragment xmi:type="uml:CombinedFragment" xmi:id="cf_300" interactionOperator="par" covered="ll_294 ll_295 ll_296 ll_297 ll_298 ll_299">
+  <operand xmi:type="uml:InteractionOperand" xmi:id="operand_301" name="Disparador 1: Timer cada 5 minutos">
+    <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_302">
+      <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_303" body="Disparador 1: Timer cada 5 minutos"/>
+    </guard>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_304" name="send" covered="ll_294" message="msg_306"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_305" name="recv" covered="ll_296" message="msg_306"/>
+  </operand>
+  <operand xmi:type="uml:InteractionOperand" xmi:id="operand_307" name="Disparador 2: login exitoso">
+    <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_308">
+      <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_309" body="Disparador 2: login exitoso"/>
+    </guard>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_310" name="send" covered="ll_295" message="msg_312"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_311" name="recv" covered="ll_296" message="msg_312"/>
+  </operand>
+</fragment>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_313" name="send" covered="ll_296" message="msg_315"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_314" name="recv" covered="ll_297" message="msg_315"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_316" name="send" covered="ll_297" message="msg_318"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_317" name="recv" covered="ll_298" message="msg_318"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_319" name="send" covered="ll_298" message="msg_321"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_320" name="recv" covered="ll_297" message="msg_321"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_322" name="send" covered="ll_297" message="msg_324"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_323" name="recv" covered="ll_296" message="msg_324"/>
+<fragment xmi:type="uml:CombinedFragment" xmi:id="cf_325" interactionOperator="loop" covered="ll_294 ll_295 ll_296 ll_297 ll_298 ll_299">
+  <operand xmi:type="uml:InteractionOperand" xmi:id="operand_326" name="Por cada turno vencido">
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_327" name="send" covered="ll_296" message="msg_329"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_328" name="recv" covered="ll_297" message="msg_329"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_330" name="send" covered="ll_297" message="msg_332"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_331" name="recv" covered="ll_298" message="msg_332"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_333" name="send" covered="ll_298" message="msg_335"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_334" name="recv" covered="ll_297" message="msg_335"/>
+    <fragment xmi:type="uml:CombinedFragment" xmi:id="cf_336" interactionOperator="alt" covered="ll_294 ll_295 ll_296 ll_297 ll_298 ll_299">
+      <operand xmi:type="uml:InteractionOperand" xmi:id="operand_337" name="Se actualizo (seguia Confirmado)">
+        <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_338">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_339" body="Se actualizo (seguia Confirmado)"/>
+        </guard>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_340" name="send" covered="ll_297" message="msg_342"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_341" name="recv" covered="ll_296" message="msg_342"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_343" name="send" covered="ll_296" message="msg_345"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_344" name="recv" covered="ll_299" message="msg_345"/>
+      </operand>
+      <operand xmi:type="uml:InteractionOperand" xmi:id="operand_346" name="No se actualizo (lo atendieron mientras tanto)">
+        <guard xmi:type="uml:InteractionConstraint" xmi:id="guard_347">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="spec_348" body="No se actualizo (lo atendieron mientras tanto)"/>
+        </guard>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_349" name="send" covered="ll_297" message="msg_351"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_350" name="recv" covered="ll_296" message="msg_351"/>
+        <!-- nota sobre ll_296 --><ownedComment xmi:id="note_352" body="Se salta sin error: condicion de carrera normal"/>
+      </operand>
+    </fragment>
+  </operand>
+</fragment>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_353" name="send" covered="ll_296" message="msg_355"/>
+<fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="occ_354" name="recv" covered="ll_294" message="msg_355"/>
+</packagedElement>
+</packagedElement>
+</packagedElement>
+</uml:Model>
+</xmi:XMI>

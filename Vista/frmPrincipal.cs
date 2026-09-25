@@ -79,10 +79,27 @@ namespace Vista
                     lblUsuario.Text = $"Usuario: {sesion.UsuarioActual.Nombre}";
 
                 AplicarPermisosMenu();
+
+                timerVencimientoTurnos.Start();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        // Autolimpieza mientras la app esta abierta: cada 5 minutos, cierra los turnos
+        // Confirmado que ya vencieron (RF ausentismo automatico). Se ignoran los errores
+        // para no interrumpir al usuario con un mensaje cada vez que corre el Timer;
+        // si falla, simplemente lo vuelve a intentar en la proxima vuelta.
+        private void timerVencimientoTurnos_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                new BLL_Turno().ProcesarVencimientos();
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -93,12 +110,17 @@ namespace Vista
 
             btn_GestionUsuarios.Visible = sesion.TieneRol("Administrador");
             btn_GestionRoles.Visible = sesion.TieneRol("Administrador");
+            btn_GestionMedicos.Visible = sesion.TieneRol("Administrador");
 
             btnGestionIdiomas.Visible = sesion.TieneRol("Administrador")
                                       || sesion.TieneRol("Administrativo");
 
             btn_Seguridad.Visible = sesion.TieneRol("Administrador");
             btn_Bitacora.Visible = sesion.TieneRol("Administrador");
+            btn_BitacoraTurno.Visible = sesion.TieneRol("Administrador");
+
+            btn_GestionTurnos.Visible = sesion.TieneRol("Administrador")
+                                      || sesion.TieneRol("Administrativo");
 
             btn_AccesoMedico.Visible = sesion.TieneRol("Medico");
             btn_AccesoPaciente.Visible = sesion.TieneRol("Paciente");
@@ -116,9 +138,12 @@ namespace Vista
                 btn_GestionRoles,
                 btn_Seguridad,
                 btn_Bitacora,
+                btn_BitacoraTurno,
                 btnGestionIdiomas,
                 btn_AccesoMedico,
-                btn_AccesoPaciente
+                btn_AccesoPaciente,
+                btn_GestionMedicos,
+                btn_GestionTurnos
             };
 
             int y = botonesEnOrden[0].Top;
@@ -188,6 +213,13 @@ namespace Vista
             AbrirFormulario<frmBitacora>();
         }
 
+        private void btn_BitacoraTurno_Click(object sender, EventArgs e)
+        {
+            if (!Sesion.Instancia().TieneRol("Administrador"))
+                return;
+            AbrirFormulario<frm_BitacoraTurno>();
+        }
+
         private void btn_AccesoMedico_Click(object sender, EventArgs e)
         {
             if (!Sesion.Instancia().TieneRol("Medico"))
@@ -248,6 +280,21 @@ namespace Vista
                 MessageBox.Show(ex.Message, "Error al cambiar idioma",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void btn_GestionMedicos_Click(object sender, EventArgs e)
+        {
+            if (!Sesion.Instancia().TieneRol("Administrador"))
+                return;
+            AbrirFormulario<frmGestionMedicos>();
+        }
+
+        private void btn_GestionTurnos_Click(object sender, EventArgs e)
+        {
+            var sesion = Sesion.Instancia();
+            if (!sesion.TieneRol("Administrador") && !sesion.TieneRol("Administrativo"))
+                return;
+            AbrirFormulario<frmGestionTurnos>();
         }
     }
 }

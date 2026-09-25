@@ -1,62 +1,259 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BE;
+using BLL;
+using Servicios;
+using System;
 using System.Windows.Forms;
 
 namespace Vista
 {
     public partial class frm_AccesoPaciente : frmBase
     {
+        BLL_MedicoHorario bll_medicoHorario = new BLL_MedicoHorario();
+        BLL_Turno bll_turno = new BLL_Turno();
+
         public frm_AccesoPaciente()
         {
             InitializeComponent();
+            dtpFecha.MinDate = DateTime.Today;
+            dtpFecha.Value = DateTime.Today;
+
+            ucEspecialidad.EspecialidadSeleccionada += ucEspecialidad_EspecialidadSeleccionada;
+            ucMedico.MedicoSeleccionado += ucMedico_MedicoSeleccionado;
+            dtpFecha.ValueChanged += dtpFecha_ValueChanged;
         }
 
         private void frm_AccesoPaciente_Load(object sender, EventArgs e)
         {
-            CargarDatosDeEjemplo();
+            try
+            {
+                ucEspecialidad.CargarEspecialidades();
+                CargarMisTurnos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        // Datos de ejemplo hardcodeados solo para que la pantalla no se vea vacía.
-        // El módulo de Turnos todavía no tiene BE/BLL/DAL propios: esto es puramente
-        // visual, no persiste nada ni se lee de la base.
-        private void CargarDatosDeEjemplo()
+        private void ucEspecialidad_EspecialidadSeleccionada(object sender, EventArgs e)
         {
-            cboEspecialidades.Items.Clear();
-            cboEspecialidades.Items.AddRange(new object[]
+            try
             {
-                "Clínica Médica", "Cardiología", "Pediatría", "Traumatología", "Dermatología"
-            });
-            cboEspecialidades.SelectedIndex = 0;
-
-            cboMedicos.Items.Clear();
-            cboMedicos.Items.AddRange(new object[]
+                CargarMedicosPorEspecialidad();
+            }
+            catch (Exception ex)
             {
-                "Dr. Juan Pérez", "Dra. Laura Sánchez", "Dr. Martín Gómez"
-            });
-            cboMedicos.SelectedIndex = 0;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-            lstHorarios.Items.Clear();
-            lstHorarios.Items.AddRange(new object[] { "09:00", "09:30", "10:00", "10:30", "11:00", "11:30" });
+        // Solo se listan los medicos que tengan asignada la especialidad elegida
+        // (Medico_Especialidad, cargado desde frmGestionMedicos).
+        private void CargarMedicosPorEspecialidad()
+        {
+            if (ucEspecialidad.IdEspecialidadSeleccionada == null)
+                ucMedico.Limpiar();
+            else
+                ucMedico.CargarMedicosPorEspecialidad(ucEspecialidad.IdEspecialidadSeleccionada.Value);
 
-            dataGridView1.DataSource = new[]
+            // Los horarios ofrecidos dependen tambien de la especialidad elegida.
+            CargarHorariosDelMedico();
+        }
+
+        private void ucMedico_MedicoSeleccionado(object sender, EventArgs e)
+        {
+            try
             {
-                new { Fecha = "05/07/2026", Hora = "09:00", Especialidad = "Clínica Médica", Medico = "Dr. Juan Pérez", Estado = "Confirmado" },
-                new { Fecha = "12/07/2026", Hora = "10:30", Especialidad = "Cardiología", Medico = "Dra. Laura Sánchez", Estado = "Pendiente" },
-                new { Fecha = "20/07/2026", Hora = "11:00", Especialidad = "Dermatología", Medico = "Dr. Martín Gómez", Estado = "Confirmado" },
-            };
+                CargarHorariosDelMedico();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dtpFecha_ValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                CargarHorariosDelMedico();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Horarios Activos del medico que caen en el dia de la semana de la fecha elegida y
+        // que todavia no tienen un turno Confirmado para esa fecha exacta.
+        private void CargarHorariosDelMedico()
+        {
+            if (ucMedico.IdMedicoSeleccionado == null)
+            {
+                lstHorarios.DataSource = null;
+                return;
+            }
+
+            lstHorarios.DataSource = bll_medicoHorario._listaDisponibles(ucMedico.IdMedicoSeleccionado.Value, dtpFecha.Value.Date, ucEspecialidad.IdEspecialidadSeleccionada);
+            lstHorarios.DisplayMember = "RangoHorario";
+        }
+
+        private void btnReservarTurno_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (lstHorarios.SelectedItem == null)
+                {
+                    MessageBox.Show("Seleccione un horario disponible.");
+                    return;
+                }
+
+                BE_MedicoHorario horario = (BE_MedicoHorario)lstHorarios.SelectedItem;
+                int idPaciente = Sesion.Instancia().UsuarioActual.IdUsuario;
+
+                bll_turno.SolicitarTurno(idPaciente, horario.IdHorario, dtpFecha.Value.Date);
+
+                MessageBox.Show("Turno reservado correctamente.");
+                CargarHorariosDelMedico();
+                CargarMisTurnos();
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnModificarTurno_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                {
+                    MessageBox.Show("Seleccione, en 'Mis Turnos', el turno que quiere modificar.");
+                    return;
+                }
+
+                if (lstHorarios.SelectedItem == null)
+                {
+                    MessageBox.Show("Elija arriba el nuevo horario disponible antes de modificar.");
+                    return;
+                }
+
+                int idTurno = Convert.ToInt32(dataGridView1.CurrentRow.Cells["colIdTurno"].Value);
+                BE_MedicoHorario horario = (BE_MedicoHorario)lstHorarios.SelectedItem;
+                int idPaciente = Sesion.Instancia().UsuarioActual.IdUsuario;
+
+                bll_turno.ModificarTurno(idTurno, horario.IdHorario, dtpFecha.Value.Date, idPaciente);
+
+                MessageBox.Show("Turno modificado correctamente.");
+                CargarHorariosDelMedico();
+                CargarMisTurnos();
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnCancelarTurnos_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                {
+                    MessageBox.Show("Seleccione, en 'Mis Turnos', el turno que quiere cancelar.");
+                    return;
+                }
+
+                int idTurno = Convert.ToInt32(dataGridView1.CurrentRow.Cells["colIdTurno"].Value);
+                int idPaciente = Sesion.Instancia().UsuarioActual.IdUsuario;
+
+                bll_turno.CancelarTurno(idTurno, idPaciente);
+
+                MessageBox.Show("Turno cancelado.");
+                CargarHorariosDelMedico();
+                CargarMisTurnos();
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void CargarMisTurnos()
+        {
+            try
+            {
+                int idPaciente = Sesion.Instancia().UsuarioActual.IdUsuario;
+
+                dataGridView1.AutoGenerateColumns = false;
+                dataGridView1.DataSource = null;
+                dataGridView1.Columns.Clear();
+
+                DataGridViewTextBoxColumn colIdTurno = new DataGridViewTextBoxColumn();
+                colIdTurno.Name = "colIdTurno";
+                colIdTurno.DataPropertyName = "IdTurno";
+                colIdTurno.Visible = false;
+                dataGridView1.Columns.Add(colIdTurno);
+
+                DataGridViewTextBoxColumn colFecha = new DataGridViewTextBoxColumn();
+                colFecha.Name = "colFecha";
+                colFecha.HeaderText = "Fecha";
+                colFecha.DataPropertyName = "FechaTexto";
+                colFecha.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView1.Columns.Add(colFecha);
+
+                DataGridViewTextBoxColumn colHora = new DataGridViewTextBoxColumn();
+                colHora.Name = "colHora";
+                colHora.HeaderText = "Turno";
+                colHora.DataPropertyName = "RangoHorario";
+                colHora.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView1.Columns.Add(colHora);
+
+                DataGridViewTextBoxColumn colEspecialidad = new DataGridViewTextBoxColumn();
+                colEspecialidad.Name = "colEspecialidad";
+                colEspecialidad.HeaderText = "Especialidad";
+                colEspecialidad.DataPropertyName = "Especialidades";
+                colEspecialidad.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView1.Columns.Add(colEspecialidad);
+
+                DataGridViewTextBoxColumn colMedico = new DataGridViewTextBoxColumn();
+                colMedico.Name = "colMedico";
+                colMedico.HeaderText = "Medico";
+                colMedico.DataPropertyName = "NombreApellidoMedico";
+                colMedico.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView1.Columns.Add(colMedico);
+
+                DataGridViewTextBoxColumn colEstado = new DataGridViewTextBoxColumn();
+                colEstado.Name = "colEstado";
+                colEstado.HeaderText = "Estado";
+                colEstado.DataPropertyName = "Estado";
+                colEstado.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView1.Columns.Add(colEstado);
+
+                dataGridView1.DataSource = bll_turno._listaPorPaciente(idPaciente);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public override void AplicarIdioma()
         {
             AplicarIdiomaAutomatico();
         }
-
-
     }
 }

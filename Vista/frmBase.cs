@@ -116,6 +116,22 @@ namespace Vista
                         ctrl.Text = traduccion;
                 }
 
+                // ucSelectorEspecialidad/ucSelectorMedico son UserControl reutilizados en varias
+                // pantallas: se traducen por el nombre de la instancia (clave), no por sus
+                // controles internos, que se llaman igual en todas las instancias.
+                if (ctrl is ucSelectorEspecialidad || ctrl is ucSelectorMedico)
+                {
+                    string traduccion = t.Traducir(clave);
+                    if (!traduccion.StartsWith("["))
+                    {
+                        if (ctrl is ucSelectorEspecialidad)
+                            ((ucSelectorEspecialidad)ctrl).Etiqueta = traduccion;
+                        else
+                            ((ucSelectorMedico)ctrl).Etiqueta = traduccion;
+                    }
+                    continue;
+                }
+
                 if (ctrl is DataGridView dgv)
                 {
                     foreach (DataGridViewColumn col in dgv.Columns)

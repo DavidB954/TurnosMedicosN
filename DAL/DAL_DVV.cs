@@ -88,7 +88,7 @@ namespace DAL
             {
                 SqlConnection.ClearAllPools();
 
-                string masterConnectionString = "Data Source=.;Initial Catalog=master;Integrated Security=True";
+                string masterConnectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
 
                 using (SqlConnection conexion = new SqlConnection(masterConnectionString))
                 {

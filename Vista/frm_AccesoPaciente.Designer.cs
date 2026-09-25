@@ -31,10 +31,10 @@
             this.groupBox_Disponibilidad = new System.Windows.Forms.GroupBox();
             this.btnReservarTurno = new System.Windows.Forms.Button();
             this.lblHorarios = new System.Windows.Forms.Label();
-            this.cboMedicos = new System.Windows.Forms.ComboBox();
-            this.lblMedico = new System.Windows.Forms.Label();
-            this.cboEspecialidades = new System.Windows.Forms.ComboBox();
-            this.lblEspecialidad = new System.Windows.Forms.Label();
+            this.ucMedico = new Vista.ucSelectorMedico();
+            this.ucEspecialidad = new Vista.ucSelectorEspecialidad();
+            this.lblFecha = new System.Windows.Forms.Label();
+            this.dtpFecha = new System.Windows.Forms.DateTimePicker();
             this.groupBox_MisTurnos = new System.Windows.Forms.GroupBox();
             this.btnCancelarTurnos = new System.Windows.Forms.Button();
             this.btnModificarTurno = new System.Windows.Forms.Button();
@@ -50,10 +50,10 @@
             this.groupBox_Disponibilidad.Controls.Add(this.btnReservarTurno);
             this.groupBox_Disponibilidad.Controls.Add(this.lstHorarios);
             this.groupBox_Disponibilidad.Controls.Add(this.lblHorarios);
-            this.groupBox_Disponibilidad.Controls.Add(this.cboMedicos);
-            this.groupBox_Disponibilidad.Controls.Add(this.lblMedico);
-            this.groupBox_Disponibilidad.Controls.Add(this.cboEspecialidades);
-            this.groupBox_Disponibilidad.Controls.Add(this.lblEspecialidad);
+            this.groupBox_Disponibilidad.Controls.Add(this.ucMedico);
+            this.groupBox_Disponibilidad.Controls.Add(this.ucEspecialidad);
+            this.groupBox_Disponibilidad.Controls.Add(this.dtpFecha);
+            this.groupBox_Disponibilidad.Controls.Add(this.lblFecha);
             this.groupBox_Disponibilidad.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_Disponibilidad.Location = new System.Drawing.Point(329, 8);
             this.groupBox_Disponibilidad.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -73,7 +73,8 @@
             this.btnReservarTurno.TabIndex = 5;
             this.btnReservarTurno.Text = "Reservar";
             this.btnReservarTurno.UseVisualStyleBackColor = true;
-            // 
+            this.btnReservarTurno.Click += new System.EventHandler(this.btnReservarTurno_Click);
+            //
             // lblHorarios
             // 
             this.lblHorarios.AutoSize = true;
@@ -84,43 +85,42 @@
             this.lblHorarios.TabIndex = 4;
             this.lblHorarios.Text = "Horarios";
             // 
-            // cboMedicos
-            // 
-            this.cboMedicos.FormattingEnabled = true;
-            this.cboMedicos.Location = new System.Drawing.Point(197, 88);
-            this.cboMedicos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.cboMedicos.Name = "cboMedicos";
-            this.cboMedicos.Size = new System.Drawing.Size(163, 28);
-            this.cboMedicos.TabIndex = 3;
-            // 
-            // lblMedico
-            // 
-            this.lblMedico.AutoSize = true;
-            this.lblMedico.Location = new System.Drawing.Point(47, 91);
-            this.lblMedico.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblMedico.Name = "lblMedico";
-            this.lblMedico.Size = new System.Drawing.Size(66, 20);
-            this.lblMedico.TabIndex = 2;
-            this.lblMedico.Text = "Medico";
-            // 
-            // cboEspecialidades
-            // 
-            this.cboEspecialidades.FormattingEnabled = true;
-            this.cboEspecialidades.Location = new System.Drawing.Point(197, 39);
-            this.cboEspecialidades.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.cboEspecialidades.Name = "cboEspecialidades";
-            this.cboEspecialidades.Size = new System.Drawing.Size(163, 28);
-            this.cboEspecialidades.TabIndex = 1;
-            // 
-            // lblEspecialidad
-            // 
-            this.lblEspecialidad.AutoSize = true;
-            this.lblEspecialidad.Location = new System.Drawing.Point(47, 42);
-            this.lblEspecialidad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblEspecialidad.Name = "lblEspecialidad";
-            this.lblEspecialidad.Size = new System.Drawing.Size(130, 20);
-            this.lblEspecialidad.TabIndex = 0;
-            this.lblEspecialidad.Text = "Especialidades";
+            // ucMedico
+            //
+            this.ucMedico.Etiqueta = "Medico:";
+            this.ucMedico.Location = new System.Drawing.Point(44, 82);
+            this.ucMedico.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ucMedico.Name = "ucMedico";
+            this.ucMedico.Size = new System.Drawing.Size(350, 30);
+            this.ucMedico.TabIndex = 3;
+            //
+            // ucEspecialidad
+            //
+            this.ucEspecialidad.Etiqueta = "Especialidad:";
+            this.ucEspecialidad.Location = new System.Drawing.Point(44, 33);
+            this.ucEspecialidad.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ucEspecialidad.Name = "ucEspecialidad";
+            this.ucEspecialidad.Size = new System.Drawing.Size(350, 30);
+            this.ucEspecialidad.TabIndex = 1;
+            //
+            // lblFecha
+            //
+            this.lblFecha.AutoSize = true;
+            this.lblFecha.Location = new System.Drawing.Point(44, 135);
+            this.lblFecha.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblFecha.Name = "lblFecha";
+            this.lblFecha.Size = new System.Drawing.Size(60, 20);
+            this.lblFecha.TabIndex = 2;
+            this.lblFecha.Text = "Fecha:";
+            //
+            // dtpFecha
+            //
+            this.dtpFecha.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFecha.Location = new System.Drawing.Point(197, 130);
+            this.dtpFecha.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dtpFecha.Name = "dtpFecha";
+            this.dtpFecha.Size = new System.Drawing.Size(197, 26);
+            this.dtpFecha.TabIndex = 4;
             //
             // lstHorarios
             //
@@ -157,9 +157,10 @@
             this.btnCancelarTurnos.TabIndex = 8;
             this.btnCancelarTurnos.Text = "Cancelar";
             this.btnCancelarTurnos.UseVisualStyleBackColor = true;
-            // 
+            this.btnCancelarTurnos.Click += new System.EventHandler(this.btnCancelarTurnos_Click);
+            //
             // btnModificarTurno
-            // 
+            //
             this.btnModificarTurno.Location = new System.Drawing.Point(634, 262);
             this.btnModificarTurno.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnModificarTurno.Name = "btnModificarTurno";
@@ -167,7 +168,8 @@
             this.btnModificarTurno.TabIndex = 7;
             this.btnModificarTurno.Text = "Modificar";
             this.btnModificarTurno.UseVisualStyleBackColor = true;
-            // 
+            this.btnModificarTurno.Click += new System.EventHandler(this.btnModificarTurno_Click);
+            //
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -202,10 +204,10 @@
 
         private System.Windows.Forms.GroupBox groupBox_Disponibilidad;
         private System.Windows.Forms.Label lblHorarios;
-        private System.Windows.Forms.ComboBox cboMedicos;
-        private System.Windows.Forms.Label lblMedico;
-        private System.Windows.Forms.ComboBox cboEspecialidades;
-        private System.Windows.Forms.Label lblEspecialidad;
+        private ucSelectorMedico ucMedico;
+        private ucSelectorEspecialidad ucEspecialidad;
+        private System.Windows.Forms.Label lblFecha;
+        private System.Windows.Forms.DateTimePicker dtpFecha;
         private System.Windows.Forms.Button btnReservarTurno;
         private System.Windows.Forms.GroupBox groupBox_MisTurnos;
         private System.Windows.Forms.Button btnCancelarTurnos;

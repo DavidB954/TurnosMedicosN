@@ -67,6 +67,15 @@
     <Compile Include="frmBaseCorrupta.Designer.cs">
       <DependentUpon>frmBaseCorrupta.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmEditarFranjasMedico.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGestionMedicos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGestionMedicos.Designer.cs">
+      <DependentUpon>frmGestionMedicos.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +112,18 @@
     <Compile Include="frmBitacora.Designer.cs">
       <DependentUpon>frmBitacora.cs</DependentUpon>
     </Compile>
+    <Compile Include="frm_BitacoraTurno.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_BitacoraTurno.Designer.cs">
+      <DependentUpon>frm_BitacoraTurno.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmGestionTurnos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGestionTurnos.Designer.cs">
+      <DependentUpon>frmGestionTurnos.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmRolesPermisos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +142,18 @@
     <Compile Include="frmSeguridad.Designer.cs">
       <DependentUpon>frmSeguridad.cs</DependentUpon>
     </Compile>
+    <Compile Include="ucSelectorEspecialidad.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucSelectorEspecialidad.Designer.cs">
+      <DependentUpon>ucSelectorEspecialidad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucSelectorMedico.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucSelectorMedico.Designer.cs">
+      <DependentUpon>ucSelectorMedico.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmABM.resx">
@@ -131,6 +164,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmBaseCorrupta.resx">
       <DependentUpon>frmBaseCorrupta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEditarFranjasMedico.resx">
+      <DependentUpon>frmEditarFranjasMedico.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGestionMedicos.resx">
+      <DependentUpon>frmGestionMedicos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
@@ -149,6 +188,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmBitacora.resx">
       <DependentUpon>frmBitacora.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_BitacoraTurno.resx">
+      <DependentUpon>frm_BitacoraTurno.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGestionTurnos.resx">
+      <DependentUpon>frmGestionTurnos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmRolesPermisos.resx">
       <DependentUpon>frmRolesPermisos.cs</DependentUpon>

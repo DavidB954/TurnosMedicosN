@@ -62,6 +62,19 @@ namespace Vista
                         TraduccionServicio.Instancia.CambiarIdioma(idioma, diccionario);
                     }
 
+                    // Cubre el caso de que la app haya estado cerrada y queden turnos vencidos
+                    // desde antes; se ignoran los errores para no bloquear el login por esto.
+                    if (Sesion.TieneRol("Administrativo") || Sesion.TieneRol("Administrador"))
+                    {
+                        try
+                        {
+                            new BLL_Turno().ProcesarVencimientos();
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+
                     frmPrincipal formP = new frmPrincipal();
 
                     formP.Show();

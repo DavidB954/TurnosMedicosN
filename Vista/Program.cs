@@ -9,16 +9,12 @@ namespace Vista
 {
     internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+       
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new frmLogin());
-
+          
+         
             BLL_DVV bll_dvv = new BLL_DVV();
             bool integra = bll_dvv.VerificarIntegridad("Usuario");
             if (!integra)
@@ -27,8 +23,24 @@ namespace Vista
             }
             else
             {
-                Application.Run(new frmLogin());
+               Application.Run(new frmLogin());
             }
+        }
+
+        private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            MostrarError(e.Exception);
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MostrarError(e.ExceptionObject as Exception);
+        }
+
+        private static void MostrarError(Exception ex)
+        {
+            string mensaje = ex != null ? ex.Message : "Ocurrio un error inesperado.";
+            MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

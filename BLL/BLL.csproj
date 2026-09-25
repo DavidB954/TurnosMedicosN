@@ -43,10 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL_Bitacora.cs" />
+    <Compile Include="BLL_BitacoraEventoTurno.cs" />
     <Compile Include="BLL_DVV.cs" />
+    <Compile Include="BLL_Especialidad.cs" />
     <Compile Include="BLL_HistorialCambios.cs" />
+    <Compile Include="BLL_MedicoHorario.cs" />
     <Compile Include="BLL_Roles.cs" />
     <Compile Include="BLL_Traduccion.cs" />
+    <Compile Include="BLL_Turno.cs" />
     <Compile Include="BLL_Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

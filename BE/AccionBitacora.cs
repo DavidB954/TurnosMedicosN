@@ -30,6 +30,11 @@ namespace BE
         PERMISO_BAJA,
         IDIOMA_ALTA,
         IDIOMA_BAJA,
+        TURNO_SOLICITADO,
+        TURNO_CANCELADO,
+        TURNO_MODIFICADO,
+        TURNO_AUSENTE,
+        DISPONIBILIDAD_MODIFICADA,
         MODULO_GENERAL
     }
 }
