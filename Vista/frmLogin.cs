@@ -32,7 +32,8 @@ namespace Vista
         {
             try
             {
-                //string pas = "123";
+                //MAil de prueba: JB@GMAIL.COM -Paciente, DB@GMAIL.COM -Medico , GS@GMAIL.COM - Administrador, 
+                //Todas las contraseñas = 123;
                 
                 //string pass = HashHelper.GenerarHash(pas);
 
