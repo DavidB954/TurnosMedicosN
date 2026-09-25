@@ -10,10 +10,7 @@ namespace DAL
     {
         DAL_Conexion conex = new DAL_Conexion();
 
-        // Los horarios con turnos asociados (aunque esten cancelados) no se pueden borrar
-        // fisicamente por la FK de Turno.IdHorario. Por eso esto es un upsert: si ya existe
-        // una fila para ese Medico+Dia+HoraInicio (por ejemplo, quedo desactivada por un
-        // "Modificar" anterior) se reactiva y se le actualiza la HoraFin; si no existe, se crea.
+       
         public void InsertarOReactivarHorario(BE_MedicoHorario horario)
         {
             try
@@ -45,10 +42,7 @@ namespace DAL
             }
         }
 
-        // No se borran fisicamente (ver comentario de InsertarOReactivarHorario): se desactivan.
-        // Si se indica una especialidad, solo se desactivan las franjas de esa especialidad
-        // (y las que no tienen especialidad asignada), para no pisar las de otra especialidad
-        // que el medico atiende el mismo dia.
+      
         public void DesactivarHorariosPorMedicoYDia(int idMedico, int diaSemana, int? idEspecialidad)
         {
             try
@@ -103,11 +97,7 @@ namespace DAL
             }
         }
 
-        // Horarios activos de un medico para un dia de la semana puntual, que ademas no
-        // tengan ya un turno Confirmado/Atendido/Ausente en esa fecha exacta (solo los Cancelados liberan
-        // el horario) y, si la fecha es hoy, cuya hora de inicio todavia no paso.
-        // Si se indica especialidad, solo las franjas del medico para esa especialidad (las
-        // que no tienen especialidad asignada valen para cualquiera).
+       
         public List<BE_MedicoHorario> ListarDisponibles(int idMedico, int diaSemana, DateTime fecha, int? idEspecialidad)
         {
             try
