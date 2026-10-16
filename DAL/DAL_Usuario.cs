@@ -191,6 +191,14 @@ namespace DAL
 
                 cmdBorrarUsuBitacora.ExecuteNonQuery();
 
+                // Luego sus roles y permisos directos (tienen FK a Usuario)
+                SqlCommand cmdBorrarSeguridad = new SqlCommand(
+                    "Delete from Usuario_Rol WHERE IdUsuario=@id; Delete from Usuario_Permiso WHERE IdUsuario=@id", conexion);
+
+                cmdBorrarSeguridad.Parameters.Add("@id", SqlDbType.Int).Value = id;
+
+                cmdBorrarSeguridad.ExecuteNonQuery();
+
                 SqlCommand comando = new SqlCommand("Delete from Usuario WHERE IdUsuario = @id", conexion);
 
                 comando.Parameters.AddWithValue("@id", id);

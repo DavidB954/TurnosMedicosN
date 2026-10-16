@@ -5,16 +5,16 @@ using Servicios;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL
 {
     public class BLL_Roles
     {
+        // El rol Administrador no se puede borrar, renombrar ni recortar desde la UI,
+        // y siempre tiene que quedar al menos un usuario con ese rol (evita quedar afuera del sistema).
+        public const string NombreRolAdministrador = "Administrador";
+
         DAL_Roles dal_roles = new DAL_Roles();
         DAL_Usuario dal_usuario = new DAL_Usuario();
         BLL_Bitacora bll_bitacora = new BLL_Bitacora();
@@ -24,94 +24,30 @@ namespace BLL
             return Sesion.Instancia().UsuarioActual?.Nombre ?? "SISTEMA";
         }
 
-        public void GuardarArbol(RolComposite raiz, string descripcionRaiz)
+        private void Registrar(AccionBitacora accion, string mensaje)
         {
-            try
-            {
-                // La raíz es el nodo "Roles" (virtual) — sus hijos son los roles reales
-                foreach (var hijo in raiz.Hijos())
-                {
-                    if (hijo is RolComposite rol)
-                        GuardarRolRecursivo(rol, idPadre: null, descripcion: descripcionRaiz);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
+            bll_bitacora.RegistrarEvento(Sesion.Instancia().UsuarioActual?.IdUsuario, accion, "ROLES", mensaje);
         }
 
-        private void GuardarRolRecursivo(RolComposite rol, int? idPadre, string descripcion)
+        private static string Texto(DataRow row, string columna)
         {
-            try
-            {
-                int idRol;
-
-                // Si ya tiene ID, existe en BD — no insertar, solo registrar jerarquía si corresponde
-                if (rol.Id > 0)
-                {
-                    idRol = rol.Id;
-                }
-                else
-                {
-                    // Es nuevo — insertar
-                    idRol = dal_roles.InsertarRol(rol.Nombre, descripcion);
-                    rol.Id = idRol;
-
-                    bll_bitacora.RegistrarEvento(
-                        Sesion.Instancia().UsuarioActual?.IdUsuario,
-                        AccionBitacora.ROL_ALTA,
-                        "ROLES",
-                        $"Usuario {ActorActual()} crea el rol {rol.Nombre}"
-                    );
-                }
-
-
-                // 2. Si tiene padre, registrar la jerarquía
-                if (idPadre.HasValue)
-                    dal_roles.AsignarRolHijo(idPadre.Value, idRol);
-
-                // 3. Recorrer hijos
-                foreach (var hijo in rol.Hijos())
-                {
-                    if (hijo is RolComposite subRol)
-                    {
-                        GuardarRolRecursivo(subRol, idPadre: idRol, descripcion: null);
-                    }
-                    else if (hijo is Permiso permiso)
-                    {
-                        int idPermiso;
-
-                        if (permiso.Id > 0)
-                        {
-                            // Ya existe en BD — solo asignar al rol
-                            idPermiso = permiso.Id;
-                        }
-                        else
-                        {
-                            // Es nuevo — insertar
-                            idPermiso = dal_roles.InsertarPermiso(permiso.Nombre);
-                            permiso.Id = idPermiso;
-                            permiso.IdPermiso = idPermiso;
-
-                            bll_bitacora.RegistrarEvento(
-                                Sesion.Instancia().UsuarioActual?.IdUsuario,
-                                AccionBitacora.PERMISO_ALTA,
-                                "ROLES",
-                                $"Usuario {ActorActual()} crea el permiso {permiso.Nombre}"
-                            );
-                        }
-
-                        dal_roles.AsignarPermisoARol(idRol, idPermiso);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }          
+            return row.Table.Columns.Contains(columna) && row[columna] != DBNull.Value
+                ? row[columna].ToString()
+                : null;
         }
+
+        private string NombreUsuario(int idUsuario)
+        {
+            BE_Usuario usuario = dal_usuario.ObtenerUsuarioPorId(idUsuario);
+            return usuario != null ? usuario.NombreApellido : $"ID {idUsuario}";
+        }
+
+        public static bool EsAdministrador(RolComposite rol)
+        {
+            return rol != null && string.Equals(rol.Nombre, NombreRolAdministrador, StringComparison.OrdinalIgnoreCase);
+        }
+
+        //// ARBOL COMPLETO (Composite)
 
         public RolComposite CargarArbol()
         {
@@ -122,17 +58,20 @@ namespace BLL
                 var roles = new Dictionary<int, RolComposite>();
                 var permisos = new Dictionary<int, Permiso>();
 
-                // Crear todos los roles
+                // Crear todos los roles (comunes y familias de formulario)
                 foreach (DataRow row in dtRoles.Rows)
                 {
-                    roles[Convert.ToInt32(row["IdRol"])] = new RolComposite
+                    int id = Convert.ToInt32(row["IdRol"]);
+                    roles[id] = new RolComposite
                     {
-                        Id = Convert.ToInt32(row["IdRol"]),
-                        Nombre = row["Nombre"].ToString()
+                        Id = id,
+                        Nombre = row["Nombre"].ToString(),
+                        Descripcion = Texto(row, "Descripcion"),
+                        Formulario = Texto(row, "Formulario")
                     };
                 }
 
-                // Crear todos los permisos
+                // Crear todas las patentes
                 foreach (DataRow row in dtPermisos.Rows)
                 {
                     int id = Convert.ToInt32(row["IdPermisos"]);
@@ -140,11 +79,13 @@ namespace BLL
                     {
                         Id = id,
                         IdPermiso = id,
-                        Nombre = row["Nombre"].ToString()
+                        Nombre = row["Nombre"].ToString(),
+                        Descripcion = Texto(row, "Descripcion"),
+                        Formulario = Texto(row, "Formulario")
                     };
                 }
 
-                // Asignar permisos a sus roles
+                // Asignar patentes a sus roles / familias
                 foreach (DataRow row in dtRolPermiso.Rows)
                 {
                     int idRol = Convert.ToInt32(row["IdRol"]);
@@ -153,28 +94,19 @@ namespace BLL
                         roles[idRol].Agregar(permisos[idPerm]);
                 }
 
-                // Construir jerarquía rol-rol
-                var rolesConPadre = new HashSet<int>();
+                // Construir jerarquía rol-rol (un rol contiene familias de formulario u otros roles)
                 foreach (DataRow row in dtRolRol.Rows)
                 {
                     int idPadre = Convert.ToInt32(row["IdRolPadre"]);
                     int idHijo = Convert.ToInt32(row["IdRolHijo"]);
                     if (roles.ContainsKey(idPadre) && roles.ContainsKey(idHijo))
-                    {
-                        //roles[idPadre].Agregar(roles[idHijo]);
-                        //rolesConPadre.Add(idHijo);
-
                         roles[idPadre].Agregar(ClonarRol(roles[idHijo]));
-                    }
                 }
 
-                // Raíz virtual: roles sin padre
+                // Raíz virtual con todos los roles
                 var raiz = new RolComposite { Id = 0, Nombre = "Roles" };
-                foreach (var kvp in roles)
-                {
-                    if (!rolesConPadre.Contains(kvp.Key))
-                        raiz.Agregar(kvp.Value);
-                }
+                foreach (var rol in roles.Values)
+                    raiz.Agregar(rol);
 
                 return raiz;
             }
@@ -182,82 +114,80 @@ namespace BLL
             {
                 throw new Exception(ex.Message);
             }
-            
         }
 
-        // Clonar dentro de la BLL
         private RolComposite ClonarRol(RolComposite original)
+        {
+            var clon = new RolComposite
+            {
+                Id = original.Id,
+                Nombre = original.Nombre,
+                Descripcion = original.Descripcion,
+                Formulario = original.Formulario,
+                EsReferencia = true
+            };
+
+            foreach (var hijo in original.Hijos())
+            {
+                if (hijo is RolComposite subRol)
+                    clon.Agregar(ClonarRol(subRol));
+                else if (hijo is Permiso p)
+                    clon.Agregar(new Permiso { Id = p.Id, IdPermiso = p.IdPermiso, Nombre = p.Nombre, Descripcion = p.Descripcion, Formulario = p.Formulario });
+            }
+
+            return clon;
+        }
+
+        // Catálogo: una familia por formulario, con sus patentes (botones) como hijos.
+        public List<RolComposite> ObtenerCatalogo()
         {
             try
             {
-                var clon = new RolComposite
-                {
-                    Id = original.Id,
-                    Nombre = original.Nombre,
-                    EsReferencia = true
-                };
-
-                foreach (var hijo in original.Hijos())
-                {
-                    if (hijo is RolComposite subRol)
-                        clon.Agregar(ClonarRol(subRol));
-                    else if (hijo is Permiso p)
-                        clon.Agregar(new Permiso { Id = p.Id, IdPermiso = p.IdPermiso, Nombre = p.Nombre });
-                }
-
-                return clon;
+                return CargarArbol().Hijos()
+                    .OfType<RolComposite>()
+                    .Where(r => r.EsFormulario)
+                    .OrderBy(r => r.Nombre)
+                    .ToList();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
         }
 
-
+        // Solo roles comunes (sin las familias de formulario)
         public List<RolComposite> ObtenerRoles()
         {
             try
             {
-                DataTable dtRoles = dal_roles.ObtenerTodosLosRoles();
-
-                List<RolComposite> lista = new List<RolComposite>();
-
-
-                foreach (DataRow row in dtRoles.Rows)
-                {
-                    lista.Add(new RolComposite
-                    {
-                        Id = Convert.ToInt32(row["IdRol"]),
-                        Nombre = row["Nombre"].ToString()
-                    });
-                }
-                return lista;
+                return CargarArbol().Hijos()
+                    .OfType<RolComposite>()
+                    .Where(r => !r.EsFormulario)
+                    .OrderBy(r => r.Nombre)
+                    .ToList();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
         }
-
 
         public List<Permiso> ObtenerPermisos()
         {
             try
             {
-                var dtPermisos = dal_roles.ObtenerTodosLosPermisos();
-
                 var permisos = new List<Permiso>();
 
-                foreach (DataRow row in dtPermisos.Rows)
+                foreach (DataRow row in dal_roles.ObtenerTodosLosPermisos().Rows)
                 {
                     int id = Convert.ToInt32(row["IdPermisos"]);
                     permisos.Add(new Permiso
                     {
                         Id = id,
                         IdPermiso = id,
-                        Nombre = row["Nombre"].ToString()
+                        Nombre = row["Nombre"].ToString(),
+                        Descripcion = Texto(row, "Descripcion"),
+                        Formulario = Texto(row, "Formulario")
                     });
                 }
                 return permisos;
@@ -266,99 +196,227 @@ namespace BLL
             {
                 throw new Exception(ex.Message);
             }
-           
         }
 
-        public void EliminarComponente(RolComposite padre, Componente componente)
+        //// ABM DE ROLES
+
+        private void ValidarNombreRol(string nombre, int? idExcluir)
+        {
+            if (string.IsNullOrWhiteSpace(nombre))
+                throw new Exception("Ingrese el nombre del rol.");
+
+            if (nombre.Trim().Length > 50)
+                throw new Exception("El nombre del rol no puede superar los 50 caracteres.");
+
+            if (dal_roles.ExisteNombreRol(nombre.Trim(), idExcluir))
+                throw new Exception("Ya existe un rol (o formulario) con ese nombre.");
+        }
+
+        private RolComposite ObtenerRolComun(int idRol)
+        {
+            RolComposite rol = ObtenerRoles().FirstOrDefault(r => r.Id == idRol);
+            if (rol == null)
+                throw new Exception("El rol seleccionado no existe.");
+            return rol;
+        }
+
+        public int CrearRol(string nombre, string descripcion)
         {
             try
             {
-                if (padre.Id == 0)
-                {
-                    return;
-                    //La raiz no tiene padre real, nada que desasignar.
-                }
-                if (componente is RolComposite rolHijo)
-                {
-                    dal_roles.DesasignarRolHijo(padre.Id, rolHijo.Id);
-                }
+                ValidarNombreRol(nombre, null);
 
-                if (componente is Permiso permiso)
-                {
-                    dal_roles.DesasignarPermisoDeRol(padre.Id, permiso.Id);
-                }
+                int idRol = dal_roles.InsertarRol(nombre.Trim(), string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim());
+
+                Registrar(AccionBitacora.ROL_ALTA, $"Usuario {ActorActual()} crea el rol {nombre.Trim()}");
+
+                return idRol;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
         }
 
-        public void EliminarRol(int id)
+        public void ModificarRol(int idRol, string nombre, string descripcion)
         {
             try
             {
-                string nombreRol = dal_roles.ObtenerNombreRol(id) ?? $"ID {id}";
+                RolComposite rol = ObtenerRolComun(idRol);
 
-                dal_roles.EliminarRol(id);
+                if (EsAdministrador(rol) && !string.Equals(rol.Nombre, nombre?.Trim(), StringComparison.OrdinalIgnoreCase))
+                    throw new Exception("El rol Administrador no se puede renombrar.");
 
-                bll_bitacora.RegistrarEvento(
-                    Sesion.Instancia().UsuarioActual?.IdUsuario,
-                    AccionBitacora.ROL_BAJA,
-                    "ROLES",
-                    $"Usuario {ActorActual()} elimina el rol {nombreRol}"
-                );
+                ValidarNombreRol(nombre, idRol);
+
+                dal_roles.ModificarRol(idRol, nombre.Trim(), string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim());
+
+                Registrar(AccionBitacora.ROL_MODIFICACION, $"Usuario {ActorActual()} modifica el rol {rol.Nombre} -> {nombre.Trim()}");
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
         }
 
-
-        public void ModificarPermiso(int idPermiso, string nuevoNombre)
+        public void EliminarRol(int idRol)
         {
             try
             {
-                dal_roles.ModificarPermiso(idPermiso, nuevoNombre);
+                RolComposite rol = ObtenerRolComun(idRol);
+
+                if (EsAdministrador(rol))
+                    throw new Exception("El rol Administrador no se puede eliminar.");
+
+                int cantidad = dal_roles.CantidadUsuariosConRol(idRol);
+                if (cantidad > 0)
+                    throw new Exception($"El rol está asignado a {cantidad} usuario(s). Quíteselo antes de eliminarlo.");
+
+                dal_roles.EliminarRol(idRol);
+
+                Registrar(AccionBitacora.ROL_BAJA, $"Usuario {ActorActual()} elimina el rol {rol.Nombre}");
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
         }
 
-        public void EliminarPermiso(int id)
+        // Deja al rol con exactamente esas familias de formulario (página completa)
+        // y esas patentes sueltas (botones). Calcula la diferencia contra lo que ya tiene.
+        public void GuardarPermisosRol(int idRol, List<int> idsFormularios, List<int> idsPermisos)
         {
             try
             {
-                string nombrePermiso = dal_roles.ObtenerNombrePermiso(id) ?? $"ID {id}";
+                RolComposite rol = ObtenerRolComun(idRol);
 
-                dal_roles.EliminarPermisos(id);
+                if (EsAdministrador(rol))
+                    throw new Exception("El rol Administrador siempre tiene acceso a todos los formularios y no se puede modificar.");
 
-                bll_bitacora.RegistrarEvento(
-                    Sesion.Instancia().UsuarioActual?.IdUsuario,
-                    AccionBitacora.PERMISO_BAJA,
-                    "ROLES",
-                    $"Usuario {ActorActual()} elimina el permiso {nombrePermiso}"
-                );
+                var formulariosActuales = rol.Hijos().OfType<RolComposite>().Where(r => r.EsFormulario).Select(r => r.Id).ToList();
+                var permisosActuales = rol.Hijos().OfType<Permiso>().Select(p => p.Id).ToList();
+
+                foreach (int id in idsFormularios.Except(formulariosActuales))
+                    dal_roles.AsignarRolHijo(idRol, id);
+                foreach (int id in formulariosActuales.Except(idsFormularios))
+                    dal_roles.DesasignarRolHijo(idRol, id);
+
+                foreach (int id in idsPermisos.Except(permisosActuales))
+                    dal_roles.AsignarPermisoARol(idRol, id);
+                foreach (int id in permisosActuales.Except(idsPermisos))
+                    dal_roles.DesasignarPermisoDeRol(idRol, id);
+
+                Registrar(AccionBitacora.ROL_PERMISOS_MODIFICADOS,
+                    $"Usuario {ActorActual()} actualiza los permisos del rol {rol.Nombre}: {idsFormularios.Count} formulario(s) completo(s), {idsPermisos.Count} boton(es) sueltos");
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
         }
-
-
-
-
 
         //// USUARIOS
-        ///
+
+        // Roles y familias de formulario asignados al usuario (Usuario_Rol), ya armados con sus hijos.
+        public List<RolComposite> ObtenerRolesDeUsuario(int idUsuario)
+        {
+            try
+            {
+                RolComposite arbolCompleto = CargarArbol();
+
+                var idsRolesUsuario = new HashSet<int>();
+                foreach (DataRow row in dal_roles.ObtenerRolesPorUsuario(idUsuario).Rows)
+                    idsRolesUsuario.Add(Convert.ToInt32(row["IdRol"]));
+
+                return arbolCompleto.Hijos()
+                    .OfType<RolComposite>()
+                    .Where(r => idsRolesUsuario.Contains(r.Id))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public List<int> ObtenerIdsUsuariosConRol(int idRol)
+        {
+            try
+            {
+                return dal_roles.ObtenerIdsUsuariosConRol(idRol);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public List<Permiso> ObtenerPermisosDirectosUsuario(int idUsuario)
+        {
+            try
+            {
+                var lista = new List<Permiso>();
+
+                foreach (DataRow row in dal_roles.ObtenerPermisosDirectosUsuario(idUsuario).Rows)
+                {
+                    int id = Convert.ToInt32(row["IdPermisos"]);
+                    lista.Add(new Permiso
+                    {
+                        Id = id,
+                        IdPermiso = id,
+                        Nombre = row["Nombre"].ToString(),
+                        Descripcion = Texto(row, "Descripcion"),
+                        Formulario = Texto(row, "Formulario")
+                    });
+                }
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Todo lo que puede hacer el usuario, como un único Composite:
+        // sus roles + familias de formulario directas + patentes directas.
+        public RolComposite ObtenerPermisosUsuario(int idUsuario)
+        {
+            try
+            {
+                var raiz = new RolComposite { Id = 0, Nombre = "Permisos del usuario" };
+
+                foreach (var rol in ObtenerRolesDeUsuario(idUsuario))
+                    raiz.Agregar(rol);
+
+                foreach (var permiso in ObtenerPermisosDirectosUsuario(idUsuario))
+                    raiz.Agregar(permiso);
+
+                return raiz;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Se llama una vez al iniciar sesión.
+        public void CargarSeguridadEnSesion(int idUsuario)
+        {
+            try
+            {
+                Sesion sesion = Sesion.Instancia();
+                RolComposite permisos = ObtenerPermisosUsuario(idUsuario);
+
+                sesion.Permisos = permisos;
+                sesion.RolesActuales = permisos.Hijos().OfType<RolComposite>().ToList();
+                sesion.CatalogoPermisos = new HashSet<string>(ObtenerPermisos().Select(p => p.Nombre));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public void AgregarRolUsuario(int idUsuario, int idRol)
         {
             try
@@ -366,54 +424,13 @@ namespace BLL
                 dal_roles.AgregarRolUsuario(idUsuario, idRol);
 
                 string nombreRol = dal_roles.ObtenerNombreRol(idRol) ?? $"ID {idRol}";
-                BE_Usuario usuarioDestino = dal_usuario.ObtenerUsuarioPorId(idUsuario);
-                string nombreDestino = usuarioDestino != null ? usuarioDestino.NombreApellido : $"ID {idUsuario}";
-
-                bll_bitacora.RegistrarEvento(
-                    Sesion.Instancia().UsuarioActual?.IdUsuario,
-                    AccionBitacora.ROL_ASIGNADO_USUARIO,
-                    "ROLES",
-                    $"Usuario {ActorActual()} asigna el rol {nombreRol} al usuario {nombreDestino}, ID: {idUsuario}"
-                );
+                Registrar(AccionBitacora.ROL_ASIGNADO_USUARIO,
+                    $"Usuario {ActorActual()} asigna el rol {nombreRol} al usuario {NombreUsuario(idUsuario)}, ID: {idUsuario}");
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
-        }
-
-        public List<RolComposite> ObtenerRolesDeUsuario(int idUsuario)
-        {
-            try
-            {
-                // Reutilizamos el árbol completo ya construido
-                RolComposite arbolCompleto = CargarArbol();
-
-                // Obtenemos los IDs de roles asignados al usuario
-                DataTable dtRoles = dal_roles.ObtenerRolesPorUsuario(idUsuario);
-
-                var idsRolesUsuario = new HashSet<int>();
-
-                foreach (DataRow row in dtRoles.Rows)
-                    idsRolesUsuario.Add(Convert.ToInt32(row["IdRol"]));
-
-                // Se busca en el arbol y los devuelve en una lista
-                var rolesUsuario = new List<RolComposite>();
-
-                foreach (var hijo in arbolCompleto.Hijos())
-                {
-                    if (hijo is RolComposite rol && idsRolesUsuario.Contains(rol.Id))
-                        rolesUsuario.Add(rol);
-                }
-
-                return rolesUsuario;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            
         }
 
         public void QuitarRolUsuario(int idUsuario, int idRol)
@@ -421,23 +438,73 @@ namespace BLL
             try
             {
                 string nombreRol = dal_roles.ObtenerNombreRol(idRol) ?? $"ID {idRol}";
-                BE_Usuario usuarioDestino = dal_usuario.ObtenerUsuarioPorId(idUsuario);
-                string nombreDestino = usuarioDestino != null ? usuarioDestino.NombreApellido : $"ID {idUsuario}";
+
+                if (string.Equals(nombreRol, NombreRolAdministrador, StringComparison.OrdinalIgnoreCase)
+                    && dal_roles.CantidadUsuariosConRol(idRol) <= 1)
+                    throw new Exception("No se puede quitar el rol Administrador al último usuario que lo tiene.");
 
                 dal_roles.QuitarRolUsuario(idUsuario, idRol);
 
-                bll_bitacora.RegistrarEvento(
-                    Sesion.Instancia().UsuarioActual?.IdUsuario,
-                    AccionBitacora.ROL_QUITADO_USUARIO,
-                    "ROLES",
-                    $"Usuario {ActorActual()} quita el rol {nombreRol} al usuario {nombreDestino}, ID: {idUsuario}"
-                );
+                Registrar(AccionBitacora.ROL_QUITADO_USUARIO,
+                    $"Usuario {ActorActual()} quita el rol {nombreRol} al usuario {NombreUsuario(idUsuario)}, ID: {idUsuario}");
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+        }
 
+        // Deja al usuario con exactamente esos roles comunes (no toca las familias de formulario directas).
+        public void GuardarRolesUsuario(int idUsuario, List<int> idsRoles)
+        {
+            try
+            {
+                var actuales = ObtenerRolesDeUsuario(idUsuario).Where(r => !r.EsFormulario).Select(r => r.Id).ToList();
+
+                foreach (int id in idsRoles.Except(actuales))
+                    AgregarRolUsuario(idUsuario, id);
+                foreach (int id in actuales.Except(idsRoles))
+                    QuitarRolUsuario(idUsuario, id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Permisos directos del usuario: familias de formulario (página completa, van a Usuario_Rol)
+        // y patentes sueltas (un botón, van a Usuario_Permiso).
+        public void GuardarPermisosDirectosUsuario(int idUsuario, List<int> idsFormularios, List<int> idsPermisos)
+        {
+            try
+            {
+                var formulariosActuales = ObtenerRolesDeUsuario(idUsuario).Where(r => r.EsFormulario).Select(r => r.Id).ToList();
+                var permisosActuales = ObtenerPermisosDirectosUsuario(idUsuario).Select(p => p.Id).ToList();
+
+                foreach (int id in idsFormularios.Except(formulariosActuales))
+                    AgregarRolUsuario(idUsuario, id);
+                foreach (int id in formulariosActuales.Except(idsFormularios))
+                    QuitarRolUsuario(idUsuario, id);
+
+                string nombreUsuario = NombreUsuario(idUsuario);
+
+                foreach (int id in idsPermisos.Except(permisosActuales))
+                {
+                    dal_roles.AsignarPermisoUsuario(idUsuario, id);
+                    Registrar(AccionBitacora.PERMISO_ASIGNADO_USUARIO,
+                        $"Usuario {ActorActual()} asigna el permiso {dal_roles.ObtenerNombrePermiso(id)} al usuario {nombreUsuario}, ID: {idUsuario}");
+                }
+                foreach (int id in permisosActuales.Except(idsPermisos))
+                {
+                    dal_roles.QuitarPermisoUsuario(idUsuario, id);
+                    Registrar(AccionBitacora.PERMISO_QUITADO_USUARIO,
+                        $"Usuario {ActorActual()} quita el permiso {dal_roles.ObtenerNombrePermiso(id)} al usuario {nombreUsuario}, ID: {idUsuario}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

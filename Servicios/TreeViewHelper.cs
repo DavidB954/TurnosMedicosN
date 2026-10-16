@@ -14,7 +14,7 @@ namespace Servicios
         {
             foreach (var hijo in rolPadre.Hijos())
             {
-                TreeNode nodoHijo = new TreeNode(hijo.Nombre);
+                TreeNode nodoHijo = new TreeNode(TraduccionServicio.Instancia.TraducirComponente(hijo));
                 nodoHijo.Tag = hijo;
 
                 nodoPadre.Nodes.Add(nodoHijo);

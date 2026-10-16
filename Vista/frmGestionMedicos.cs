@@ -69,7 +69,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.ToString(),"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -488,7 +488,9 @@ namespace Vista
         {
             DataGridViewTextBoxColumn col = new DataGridViewTextBoxColumn();
             col.Name = nombre;
-            col.HeaderText = titulo;
+            col.HeaderText = string.IsNullOrEmpty(titulo)
+                ? titulo
+                : Servicios.TraduccionServicio.Instancia.TraducirODefecto($"{Name}.{dataGridViewMedicosDiasHorarios.Name}.{nombre}", titulo);
             col.DataPropertyName = propiedad;
             col.Visible = visible;
             col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;

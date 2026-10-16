@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -130,12 +130,25 @@
     <Compile Include="frmRolesPermisos.Designer.cs">
       <DependentUpon>frmRolesPermisos.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmUsuario.cs">
+    <Compile Include="frmUsuarioABM.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmUsuario.Designer.cs">
-      <DependentUpon>frmUsuario.cs</DependentUpon>
+    <Compile Include="frmUsuarioABM.Designer.cs">
+      <DependentUpon>frmUsuarioABM.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmUsuarioHistorial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmUsuarioHistorial.Designer.cs">
+      <DependentUpon>frmUsuarioHistorial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmUsuarioRoles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmUsuarioRoles.Designer.cs">
+      <DependentUpon>frmUsuarioRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ArbolPermisos.cs" />
     <Compile Include="frmSeguridad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,9 +210,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmRolesPermisos.resx">
       <DependentUpon>frmRolesPermisos.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmUsuario.resx">
-      <DependentUpon>frmUsuario.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSeguridad.resx">
       <DependentUpon>frmSeguridad.cs</DependentUpon>

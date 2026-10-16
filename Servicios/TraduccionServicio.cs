@@ -36,6 +36,23 @@ namespace Servicios
             if (_diccionario == null) return $"[{clave}]";
             return _diccionario.TryGetValue(clave, out var texto) ? texto : $"[{clave}]";
         }
+        // Igual que Traducir, pero si la clave no existe devuelve el texto por defecto
+        public string TraducirODefecto(string clave, string porDefecto)
+        {
+            string texto = Traducir(clave);
+            return texto.StartsWith("[") ? porDefecto : texto;
+        }
+
+        // Textos del catálogo de permisos: "Formularios.<Formulario>" y "Permisos.<NombrePatente>"
+        public string TraducirComponente(BE.Composite.Componente componente)
+        {
+            if (componente is BE.Composite.RolComposite rol && rol.EsFormulario)
+                return TraducirODefecto($"Formularios.{rol.Formulario}", rol.Nombre);
+            if (componente is BE.Composite.Permiso permiso)
+                return TraducirODefecto($"Permisos.{permiso.Nombre}", permiso.ToString());
+            return componente?.ToString();
+        }
+
         public static void ResetearInstancia()
         {
             _instancia = null;

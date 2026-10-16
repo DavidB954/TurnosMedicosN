@@ -103,27 +103,44 @@ namespace Vista
             }
         }
 
-        // Muestra u oculta cada botón del menú según el/los roles del usuario logueado.
+        // Submenú desplegable de "Gestión de Usuarios"
+        private bool submenuUsuariosAbierto = false;
+
+        // Cada botón del menú abre un formulario; se muestra si el usuario tiene al menos
+        // una patente de ese formulario (página completa, "Ver" o un solo botón).
+        private bool PuedeAbrir(string formulario)
+        {
+            return Sesion.Instancia().TieneAccesoFormulario(formulario);
+        }
+
         private void AplicarPermisosMenu()
         {
-            var sesion = Sesion.Instancia();
+            btn_SubUsuariosABM.Tag = PuedeAbrir(nameof(frmUsuarioABM));
+            btn_SubUsuariosRoles.Tag = PuedeAbrir(nameof(frmUsuarioRoles));
+            btn_SubUsuariosHistorial.Tag = PuedeAbrir(nameof(frmUsuarioHistorial));
 
-            btn_GestionUsuarios.Visible = sesion.TieneRol("Administrador");
-            btn_GestionRoles.Visible = sesion.TieneRol("Administrador");
-            btn_GestionMedicos.Visible = sesion.TieneRol("Administrador");
+            btn_GestionUsuarios.Visible = (bool)btn_SubUsuariosABM.Tag
+                                       || (bool)btn_SubUsuariosRoles.Tag
+                                       || (bool)btn_SubUsuariosHistorial.Tag;
 
-            btnGestionIdiomas.Visible = sesion.TieneRol("Administrador")
-                                      || sesion.TieneRol("Administrativo");
+            btn_GestionRoles.Visible = PuedeAbrir(nameof(frmRolesPermisos));
+            btn_Seguridad.Visible = PuedeAbrir(nameof(frmSeguridad));
+            btn_Bitacora.Visible = PuedeAbrir(nameof(frmBitacora));
+            btn_BitacoraTurno.Visible = PuedeAbrir(nameof(frm_BitacoraTurno));
+            btnGestionIdiomas.Visible = PuedeAbrir(nameof(frmABM));
+            btn_AccesoMedico.Visible = PuedeAbrir(nameof(frm_AccesoMedico));
+            btn_AccesoPaciente.Visible = PuedeAbrir(nameof(frm_AccesoPaciente));
+            btn_GestionMedicos.Visible = PuedeAbrir(nameof(frmGestionMedicos));
+            btn_GestionTurnos.Visible = PuedeAbrir(nameof(frmGestionTurnos));
 
-            btn_Seguridad.Visible = sesion.TieneRol("Administrador");
-            btn_Bitacora.Visible = sesion.TieneRol("Administrador");
-            btn_BitacoraTurno.Visible = sesion.TieneRol("Administrador");
+            ActualizarSubmenuUsuarios();
+        }
 
-            btn_GestionTurnos.Visible = sesion.TieneRol("Administrador")
-                                      || sesion.TieneRol("Administrativo");
-
-            btn_AccesoMedico.Visible = sesion.TieneRol("Medico");
-            btn_AccesoPaciente.Visible = sesion.TieneRol("Paciente");
+        // Los subítems se ven solo con el submenú abierto y si el usuario tiene acceso a ese formulario.
+        private void ActualizarSubmenuUsuarios()
+        {
+            foreach (var sub in new[] { btn_SubUsuariosABM, btn_SubUsuariosRoles, btn_SubUsuariosHistorial })
+                sub.Visible = submenuUsuariosAbierto && sub.Tag is bool permitido && permitido;
 
             ReacomodarBotonesMenu();
         }
@@ -135,6 +152,9 @@ namespace Vista
             var botonesEnOrden = new[]
             {
                 btn_GestionUsuarios,
+                btn_SubUsuariosABM,
+                btn_SubUsuariosRoles,
+                btn_SubUsuariosHistorial,
                 btn_GestionRoles,
                 btn_Seguridad,
                 btn_Bitacora,
@@ -146,7 +166,7 @@ namespace Vista
                 btn_GestionTurnos
             };
 
-            int y = botonesEnOrden[0].Top;
+            int y = 34;
             foreach (var boton in botonesEnOrden)
             {
                 if (!boton.Visible)
@@ -185,53 +205,62 @@ namespace Vista
            
         }
 
+        private void AbrirSiTieneAcceso<T>() where T : Form, new()
+        {
+            if (!PuedeAbrir(typeof(T).Name))
+                return;
+            AbrirFormulario<T>();
+        }
+
         private void btn_GestionUsuarios_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Administrador"))
-                return;
-            AbrirFormulario<frmUsuario>();
+            submenuUsuariosAbierto = !submenuUsuariosAbierto;
+            ActualizarSubmenuUsuarios();
+        }
+
+        private void btn_SubUsuariosABM_Click(object sender, EventArgs e)
+        {
+            AbrirSiTieneAcceso<frmUsuarioABM>();
+        }
+
+        private void btn_SubUsuariosRoles_Click(object sender, EventArgs e)
+        {
+            AbrirSiTieneAcceso<frmUsuarioRoles>();
+        }
+
+        private void btn_SubUsuariosHistorial_Click(object sender, EventArgs e)
+        {
+            AbrirSiTieneAcceso<frmUsuarioHistorial>();
         }
 
         private void btn_GestionRoles_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Administrador"))
-                return;
-            AbrirFormulario<frmRolesPermisos>();
+            AbrirSiTieneAcceso<frmRolesPermisos>();
         }
 
         private void btn_Seguridad_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Administrador"))
-                return;
-            AbrirFormulario<frmSeguridad>();
+            AbrirSiTieneAcceso<frmSeguridad>();
         }
 
         private void btn_Bitacora_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Administrador"))
-                return;
-            AbrirFormulario<frmBitacora>();
+            AbrirSiTieneAcceso<frmBitacora>();
         }
 
         private void btn_BitacoraTurno_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Administrador"))
-                return;
-            AbrirFormulario<frm_BitacoraTurno>();
+            AbrirSiTieneAcceso<frm_BitacoraTurno>();
         }
 
         private void btn_AccesoMedico_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Medico"))
-                return;
-            AbrirFormulario<frm_AccesoMedico>();
+            AbrirSiTieneAcceso<frm_AccesoMedico>();
         }
 
         private void btn_AccesoPaciente_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Paciente"))
-                return;
-            AbrirFormulario<frm_AccesoPaciente>();
+            AbrirSiTieneAcceso<frm_AccesoPaciente>();
         }
 
         private void btn_Salir_Click(object sender, EventArgs e)
@@ -262,10 +291,7 @@ namespace Vista
 
         private void btnGestionIdiomas_Click(object sender, EventArgs e)
         {
-            var sesion = Sesion.Instancia();
-            if (!sesion.TieneRol("Administrador") && !sesion.TieneRol("Administrativo"))
-                return;
-            AbrirFormulario<frmABM>();
+            AbrirSiTieneAcceso<frmABM>();
         }
 
         private void CbPrincipalIdioma_SelectedIndexChanged(object sender, EventArgs e)
@@ -284,17 +310,12 @@ namespace Vista
 
         private void btn_GestionMedicos_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Instancia().TieneRol("Administrador"))
-                return;
-            AbrirFormulario<frmGestionMedicos>();
+            AbrirSiTieneAcceso<frmGestionMedicos>();
         }
 
         private void btn_GestionTurnos_Click(object sender, EventArgs e)
         {
-            var sesion = Sesion.Instancia();
-            if (!sesion.TieneRol("Administrador") && !sesion.TieneRol("Administrativo"))
-                return;
-            AbrirFormulario<frmGestionTurnos>();
+            AbrirSiTieneAcceso<frmGestionTurnos>();
         }
     }
 }

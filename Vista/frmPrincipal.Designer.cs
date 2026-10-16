@@ -41,6 +41,9 @@
             this.btn_Seguridad = new System.Windows.Forms.Button();
             this.btn_GestionRoles = new System.Windows.Forms.Button();
             this.btn_GestionUsuarios = new System.Windows.Forms.Button();
+            this.btn_SubUsuariosABM = new System.Windows.Forms.Button();
+            this.btn_SubUsuariosRoles = new System.Windows.Forms.Button();
+            this.btn_SubUsuariosHistorial = new System.Windows.Forms.Button();
             this.btn_GestionMedicos = new System.Windows.Forms.Button();
             this.btn_GestionTurnos = new System.Windows.Forms.Button();
             this.timerVencimientoTurnos = new System.Windows.Forms.Timer(this.components);
@@ -63,6 +66,9 @@
             this.groupBox_Menu.Controls.Add(this.btn_Seguridad);
             this.groupBox_Menu.Controls.Add(this.btn_GestionRoles);
             this.groupBox_Menu.Controls.Add(this.btn_GestionUsuarios);
+            this.groupBox_Menu.Controls.Add(this.btn_SubUsuariosABM);
+            this.groupBox_Menu.Controls.Add(this.btn_SubUsuariosRoles);
+            this.groupBox_Menu.Controls.Add(this.btn_SubUsuariosHistorial);
             this.groupBox_Menu.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_Menu.Location = new System.Drawing.Point(0, 3);
             this.groupBox_Menu.Name = "groupBox_Menu";
@@ -74,7 +80,7 @@
             // CbPrincipalIdioma
             // 
             this.CbPrincipalIdioma.FormattingEnabled = true;
-            this.CbPrincipalIdioma.Location = new System.Drawing.Point(120, 640);
+            this.CbPrincipalIdioma.Location = new System.Drawing.Point(120, 690);
             this.CbPrincipalIdioma.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CbPrincipalIdioma.Name = "CbPrincipalIdioma";
             this.CbPrincipalIdioma.Size = new System.Drawing.Size(180, 37);
@@ -84,7 +90,7 @@
             // lblUsuario
             // 
             this.lblUsuario.AutoSize = true;
-            this.lblUsuario.Location = new System.Drawing.Point(48, 692);
+            this.lblUsuario.Location = new System.Drawing.Point(48, 738);
             this.lblUsuario.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblUsuario.Name = "lblUsuario";
             this.lblUsuario.Size = new System.Drawing.Size(0, 29);
@@ -179,6 +185,51 @@
             this.btn_GestionUsuarios.Text = "Gestion de Usuarios";
             this.btn_GestionUsuarios.UseVisualStyleBackColor = true;
             this.btn_GestionUsuarios.Click += new System.EventHandler(this.btn_GestionUsuarios_Click);
+            //
+            // btn_SubUsuariosABM
+            //
+            this.btn_SubUsuariosABM.BackColor = System.Drawing.Color.Gainsboro;
+            this.btn_SubUsuariosABM.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_SubUsuariosABM.Location = new System.Drawing.Point(0, 86);
+            this.btn_SubUsuariosABM.Name = "btn_SubUsuariosABM";
+            this.btn_SubUsuariosABM.Padding = new System.Windows.Forms.Padding(30, 0, 0, 0);
+            this.btn_SubUsuariosABM.Size = new System.Drawing.Size(300, 38);
+            this.btn_SubUsuariosABM.TabIndex = 13;
+            this.btn_SubUsuariosABM.Text = "ABM de Usuarios";
+            this.btn_SubUsuariosABM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_SubUsuariosABM.UseVisualStyleBackColor = false;
+            this.btn_SubUsuariosABM.Visible = false;
+            this.btn_SubUsuariosABM.Click += new System.EventHandler(this.btn_SubUsuariosABM_Click);
+            //
+            // btn_SubUsuariosRoles
+            //
+            this.btn_SubUsuariosRoles.BackColor = System.Drawing.Color.Gainsboro;
+            this.btn_SubUsuariosRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_SubUsuariosRoles.Location = new System.Drawing.Point(0, 124);
+            this.btn_SubUsuariosRoles.Name = "btn_SubUsuariosRoles";
+            this.btn_SubUsuariosRoles.Padding = new System.Windows.Forms.Padding(30, 0, 0, 0);
+            this.btn_SubUsuariosRoles.Size = new System.Drawing.Size(300, 38);
+            this.btn_SubUsuariosRoles.TabIndex = 14;
+            this.btn_SubUsuariosRoles.Text = "Asignación de Roles";
+            this.btn_SubUsuariosRoles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_SubUsuariosRoles.UseVisualStyleBackColor = false;
+            this.btn_SubUsuariosRoles.Visible = false;
+            this.btn_SubUsuariosRoles.Click += new System.EventHandler(this.btn_SubUsuariosRoles_Click);
+            //
+            // btn_SubUsuariosHistorial
+            //
+            this.btn_SubUsuariosHistorial.BackColor = System.Drawing.Color.Gainsboro;
+            this.btn_SubUsuariosHistorial.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_SubUsuariosHistorial.Location = new System.Drawing.Point(0, 162);
+            this.btn_SubUsuariosHistorial.Name = "btn_SubUsuariosHistorial";
+            this.btn_SubUsuariosHistorial.Padding = new System.Windows.Forms.Padding(30, 0, 0, 0);
+            this.btn_SubUsuariosHistorial.Size = new System.Drawing.Size(300, 38);
+            this.btn_SubUsuariosHistorial.TabIndex = 15;
+            this.btn_SubUsuariosHistorial.Text = "Historial";
+            this.btn_SubUsuariosHistorial.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_SubUsuariosHistorial.UseVisualStyleBackColor = false;
+            this.btn_SubUsuariosHistorial.Visible = false;
+            this.btn_SubUsuariosHistorial.Click += new System.EventHandler(this.btn_SubUsuariosHistorial_Click);
             // 
             // btn_GestionMedicos
             // 
@@ -231,6 +282,9 @@
         private System.Windows.Forms.Button btn_Seguridad;
         private System.Windows.Forms.Button btn_GestionRoles;
         private System.Windows.Forms.Button btn_GestionUsuarios;
+        private System.Windows.Forms.Button btn_SubUsuariosABM;
+        private System.Windows.Forms.Button btn_SubUsuariosRoles;
+        private System.Windows.Forms.Button btn_SubUsuariosHistorial;
         private System.Windows.Forms.Button btn_AccesoPaciente;
         private System.Windows.Forms.Button btn_AccesoMedico;
         private System.Windows.Forms.Button btnGestionIdiomas;

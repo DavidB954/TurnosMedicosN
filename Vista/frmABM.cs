@@ -23,21 +23,6 @@ namespace Vista
             CargarIdiomas();
             ConfigurarGrilla();
             CargarGrilla();
-            AplicarPermisosAcciones();
-        }
-
-        // Ejemplo de uso del mecanismo genérico de permisos por acción (definido en frmBase).
-        // Convención de nombre: "Entidad.Accion". Estos permisos se crean y asignan a roles
-        // desde la pantalla "Gestión de Roles", igual que cualquier otro permiso.
-        private void AplicarPermisosAcciones()
-        {
-            AplicarPermisos(new Dictionary<Control, string>
-            {
-                { btnAgregarIdioma,     "GestionIdiomas.Agregar" },
-                { btnEliminar,          "GestionIdiomas.Eliminar" },
-                { btnGuardar,           "GestionIdiomas.Modificar" },
-                { btnCargarControles,   "GestionIdiomas.Modificar" },
-            });
         }
 
         private void frmABM_Load(object sender, EventArgs e)
@@ -245,7 +230,7 @@ namespace Vista
         {
             foreach (Control ctrl in controles)
             {
-                if (ctrl is Label || ctrl is Button || ctrl is GroupBox)
+                if (ctrl is Label || ctrl is Button || ctrl is GroupBox || ctrl is CheckBox)
                 {
                     string clave = $"{nombreForm}.{ctrl.Name}";
                     foreach (var idioma in idiomas)

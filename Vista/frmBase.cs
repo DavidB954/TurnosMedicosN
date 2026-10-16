@@ -43,6 +43,33 @@ namespace Vista
             TraduccionServicio.Instancia.IdiomaChanged += OnIdiomaChanged;
             if (TraduccionServicio.Instancia.IdiomaActual != null)
                 AplicarIdioma();
+            AplicarPermisosAutomatico();
+        }
+
+        // Oculta cada botón cuyo "<ClaseFormulario>.<NombreBoton>" esté en el catálogo de
+        // permisos y el usuario no tenga. Los botones que no están en el catálogo
+        // (Buscar, Limpiar, Volver...) no se tocan.
+        protected void AplicarPermisosAutomatico()
+        {
+            AplicarPermisosEnControles(this.Controls, GetType().Name);
+        }
+
+        private void AplicarPermisosEnControles(Control.ControlCollection controles, string formulario)
+        {
+            var sesion = Sesion.Instancia();
+
+            foreach (Control ctrl in controles)
+            {
+                if (ctrl is Button)
+                {
+                    string clave = $"{formulario}.{ctrl.Name}";
+                    if (sesion.EstaEnCatalogo(clave))
+                        ctrl.Visible = sesion.TienePermiso(clave);
+                }
+
+                if (ctrl.Controls.Count > 0)
+                    AplicarPermisosEnControles(ctrl.Controls, formulario);
+            }
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -109,7 +136,7 @@ namespace Vista
             {
                 string clave = $"{nombreForm}.{ctrl.Name}";
 
-                if (ctrl is Label || ctrl is Button || ctrl is GroupBox)
+                if (ctrl is Label || ctrl is Button || ctrl is GroupBox || ctrl is CheckBox)
                 {
                     string traduccion = t.Traducir(clave);
                     if (!traduccion.StartsWith("["))

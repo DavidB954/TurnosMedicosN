@@ -2,6 +2,7 @@ using BE;
 using BLL;
 using Servicios;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Vista
@@ -18,9 +19,26 @@ namespace Vista
             InitializeComponent();
         }
 
+        // Valores del filtro de estado tal como están en la base (índice 0 = Todos = sin filtro).
+        // El combo muestra el texto traducido; el filtro usa siempre este valor.
+        private static readonly string[] estadosFiltro = { null, "Confirmado", "Cancelado", "Atendido", "Ausente" };
+
         public override void AplicarIdioma()
         {
             AplicarIdiomaAutomatico();
+            CargarComboEstado();
+        }
+
+        private void CargarComboEstado()
+        {
+            var t = Servicios.TraduccionServicio.Instancia;
+            int indice = cbEstado.SelectedIndex < 0 ? 1 : cbEstado.SelectedIndex;
+
+            cbEstado.Items.Clear();
+            cbEstado.Items.Add(t.TraducirODefecto($"{Name}.Estado.Todos", "Todos"));
+            foreach (string estado in estadosFiltro.Skip(1))
+                cbEstado.Items.Add(t.TraducirODefecto($"{Name}.Estado.{estado}", estado));
+            cbEstado.SelectedIndex = indice;
         }
 
         private void frmGestionTurnos_Load(object sender, EventArgs e)
@@ -30,13 +48,7 @@ namespace Vista
                 dtpDesde.Checked = false;
                 dtpHasta.Checked = false;
 
-                cbEstado.Items.Clear();
-                cbEstado.Items.Add("Todos");
-                cbEstado.Items.Add("Confirmado");
-                cbEstado.Items.Add("Cancelado");
-                cbEstado.Items.Add("Atendido");
-                cbEstado.Items.Add("Ausente");
-                cbEstado.SelectedIndex = 1;
+                CargarComboEstado();
 
                 ConfigurarColumnas();
                 CargarTurnos();
@@ -66,7 +78,7 @@ namespace Vista
         {
             DataGridViewTextBoxColumn columna = new DataGridViewTextBoxColumn();
             columna.Name = nombre;
-            columna.HeaderText = encabezado;
+            columna.HeaderText = Servicios.TraduccionServicio.Instancia.TraducirODefecto($"{Name}.dgvTurnos.{nombre}", encabezado);
             columna.DataPropertyName = propiedad;
             columna.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvTurnos.Columns.Add(columna);
@@ -88,8 +100,7 @@ namespace Vista
                 DateTime? desde = dtpDesde.Checked ? dtpDesde.Value.Date : (DateTime?)null;
                 DateTime? hasta = dtpHasta.Checked ? dtpHasta.Value.Date : (DateTime?)null;
 
-                string estadoSeleccionado = cbEstado.SelectedItem as string;
-                string estado = (estadoSeleccionado == "Todos" || estadoSeleccionado == null) ? null : estadoSeleccionado;
+                string estado = cbEstado.SelectedIndex > 0 ? estadosFiltro[cbEstado.SelectedIndex] : null;
 
                 dgvTurnos.DataSource = null;
                 dgvTurnos.DataSource = bll_turno.Filtrar(idTurno, desde, hasta, estado);

@@ -49,9 +49,8 @@ namespace Vista
 
                     Sesion.UsuarioActual = Obj_Usuario.Usuario;
 
-                    // Cargamos los roles del usuario para poder filtrar el menú por permisos
-                    Sesion.RolesActuales = new BLL_Roles().ObtenerRolesDeUsuario(Obj_Usuario.Usuario.IdUsuario)
-                                            ?? new List<BE.Composite.RolComposite>();
+                    // Cargamos roles y permisos del usuario para filtrar el menú y los botones
+                    new BLL_Roles().CargarSeguridadEnSesion(Obj_Usuario.Usuario.IdUsuario);
 
                     var idioma = new BLL_Traduccion().ObtenerIdiomaPorUsuario(Obj_Usuario.Usuario.IdUsuario);
                     if (idioma == null)
@@ -65,7 +64,7 @@ namespace Vista
 
                     // Cubre el caso de que la app haya estado cerrada y queden turnos vencidos
                     // desde antes; se ignoran los errores para no bloquear el login por esto.
-                    if (Sesion.TieneRol("Administrativo") || Sesion.TieneRol("Administrador"))
+                    if (Sesion.TieneAccesoFormulario("frmGestionTurnos"))
                     {
                         try
                         {

@@ -41,7 +41,7 @@ namespace DAL
 
                 cmdActRol.Parameters.Add("@id", SqlDbType.Int).Value = idRol;
                 cmdActRol.Parameters.Add("@nombre", SqlDbType.VarChar, 50).Value = nombre;
-                cmdActRol.Parameters.Add("@descripcion", SqlDbType.VarChar, 50).Value = descripcion;
+                cmdActRol.Parameters.Add("@descripcion", SqlDbType.VarChar, 100).Value = (object)descripcion ?? DBNull.Value;
 
                 cmdActRol.ExecuteNonQuery();
             }
@@ -449,6 +449,90 @@ namespace DAL
 
             }
         }
+        public int CantidadUsuariosConRol(int idRol)
+        {
+            using (SqlConnection conexion = conex.ObtenerConexion())
+            {
+                conexion.Open();
+
+                SqlCommand cmd = new SqlCommand("SELECT COUNT(1) FROM Usuario_Rol WHERE IdRol=@id", conexion);
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = idRol;
+
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+
+        public List<int> ObtenerIdsUsuariosConRol(int idRol)
+        {
+            var lista = new List<int>();
+
+            using (SqlConnection conexion = conex.ObtenerConexion())
+            {
+                conexion.Open();
+
+                SqlCommand cmd = new SqlCommand("SELECT IdUsuario FROM Usuario_Rol WHERE IdRol=@id", conexion);
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = idRol;
+
+                using (SqlDataReader lector = cmd.ExecuteReader())
+                {
+                    while (lector.Read())
+                        lista.Add(lector.GetInt32(0));
+                }
+            }
+
+            return lista;
+        }
+
+        // Usuario_Permiso: patentes asignadas directamente a un usuario
+
+        public DataTable ObtenerPermisosDirectosUsuario(int idUsuario)
+        {
+            using (SqlConnection conexion = conex.ObtenerConexion())
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand(@"SELECT p.* FROM Usuario_Permiso up
+                                                  JOIN Permisos p ON p.IdPermisos = up.IdPermisos
+                                                  WHERE up.IdUsuario = @id", conexion);
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = idUsuario;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+
+        public void AsignarPermisoUsuario(int idUsuario, int idPermiso)
+        {
+            using (SqlConnection conexion = conex.ObtenerConexion())
+            {
+                conexion.Open();
+
+                SqlCommand cmd = new SqlCommand(@"IF NOT EXISTS (SELECT 1 FROM Usuario_Permiso WHERE IdUsuario=@idUsu AND IdPermisos=@idPer)
+                                   INSERT INTO Usuario_Permiso (IdUsuario, IdPermisos) VALUES (@idUsu, @idPer)", conexion);
+
+                cmd.Parameters.Add("@idUsu", SqlDbType.Int).Value = idUsuario;
+                cmd.Parameters.Add("@idPer", SqlDbType.Int).Value = idPermiso;
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void QuitarPermisoUsuario(int idUsuario, int idPermiso)
+        {
+            using (SqlConnection conexion = conex.ObtenerConexion())
+            {
+                conexion.Open();
+
+                SqlCommand cmd = new SqlCommand("Delete from Usuario_Permiso Where IdUsuario=@idUsu AND IdPermisos=@idPer", conexion);
+
+                cmd.Parameters.Add("@idUsu", SqlDbType.Int).Value = idUsuario;
+                cmd.Parameters.Add("@idPer", SqlDbType.Int).Value = idPermiso;
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         //public void LimpiarTablas()
         //{
         //    using (SqlConnection conexion = conex.ObtenerConexion())

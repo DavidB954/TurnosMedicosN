@@ -27,9 +27,10 @@ namespace Vista
             dgvSeguridad.DataSource = lista;
 
             dgvSeguridad.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvSeguridad.Columns["IdUsuario"].HeaderText = "ID Usuario";
-            dgvSeguridad.Columns["DVH_Almacenado"].HeaderText = "DVH Guardado";
-            dgvSeguridad.Columns["DVH_Recalculado"].HeaderText = "DVH Recalculado";
+            var t = Servicios.TraduccionServicio.Instancia;
+            dgvSeguridad.Columns["IdUsuario"].HeaderText = t.TraducirODefecto($"{Name}.dgvSeguridad.IdUsuario", "ID Usuario");
+            dgvSeguridad.Columns["DVH_Almacenado"].HeaderText = t.TraducirODefecto($"{Name}.dgvSeguridad.DVH_Almacenado", "DVH Guardado");
+            dgvSeguridad.Columns["DVH_Recalculado"].HeaderText = t.TraducirODefecto($"{Name}.dgvSeguridad.DVH_Recalculado", "DVH Recalculado");
 
             btnBackUp.Enabled = false;
         }
