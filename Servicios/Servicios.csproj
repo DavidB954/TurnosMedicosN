@@ -42,8 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentoPdf.cs" />
     <Compile Include="HashHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecetaPdf.cs" />
     <Compile Include="Sesion.cs" />
     <Compile Include="TraduccionServicio.cs" />
     <Compile Include="TreeViewHelper.cs" />

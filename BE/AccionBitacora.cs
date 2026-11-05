@@ -39,6 +39,18 @@ namespace BE
         TURNO_MODIFICADO,
         TURNO_AUSENTE,
         DISPONIBILIDAD_MODIFICADA,
+        // Proceso 2 - Atencion y Agenda Medica
+        AGENDA_CONSULTADA,
+        ATENCION_REGISTRADA,
+        TURNO_ATENDIDO,
+        RECETA_EMITIDA,
+        HC_CONSULTADA,
+        ATENCION_FINALIZADA,
+        PACIENTE_ALTA,
+        PACIENTE_MODIFICACION,
+        RECETA_CONSULTADA,
+        RECETA_DESCARGADA,
+        MEDICO_MATRICULA_MODIFICADA,
         MODULO_GENERAL
     }
 }

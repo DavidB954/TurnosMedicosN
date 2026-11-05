@@ -1,4 +1,4 @@
-using BE;
+﻿using BE;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,13 +31,14 @@ namespace DAL
             }
         }
 
-        public void Insertar(BE_Turno turno)
+        public void Insertar(BE_Turno turno, int? idUsuarioCambio)
         {
             try
             {
                 using (SqlConnection conexion = conex.ObtenerConexion())
                 {
                     conexion.Open();
+                    DAL_Conexion.EstablecerUsuarioAuditoria(conexion, null, idUsuarioCambio);
                     SqlCommand cmd = new SqlCommand(@"INSERT INTO Turno (IdPaciente, IdHorario, Fecha, Estado) VALUES (@idPaciente, @idHorario, @fecha, 'Confirmado')", conexion);
                     cmd.Parameters.Add("@idPaciente", SqlDbType.Int).Value = turno.IdPaciente;
                     cmd.Parameters.Add("@idHorario", SqlDbType.Int).Value = turno.IdHorario;
@@ -51,13 +52,14 @@ namespace DAL
             }
         }
 
-        public void CambiarEstado(int idTurno, string estado)
+        public void CambiarEstado(int idTurno, string estado, int? idUsuarioCambio)
         {
             try
             {
                 using (SqlConnection conexion = conex.ObtenerConexion())
                 {
                     conexion.Open();
+                    DAL_Conexion.EstablecerUsuarioAuditoria(conexion, null, idUsuarioCambio);
                     SqlCommand cmd = new SqlCommand(@"UPDATE Turno SET Estado = @estado WHERE IdTurno = @idTurno", conexion);
                     cmd.Parameters.Add("@estado", SqlDbType.VarChar, 20).Value = estado;
                     cmd.Parameters.Add("@idTurno", SqlDbType.Int).Value = idTurno;
@@ -323,9 +325,10 @@ namespace DAL
             }
         }
 
-        // Turnos Confirmados cuyo horario de fin, mas 1 hora de margen, ya paso respecto de
-        // la hora del servidor de base de datos (GETDATE()). Solo trae los ids: el proceso de
-        // vencimiento (BLL_Turno.ProcesarVencimientos) no necesita el turno completo.
+        // Turnos Confirmados de DIAS ANTERIORES (RN-3 de CU-02.6): los del dia actual los marca
+        // el Medico (Ausente / Finalizar atencion), el proceso automatico queda solo como
+        // respaldo para los que nadie marco. Se compara con la fecha del servidor (GETDATE()).
+        // Solo trae los ids: BLL_Turno.ProcesarVencimientos no necesita el turno completo.
         public List<int> ListarVencidosParaMarcarAusente()
         {
             try
@@ -337,9 +340,8 @@ namespace DAL
                     SqlCommand cmd = new SqlCommand(@"
                         SELECT t.IdTurno
                         FROM Turno t
-                        INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
                         WHERE t.Estado = 'Confirmado'
-                          AND DATEADD(HOUR, 1, DATEADD(MINUTE, DATEDIFF(MINUTE, 0, mh.HoraFin), CAST(t.Fecha AS DATETIME))) < GETDATE()", conexion);
+                          AND t.Fecha < CAST(GETDATE() AS DATE)", conexion);
 
                     SqlDataReader lector = cmd.ExecuteReader();
                     while (lector.Read())
@@ -364,6 +366,8 @@ namespace DAL
                 using (SqlConnection conexion = conex.ObtenerConexion())
                 {
                     conexion.Open();
+                    // Proceso automatico: IdUsuarioCambio = NULL (se limpia por si la conexion del pool traia otro usuario)
+                    DAL_Conexion.EstablecerUsuarioAuditoria(conexion, null, null);
                     SqlCommand cmd = new SqlCommand(@"UPDATE Turno SET Estado = 'Ausente' WHERE IdTurno = @idTurno AND Estado = 'Confirmado'", conexion);
                     cmd.Parameters.Add("@idTurno", SqlDbType.Int).Value = idTurno;
 

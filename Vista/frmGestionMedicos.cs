@@ -28,6 +28,7 @@ namespace Vista
             InitializeComponent();
             dataGridViewMedicosDiasHorarios.SelectionChanged += dataGridViewMedicosDiasHorarios_SelectionChanged;
             ucMedicoHorario.MedicoSeleccionado += ucMedicoHorario_MedicoSeleccionado;
+            ucMedicoAsignar.MedicoSeleccionado += ucMedicoAsignar_MedicoSeleccionado;
             dataGridViewMedicosDiasHorarios.CellDoubleClick += dataGridViewMedicosDiasHorarios_CellDoubleClick;
         }
 
@@ -145,6 +146,45 @@ namespace Vista
         }
 
         // Solo se ofrecen las especialidades que el medico tiene asignadas.
+        // Al elegir el medico se muestra su matricula (se imprime en las recetas).
+        private void ucMedicoAsignar_MedicoSeleccionado(object sender, EventArgs e)
+        {
+            try
+            {
+                txtMatricula.Text = ucMedicoAsignar.IdMedicoSeleccionado == null
+                    ? ""
+                    : new BLL_Medico().ObtenerMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnGuardarMatricula_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ucMedicoAsignar.IdMedicoSeleccionado == null)
+                {
+                    MessageBox.Show("Por favor seleccione un medico.");
+                    return;
+                }
+
+                new BLL_Medico().GuardarMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value, txtMatricula.Text);
+                txtMatricula.Text = new BLL_Medico().ObtenerMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value);
+                MessageBox.Show("Matricula guardada.", "Matricula", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Matricula", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void ucMedicoHorario_MedicoSeleccionado(object sender, EventArgs e)
         {
             if (ucMedicoHorario.IdMedicoSeleccionado == null)

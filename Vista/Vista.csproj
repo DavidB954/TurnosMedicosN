@@ -55,6 +55,12 @@
     <Compile Include="frmABM.Designer.cs">
       <DependentUpon>frmABM.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmAtencion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAtencion.Designer.cs">
+      <DependentUpon>frmAtencion.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,6 +72,19 @@
     </Compile>
     <Compile Include="frmBaseCorrupta.Designer.cs">
       <DependentUpon>frmBaseCorrupta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMiReceta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMiReceta.Designer.cs">
+      <DependentUpon>frmMiReceta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DescargadorReceta.cs" />
+    <Compile Include="frmMisRecetas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMisRecetas.Designer.cs">
+      <DependentUpon>frmMisRecetas.cs</DependentUpon>
     </Compile>
     <Compile Include="frmEditarFranjasMedico.cs">
       <SubType>Form</SubType>

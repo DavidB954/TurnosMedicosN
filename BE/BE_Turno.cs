@@ -23,9 +23,20 @@ namespace BE
 
         public string NombreApellidoMedico { get; set; }
 
+        // Matricula profesional del medico (tabla Medico). Se muestra en la receta.
+        public string MatriculaMedico { get; set; }
+
         public string NombreApellidoPaciente { get; set; }
 
         public string Especialidades { get; set; }
+
+        // Asociacion con el Paciente (Proceso 2): un Turno TIENE un Paciente, no hereda de el.
+        // Se completa solo en las consultas que lo necesitan (agenda del medico, atencion).
+        public BE_Paciente Paciente { get; set; }
+
+        public string HoraTexto { get { return HoraInicio.ToString(@"hh\:mm"); } }
+
+        public string HistoriaClinicaTexto { get { return Paciente != null ? Paciente.HistoriaClinicaTexto : ""; } }
 
         public string FechaTexto { get { return Fecha.ToString("dd/MM/yyyy"); } }
 

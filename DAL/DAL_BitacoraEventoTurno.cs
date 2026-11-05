@@ -22,7 +22,8 @@ namespace DAL
                     conexion.Open();
                     SqlCommand cmd = new SqlCommand(@"
                         SELECT bet.IdBitacoraEvento, bet.IdTurno, bet.TipoEvento, bet.EstadoAnterior,
-                               bet.EstadoNuevo, bet.FechaHora, bet.UsuarioBD, bet.HostBD,
+                               bet.EstadoNuevo, bet.FechaHora, bet.UsuarioBD, bet.HostBD, bet.IdUsuarioCambio,
+                               uc.Nombre AS NombreUsuarioCambio, uc.Apellido AS ApellidoUsuarioCambio,
                                up.Nombre AS NombrePaciente, up.Apellido AS ApellidoPaciente,
                                um.Nombre AS NombreMedico, um.Apellido AS ApellidoMedico,
                                t.Fecha AS FechaTurno, mh.HoraInicio, mh.HoraFin
@@ -31,6 +32,7 @@ namespace DAL
                         INNER JOIN Usuario up ON up.IdUsuario = t.IdPaciente
                         INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
                         INNER JOIN Usuario um ON um.IdUsuario = mh.IdMedico
+                        LEFT JOIN Usuario uc ON uc.IdUsuario = bet.IdUsuarioCambio
                         WHERE (@idTurno IS NULL OR bet.IdTurno = @idTurno)
                           AND (@desde IS NULL OR bet.FechaHora >= @desde)
                           AND (@hasta IS NULL OR bet.FechaHora <= @hasta)
@@ -52,6 +54,10 @@ namespace DAL
                         evento.FechaHora = Convert.ToDateTime(lector["FechaHora"]);
                         evento.UsuarioBD = lector["UsuarioBD"].ToString();
                         evento.HostBD = lector["HostBD"].ToString();
+                        evento.IdUsuarioCambio = lector["IdUsuarioCambio"] == DBNull.Value ? (int?)null : Convert.ToInt32(lector["IdUsuarioCambio"]);
+                        evento.NombreUsuarioCambio = evento.IdUsuarioCambio.HasValue
+                            ? lector["NombreUsuarioCambio"] + " " + lector["ApellidoUsuarioCambio"]
+                            : "Sistema (automatico)";
                         evento.NombreApellidoPaciente = lector["NombrePaciente"] + " " + lector["ApellidoPaciente"];
                         evento.NombreApellidoMedico = lector["NombreMedico"] + " " + lector["ApellidoMedico"];
                         evento.FechaTurno = Convert.ToDateTime(lector["FechaTurno"]);

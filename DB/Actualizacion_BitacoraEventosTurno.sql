@@ -9,6 +9,12 @@
     depender de que ninguna capa de la aplicacion se acuerde de llamarla, y sin poder ser
     salteada aunque alguien modifique la tabla Turno directamente desde SSMS.
 
+    Usuario de la aplicacion (T06.B - IdUsuarioCambio): un trigger no conoce al usuario logueado
+    (solo el login de SQL, que es siempre el mismo). Por eso la DAL, en la MISMA conexion y
+    transaccion del INSERT/UPDATE, ejecuta sp_set_session_context 'IdUsuario' y el trigger lo
+    lee con SESSION_CONTEXT(N'IdUsuario'). Queda NULL cuando el cambio lo hizo el proceso
+    automatico de vencimiento o alguien desde SSMS (fuera de la aplicacion).
+
     Es idempotente: se puede ejecutar mas de una vez sin error.
 */
 
@@ -35,6 +41,11 @@ BEGIN
 END
 GO
 
+IF COL_LENGTH('dbo.BitacoraEventosTurno', 'IdUsuarioCambio') IS NULL
+    ALTER TABLE dbo.BitacoraEventosTurno ADD IdUsuarioCambio INT NULL
+        CONSTRAINT FK_BitacoraEventosTurno_Usuario FOREIGN KEY REFERENCES dbo.Usuario(IdUsuario);
+GO
+
 -- El indice ayuda a las consultas del filtro por turno (pantalla frm_BitacoraTurno).
 IF NOT EXISTS (
     SELECT 1 FROM sys.indexes WHERE name = 'IX_BitacoraEventosTurno_IdTurno' AND object_id = OBJECT_ID('dbo.BitacoraEventosTurno')
@@ -57,8 +68,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.BitacoraEventosTurno (IdTurno, TipoEvento, EstadoAnterior, EstadoNuevo)
-    SELECT i.IdTurno, 'ALTA', NULL, i.Estado
+    INSERT INTO dbo.BitacoraEventosTurno (IdTurno, TipoEvento, EstadoAnterior, EstadoNuevo, IdUsuarioCambio)
+    SELECT i.IdTurno, 'ALTA', NULL, i.Estado, TRY_CAST(SESSION_CONTEXT(N'IdUsuario') AS INT)
     FROM inserted i;
 END
 GO
@@ -79,8 +90,8 @@ BEGIN
     IF NOT UPDATE(Estado)
         RETURN;
 
-    INSERT INTO dbo.BitacoraEventosTurno (IdTurno, TipoEvento, EstadoAnterior, EstadoNuevo)
-    SELECT i.IdTurno, 'CAMBIO_ESTADO', d.Estado, i.Estado
+    INSERT INTO dbo.BitacoraEventosTurno (IdTurno, TipoEvento, EstadoAnterior, EstadoNuevo, IdUsuarioCambio)
+    SELECT i.IdTurno, 'CAMBIO_ESTADO', d.Estado, i.Estado, TRY_CAST(SESSION_CONTEXT(N'IdUsuario') AS INT)
     FROM inserted i
     INNER JOIN deleted d ON d.IdTurno = i.IdTurno
     WHERE ISNULL(d.Estado, '') <> ISNULL(i.Estado, '');

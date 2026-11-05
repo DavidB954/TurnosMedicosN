@@ -1,4 +1,4 @@
-using BE;
+﻿using BE;
 using DAL;
 using Servicios;
 using System;
@@ -37,7 +37,8 @@ namespace BLL
 
             try
             {
-                dal_turno.Insertar(turno);
+                // Quien reserva: el usuario logueado (el paciente, o quien opere en su nombre).
+                dal_turno.Insertar(turno, Sesion.Instancia().UsuarioActual?.IdUsuario ?? idPaciente);
             }
             catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
             {
@@ -62,7 +63,7 @@ namespace BLL
             if (!esPropio && !puedeCancelarCualquiera)
                 throw new ArgumentException("Ese turno no pertenece al paciente logueado.");
 
-            dal_turno.CambiarEstado(idTurno, "Cancelado");
+            dal_turno.CambiarEstado(idTurno, "Cancelado", idUsuarioQueCancela);
 
             string descripcion = esPropio
                 ? $"Turno {idTurno} cancelado por el paciente {idUsuarioQueCancela}"
@@ -77,7 +78,7 @@ namespace BLL
         {
             foreach (BE_Turno turno in turnos)
             {
-                dal_turno.CambiarEstado(turno.IdTurno, "Cancelado");
+                dal_turno.CambiarEstado(turno.IdTurno, "Cancelado", idUsuarioQueCancela);
 
                 bll_bitacora.RegistrarEvento(idUsuarioQueCancela, AccionBitacora.TURNO_CANCELADO, "TURNOS",
                     $"Turno {turno.IdTurno} (paciente {turno.IdPaciente}) del {turno.Fecha:dd/MM/yyyy} cancelado por el usuario {idUsuarioQueCancela} por modificacion o inactivacion del horario medico");
@@ -98,7 +99,7 @@ namespace BLL
             // reserva original si el horario elegido no es valido.
             SolicitarTurno(idPaciente, nuevoIdHorario, nuevaFecha);
 
-            dal_turno.CambiarEstado(idTurno, "Cancelado");
+            dal_turno.CambiarEstado(idTurno, "Cancelado", Sesion.Instancia().UsuarioActual?.IdUsuario ?? idPaciente);
 
             bll_bitacora.RegistrarEvento(idPaciente, AccionBitacora.TURNO_MODIFICADO, "TURNOS",
                 $"Turno {idTurno} modificado por el paciente {idPaciente}: reemplazado por el horario {nuevoIdHorario} el {nuevaFecha:dd/MM/yyyy}");
@@ -116,9 +117,10 @@ namespace BLL
             return dal_turno.Filtrar(idTurno, desde, hasta, estado);
         }
 
-        // Cierra automaticamente los turnos vencidos: Confirmado -> Ausente cuando ya paso
-        // 1 hora desde el fin del horario y nadie lo marco Atendido. Se llama desde el Timer
-        // de frmPrincipal y una vez al loguearse un Administrativo/Administrador.
+        // Cierra automaticamente los turnos vencidos (RF 01.3): Confirmado -> Ausente para los
+        // turnos de DIAS ANTERIORES que nadie marco. Los del dia actual los marca el Medico
+        // (Ausente o Finalizar atencion, CU-02.6). Se llama desde el Timer de frmPrincipal y
+        // una vez al loguearse un Administrativo/Administrador.
         // Devuelve la cantidad de turnos efectivamente marcados.
         public int ProcesarVencimientos()
         {

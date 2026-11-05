@@ -147,7 +147,7 @@ namespace DAL
             {
                 conexion.Open();
 
-                SqlCommand comando = new SqlCommand("Insert into Usuario (Nombre, Apellido, Email, HashPassword, DVH) VALUES (@nombre, @apellido, @email, @hash, @dvh)", conexion);
+                SqlCommand comando = new SqlCommand("Insert into Usuario (Nombre, Apellido, Email, HashPassword, DVH) VALUES (@nombre, @apellido, @email, @hash, @dvh); SELECT CAST(SCOPE_IDENTITY() AS INT);", conexion);
 
                 comando.Parameters.AddWithValue("@nombre", Usuario.Nombre);
                 comando.Parameters.AddWithValue("@apellido", Usuario.Apellido);
@@ -155,7 +155,8 @@ namespace DAL
                 comando.Parameters.AddWithValue("@hash", Usuario.HashPassword);
                 comando.Parameters.AddWithValue("@dvh", Usuario.DVH);
 
-                comando.ExecuteNonQuery();
+                // Se devuelve el Id generado para poder registrar el alta y los datos de paciente.
+                Usuario.IdUsuario = (int)comando.ExecuteScalar();
             }
 
         }

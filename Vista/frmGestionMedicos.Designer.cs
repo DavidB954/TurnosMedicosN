@@ -39,6 +39,9 @@
             this.btnAsignarEspecialidad = new System.Windows.Forms.Button();
             this.ucEspecialidadAsignar = new Vista.ucSelectorEspecialidad();
             this.ucMedicoAsignar = new Vista.ucSelectorMedico();
+            this.lblMatricula = new System.Windows.Forms.Label();
+            this.txtMatricula = new System.Windows.Forms.TextBox();
+            this.btnGuardarMatricula = new System.Windows.Forms.Button();
             this.groupBoxHorariosMedicos = new System.Windows.Forms.GroupBox();
             this.ucMedicoHorario = new Vista.ucSelectorMedico();
             this.ucEspecialidadHorario = new Vista.ucSelectorEspecialidad();
@@ -139,6 +142,9 @@
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.btnAsignarEspecialidad);
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.ucEspecialidadAsignar);
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.ucMedicoAsignar);
+            this.groupBoxAsignacionEspecialidades.Controls.Add(this.lblMatricula);
+            this.groupBoxAsignacionEspecialidades.Controls.Add(this.txtMatricula);
+            this.groupBoxAsignacionEspecialidades.Controls.Add(this.btnGuardarMatricula);
             this.groupBoxAsignacionEspecialidades.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxAsignacionEspecialidades.Location = new System.Drawing.Point(365, 192);
             this.groupBoxAsignacionEspecialidades.Margin = new System.Windows.Forms.Padding(2);
@@ -151,7 +157,7 @@
             // 
             // btnQuitarEspecialidad
             // 
-            this.btnQuitarEspecialidad.Location = new System.Drawing.Point(388, 144);
+            this.btnQuitarEspecialidad.Location = new System.Drawing.Point(388, 150);
             this.btnQuitarEspecialidad.Name = "btnQuitarEspecialidad";
             this.btnQuitarEspecialidad.Size = new System.Drawing.Size(90, 32);
             this.btnQuitarEspecialidad.TabIndex = 5;
@@ -161,7 +167,7 @@
             // 
             // btnAsignarEspecialidad
             // 
-            this.btnAsignarEspecialidad.Location = new System.Drawing.Point(270, 144);
+            this.btnAsignarEspecialidad.Location = new System.Drawing.Point(270, 150);
             this.btnAsignarEspecialidad.Name = "btnAsignarEspecialidad";
             this.btnAsignarEspecialidad.Size = new System.Drawing.Size(106, 32);
             this.btnAsignarEspecialidad.TabIndex = 4;
@@ -172,15 +178,44 @@
             // ucEspecialidadAsignar
             //
             this.ucEspecialidadAsignar.Etiqueta = "Seleccione una Especialidad:";
-            this.ucEspecialidadAsignar.Location = new System.Drawing.Point(14, 84);
+            this.ucEspecialidadAsignar.Location = new System.Drawing.Point(14, 104);
             this.ucEspecialidadAsignar.Name = "ucEspecialidadAsignar";
             this.ucEspecialidadAsignar.Size = new System.Drawing.Size(460, 30);
             this.ucEspecialidadAsignar.TabIndex = 3;
             //
+            // lblMatricula
+            //
+            this.lblMatricula.AutoSize = true;
+            this.lblMatricula.Location = new System.Drawing.Point(14, 70);
+            this.lblMatricula.Name = "lblMatricula";
+            this.lblMatricula.Size = new System.Drawing.Size(95, 20);
+            this.lblMatricula.TabIndex = 6;
+            this.lblMatricula.Text = "Matrícula:";
+            //
+            // txtMatricula
+            //
+            this.txtMatricula.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtMatricula.Location = new System.Drawing.Point(130, 67);
+            this.txtMatricula.MaxLength = 20;
+            this.txtMatricula.Name = "txtMatricula";
+            this.txtMatricula.Size = new System.Drawing.Size(150, 23);
+            this.txtMatricula.TabIndex = 7;
+            //
+            // btnGuardarMatricula
+            //
+            this.btnGuardarMatricula.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnGuardarMatricula.Location = new System.Drawing.Point(290, 63);
+            this.btnGuardarMatricula.Name = "btnGuardarMatricula";
+            this.btnGuardarMatricula.Size = new System.Drawing.Size(188, 30);
+            this.btnGuardarMatricula.TabIndex = 8;
+            this.btnGuardarMatricula.Text = "Guardar matrícula";
+            this.btnGuardarMatricula.UseVisualStyleBackColor = true;
+            this.btnGuardarMatricula.Click += new System.EventHandler(this.btnGuardarMatricula_Click);
+            //
             // ucMedicoAsignar
             //
             this.ucMedicoAsignar.Etiqueta = "Seleccione un Medico:";
-            this.ucMedicoAsignar.Location = new System.Drawing.Point(14, 35);
+            this.ucMedicoAsignar.Location = new System.Drawing.Point(14, 28);
             this.ucMedicoAsignar.Margin = new System.Windows.Forms.Padding(2);
             this.ucMedicoAsignar.Name = "ucMedicoAsignar";
             this.ucMedicoAsignar.Size = new System.Drawing.Size(460, 30);
@@ -445,6 +480,9 @@
         private System.Windows.Forms.GroupBox groupBoxAsignacionEspecialidades;
         private ucSelectorEspecialidad ucEspecialidadAsignar;
         private ucSelectorMedico ucMedicoAsignar;
+        private System.Windows.Forms.Label lblMatricula;
+        private System.Windows.Forms.TextBox txtMatricula;
+        private System.Windows.Forms.Button btnGuardarMatricula;
         private System.Windows.Forms.Button btnQuitarEspecialidad;
         private System.Windows.Forms.Button btnAsignarEspecialidad;
         private System.Windows.Forms.GroupBox groupBoxHorariosMedicos;
