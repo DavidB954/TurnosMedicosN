@@ -14,8 +14,12 @@ namespace Vista
         }
 
         BLL_Usuario bll_usuario = new BLL_Usuario();
+        BLL_Paciente bll_paciente = new BLL_Paciente();
 
         private int? idSeleccionado = null;
+
+        // Paciente del usuario seleccionado (null si todavia no tiene Historia Clinica).
+        private BE_Paciente pacienteSeleccionado = null;
 
         public override void AplicarIdioma()
         {
@@ -80,6 +84,59 @@ namespace Vista
             txtPassword.Clear();
             cboActivo.SelectedIndex = 0;
             idSeleccionado = null;
+            LimpiarDatosPaciente();
+        }
+
+        private void LimpiarDatosPaciente()
+        {
+            pacienteSeleccionado = null;
+            txtDNI.Clear();
+            txtTelefono.Clear();
+            dtpFechaNacimiento.Value = DateTime.Today;
+            dtpFechaNacimiento.Checked = false;
+            lblNroHC.Text = "";
+        }
+
+        private void MostrarDatosPaciente(int idUsuario)
+        {
+            LimpiarDatosPaciente();
+            pacienteSeleccionado = bll_paciente.ObtenerPorUsuario(idUsuario);
+            if (pacienteSeleccionado == null)
+                return;
+
+            txtDNI.Text = pacienteSeleccionado.DNI;
+            txtTelefono.Text = pacienteSeleccionado.Telefono;
+            if (pacienteSeleccionado.FechaNacimiento.HasValue)
+            {
+                dtpFechaNacimiento.Value = pacienteSeleccionado.FechaNacimiento.Value;
+                dtpFechaNacimiento.Checked = true;
+            }
+            lblNroHC.Text = pacienteSeleccionado.HistoriaClinicaTexto;
+        }
+
+        // Devuelve los datos de paciente cargados, o null si no se completo ninguno.
+        // Si ya tiene Historia Clinica, el DNI no puede quedar vacio (la HC no se borra).
+        private BE_Paciente LeerDatosPaciente(int idUsuario)
+        {
+            bool algunDato = !string.IsNullOrWhiteSpace(txtDNI.Text)
+                          || !string.IsNullOrWhiteSpace(txtTelefono.Text)
+                          || dtpFechaNacimiento.Checked;
+
+            if (!algunDato && pacienteSeleccionado == null)
+                return null;
+
+            if (string.IsNullOrWhiteSpace(txtDNI.Text))
+                throw new ArgumentException(pacienteSeleccionado != null
+                    ? "El DNI no puede quedar vacío: el paciente ya tiene Historia Clínica."
+                    : "Para cargar datos de paciente ingrese el DNI.");
+
+            return new BE_Paciente
+            {
+                IdUsuario = idUsuario,
+                DNI = txtDNI.Text,
+                Telefono = txtTelefono.Text,
+                FechaNacimiento = dtpFechaNacimiento.Checked ? dtpFechaNacimiento.Value.Date : (DateTime?)null
+            };
         }
 
         private void dgvUsuarios_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -96,6 +153,7 @@ namespace Vista
                 txtEmail.Text = fila.Cells["Email"].Value.ToString();
                 bool activo = Convert.ToBoolean(fila.Cells["Activo"].Value);
                 cboActivo.SelectedIndex = activo ? 0 : 1;
+                MostrarDatosPaciente(idSeleccionado.Value);
             }
             catch (Exception ex)
             {
@@ -120,9 +178,27 @@ namespace Vista
                 Usuario.Email = txtEmail.Text;
                 Usuario.HashPassword = txtPassword.Text;
 
+                // Los datos de paciente se validan ANTES de crear el usuario.
+                pacienteSeleccionado = null;
+                BE_Paciente paciente = LeerDatosPaciente(0);
+                if (paciente != null)
+                    bll_paciente.ValidarDatosPaciente(paciente);
+
                 bll_usuario.AgregarUsuario(Usuario);
+
+                if (paciente != null)
+                {
+                    paciente.IdUsuario = Usuario.IdUsuario;
+                    bll_paciente.GuardarDatosPaciente(paciente);
+                }
+
                 CargarUsuarios();
                 LimpiarCampos();
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Datos de paciente",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
@@ -149,9 +225,22 @@ namespace Vista
                 Usuario.HashPassword = txtPassword.Text;
                 Usuario.Activo = cboActivo.SelectedIndex == 0;
 
+                BE_Paciente paciente = LeerDatosPaciente(Usuario.IdUsuario);
+                if (paciente != null)
+                    bll_paciente.ValidarDatosPaciente(paciente);
+
                 bll_usuario.ModificarUsuario(Usuario);
+
+                if (paciente != null)
+                    bll_paciente.GuardarDatosPaciente(paciente);
+
                 CargarUsuarios();
                 LimpiarCampos();
+            }
+            catch (ArgumentException ex) when (!ex.Message.StartsWith("Error en ModificarUsuario"))
+            {
+                MessageBox.Show(ex.Message, "Datos de paciente",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {

@@ -10,6 +10,7 @@ namespace Vista
     {
         BLL_MedicoHorario bll_medicoHorario = new BLL_MedicoHorario();
         BLL_Turno bll_turno = new BLL_Turno();
+        BLL_Atencion bll_atencion = new BLL_Atencion();
 
         public frm_AccesoPaciente()
         {
@@ -190,6 +191,47 @@ namespace Vista
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // Receta de un turno Atendido (solo la receta: el motivo y las indicaciones son de la
+        // Historia Clinica, exclusiva del Medico). Desde la ventana se descarga en PDF.
+        private void btnVerReceta_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                {
+                    MessageBox.Show("Seleccione, en 'Mis Turnos', un turno Atendido.");
+                    return;
+                }
+
+                int idTurno = Convert.ToInt32(dataGridView1.CurrentRow.Cells["colIdTurno"].Value);
+                BE_AtencionMedica receta = bll_atencion.ObtenerMiReceta(idTurno);
+
+                using (frmMiReceta frm = new frmMiReceta(receta))
+                {
+                    frm.ShowDialog(this);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Mi receta", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Doble clic en un turno Atendido: abre su receta.
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || !btnVerReceta.Visible)
+                return;
+
+            BE_Turno turno = dataGridView1.Rows[e.RowIndex].DataBoundItem as BE_Turno;
+            if (turno != null && turno.Estado == "Atendido")
+                btnVerReceta_Click(btnVerReceta, EventArgs.Empty);
         }
 
         public void CargarMisTurnos()

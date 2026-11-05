@@ -26,6 +26,13 @@ namespace BE
         // Equipo desde el que se abrio la conexion que disparo el trigger (HOST_NAME()).
         public string HostBD { get; set; }
 
+        // Usuario de la APLICACION que hizo el cambio (T06.B). null = proceso automatico
+        // (vencimiento) o cambio hecho fuera de la aplicacion.
+        public int? IdUsuarioCambio { get; set; }
+
+        // Resuelto por JOIN con Usuario
+        public string NombreUsuarioCambio { get; set; }
+
         // Datos resueltos por JOIN, no se persisten en BitacoraEventosTurno
         public string NombreApellidoPaciente { get; set; }
 

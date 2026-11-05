@@ -54,6 +54,7 @@ namespace Vista
             AgregarColumna("colFechaTurno", "Fecha Turno", "FechaTurnoTexto");
             AgregarColumna("colHorario", "Horario", "RangoHorario");
             AgregarColumna("colIdTurno", "Turno", "IdTurno");
+            AgregarColumna("colUsuario", "Usuario", "NombreUsuarioCambio");
             AgregarColumna("colUsuarioBD", "Usuario SQL", "UsuarioBD");
             AgregarColumna("colHostBD", "Equipo", "HostBD");
         }

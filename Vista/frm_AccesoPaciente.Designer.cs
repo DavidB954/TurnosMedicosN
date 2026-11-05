@@ -38,6 +38,7 @@
             this.groupBox_MisTurnos = new System.Windows.Forms.GroupBox();
             this.btnCancelarTurnos = new System.Windows.Forms.Button();
             this.btnModificarTurno = new System.Windows.Forms.Button();
+            this.btnVerReceta = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.lstHorarios = new System.Windows.Forms.ListBox();
             this.groupBox_Disponibilidad.SuspendLayout();
@@ -137,6 +138,7 @@
             // 
             this.groupBox_MisTurnos.Controls.Add(this.btnCancelarTurnos);
             this.groupBox_MisTurnos.Controls.Add(this.btnModificarTurno);
+            this.groupBox_MisTurnos.Controls.Add(this.btnVerReceta);
             this.groupBox_MisTurnos.Controls.Add(this.dataGridView1);
             this.groupBox_MisTurnos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_MisTurnos.Location = new System.Drawing.Point(329, 219);
@@ -170,9 +172,21 @@
             this.btnModificarTurno.UseVisualStyleBackColor = true;
             this.btnModificarTurno.Click += new System.EventHandler(this.btnModificarTurno_Click);
             //
+            // btnVerReceta
+            //
+            this.btnVerReceta.Location = new System.Drawing.Point(468, 262);
+            this.btnVerReceta.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnVerReceta.Name = "btnVerReceta";
+            this.btnVerReceta.Size = new System.Drawing.Size(155, 31);
+            this.btnVerReceta.TabIndex = 9;
+            this.btnVerReceta.Text = "Ver receta";
+            this.btnVerReceta.UseVisualStyleBackColor = true;
+            this.btnVerReceta.Click += new System.EventHandler(this.btnVerReceta_Click);
+            //
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.Location = new System.Drawing.Point(20, 38);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridView1.Name = "dataGridView1";
@@ -212,6 +226,7 @@
         private System.Windows.Forms.GroupBox groupBox_MisTurnos;
         private System.Windows.Forms.Button btnCancelarTurnos;
         private System.Windows.Forms.Button btnModificarTurno;
+        private System.Windows.Forms.Button btnVerReceta;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ListBox lstHorarios;
     }

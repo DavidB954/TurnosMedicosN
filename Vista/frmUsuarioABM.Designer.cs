@@ -1,4 +1,4 @@
-namespace Vista
+﻿namespace Vista
 {
     partial class frmUsuarioABM
     {
@@ -44,7 +44,17 @@ namespace Vista
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.groupBoxUsuarios = new System.Windows.Forms.GroupBox();
             this.dgvUsuarios = new System.Windows.Forms.DataGridView();
+            this.groupBoxDatosPaciente = new System.Windows.Forms.GroupBox();
+            this.lblDNI = new System.Windows.Forms.Label();
+            this.txtDNI = new System.Windows.Forms.TextBox();
+            this.lblFechaNacimiento = new System.Windows.Forms.Label();
+            this.dtpFechaNacimiento = new System.Windows.Forms.DateTimePicker();
+            this.lblTelefono = new System.Windows.Forms.Label();
+            this.txtTelefono = new System.Windows.Forms.TextBox();
+            this.lblNroHC = new System.Windows.Forms.Label();
+            this.lblAyudaPaciente = new System.Windows.Forms.Label();
             this.groupBox_DatosUsuario.SuspendLayout();
+            this.groupBoxDatosPaciente.SuspendLayout();
             this.groupBoxUsuarios.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
             this.SuspendLayout();
@@ -229,11 +239,112 @@ namespace Vista
             this.dgvUsuarios.TabIndex = 0;
             this.dgvUsuarios.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUsuarios_CellClick);
             //
+            // groupBoxDatosPaciente
+            //
+            this.groupBoxDatosPaciente.Controls.Add(this.lblDNI);
+            this.groupBoxDatosPaciente.Controls.Add(this.txtDNI);
+            this.groupBoxDatosPaciente.Controls.Add(this.lblFechaNacimiento);
+            this.groupBoxDatosPaciente.Controls.Add(this.dtpFechaNacimiento);
+            this.groupBoxDatosPaciente.Controls.Add(this.lblTelefono);
+            this.groupBoxDatosPaciente.Controls.Add(this.txtTelefono);
+            this.groupBoxDatosPaciente.Controls.Add(this.lblNroHC);
+            this.groupBoxDatosPaciente.Controls.Add(this.lblAyudaPaciente);
+            this.groupBoxDatosPaciente.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxDatosPaciente.Location = new System.Drawing.Point(327, 400);
+            this.groupBoxDatosPaciente.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxDatosPaciente.Name = "groupBoxDatosPaciente";
+            this.groupBoxDatosPaciente.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxDatosPaciente.Size = new System.Drawing.Size(432, 290);
+            this.groupBoxDatosPaciente.TabIndex = 2;
+            this.groupBoxDatosPaciente.TabStop = false;
+            this.groupBoxDatosPaciente.Text = "Datos de Paciente";
+            //
+            // lblDNI
+            //
+            this.lblDNI.AutoSize = true;
+            this.lblDNI.Location = new System.Drawing.Point(8, 40);
+            this.lblDNI.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDNI.Name = "lblDNI";
+            this.lblDNI.Size = new System.Drawing.Size(55, 29);
+            this.lblDNI.TabIndex = 0;
+            this.lblDNI.Text = "DNI";
+            //
+            // txtDNI
+            //
+            this.txtDNI.Location = new System.Drawing.Point(12, 74);
+            this.txtDNI.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtDNI.MaxLength = 10;
+            this.txtDNI.Name = "txtDNI";
+            this.txtDNI.Size = new System.Drawing.Size(187, 35);
+            this.txtDNI.TabIndex = 1;
+            //
+            // lblFechaNacimiento
+            //
+            this.lblFechaNacimiento.AutoSize = true;
+            this.lblFechaNacimiento.Location = new System.Drawing.Point(218, 40);
+            this.lblFechaNacimiento.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblFechaNacimiento.Name = "lblFechaNacimiento";
+            this.lblFechaNacimiento.Size = new System.Drawing.Size(170, 29);
+            this.lblFechaNacimiento.TabIndex = 2;
+            this.lblFechaNacimiento.Text = "Fecha Nac.";
+            //
+            // dtpFechaNacimiento
+            //
+            this.dtpFechaNacimiento.CustomFormat = "dd/MM/yyyy";
+            this.dtpFechaNacimiento.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpFechaNacimiento.Location = new System.Drawing.Point(212, 74);
+            this.dtpFechaNacimiento.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dtpFechaNacimiento.Name = "dtpFechaNacimiento";
+            this.dtpFechaNacimiento.ShowCheckBox = true;
+            this.dtpFechaNacimiento.Size = new System.Drawing.Size(212, 35);
+            this.dtpFechaNacimiento.TabIndex = 3;
+            //
+            // lblTelefono
+            //
+            this.lblTelefono.AutoSize = true;
+            this.lblTelefono.Location = new System.Drawing.Point(8, 122);
+            this.lblTelefono.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTelefono.Name = "lblTelefono";
+            this.lblTelefono.Size = new System.Drawing.Size(115, 29);
+            this.lblTelefono.TabIndex = 4;
+            this.lblTelefono.Text = "Teléfono";
+            //
+            // txtTelefono
+            //
+            this.txtTelefono.Location = new System.Drawing.Point(12, 156);
+            this.txtTelefono.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtTelefono.MaxLength = 30;
+            this.txtTelefono.Name = "txtTelefono";
+            this.txtTelefono.Size = new System.Drawing.Size(187, 35);
+            this.txtTelefono.TabIndex = 5;
+            //
+            // lblNroHC
+            //
+            this.lblNroHC.AutoSize = true;
+            this.lblNroHC.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNroHC.Location = new System.Drawing.Point(218, 160);
+            this.lblNroHC.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblNroHC.Name = "lblNroHC";
+            this.lblNroHC.Size = new System.Drawing.Size(0, 26);
+            this.lblNroHC.TabIndex = 6;
+            //
+            // lblAyudaPaciente
+            //
+            this.lblAyudaPaciente.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAyudaPaciente.ForeColor = System.Drawing.Color.DimGray;
+            this.lblAyudaPaciente.Location = new System.Drawing.Point(8, 205);
+            this.lblAyudaPaciente.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAyudaPaciente.Name = "lblAyudaPaciente";
+            this.lblAyudaPaciente.Size = new System.Drawing.Size(410, 75);
+            this.lblAyudaPaciente.TabIndex = 7;
+            this.lblAyudaPaciente.Text = "Completar solo para pacientes. Al guardar el DNI se abre la Historia Clínica (el N° de HC lo genera el sistema).";
+            //
             // frmUsuarioABM
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 832);
+            this.Controls.Add(this.groupBoxDatosPaciente);
             this.Controls.Add(this.groupBoxUsuarios);
             this.Controls.Add(this.groupBox_DatosUsuario);
             this.Margin = new System.Windows.Forms.Padding(3);
@@ -243,6 +354,8 @@ namespace Vista
             this.groupBox_DatosUsuario.ResumeLayout(false);
             this.groupBox_DatosUsuario.PerformLayout();
             this.groupBoxUsuarios.ResumeLayout(false);
+            this.groupBoxDatosPaciente.ResumeLayout(false);
+            this.groupBoxDatosPaciente.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).EndInit();
             this.ResumeLayout(false);
 
@@ -266,5 +379,14 @@ namespace Vista
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.GroupBox groupBoxUsuarios;
         private System.Windows.Forms.DataGridView dgvUsuarios;
+        private System.Windows.Forms.GroupBox groupBoxDatosPaciente;
+        private System.Windows.Forms.Label lblDNI;
+        private System.Windows.Forms.TextBox txtDNI;
+        private System.Windows.Forms.Label lblFechaNacimiento;
+        private System.Windows.Forms.DateTimePicker dtpFechaNacimiento;
+        private System.Windows.Forms.Label lblTelefono;
+        private System.Windows.Forms.TextBox txtTelefono;
+        private System.Windows.Forms.Label lblNroHC;
+        private System.Windows.Forms.Label lblAyudaPaciente;
     }
 }

@@ -34,6 +34,7 @@
             this.lblUsuario = new System.Windows.Forms.Label();
             this.btnGestionIdiomas = new System.Windows.Forms.Button();
             this.btn_AccesoPaciente = new System.Windows.Forms.Button();
+            this.btn_MisRecetas = new System.Windows.Forms.Button();
             this.btn_AccesoMedico = new System.Windows.Forms.Button();
             this.btn_Salir = new System.Windows.Forms.Button();
             this.btn_Bitacora = new System.Windows.Forms.Button();
@@ -59,6 +60,7 @@
             this.groupBox_Menu.Controls.Add(this.lblUsuario);
             this.groupBox_Menu.Controls.Add(this.btnGestionIdiomas);
             this.groupBox_Menu.Controls.Add(this.btn_AccesoPaciente);
+            this.groupBox_Menu.Controls.Add(this.btn_MisRecetas);
             this.groupBox_Menu.Controls.Add(this.btn_AccesoMedico);
             this.groupBox_Menu.Controls.Add(this.btn_Salir);
             this.groupBox_Menu.Controls.Add(this.btn_Bitacora);
@@ -115,6 +117,16 @@
             this.btn_AccesoPaciente.Text = "Acceso Paciente";
             this.btn_AccesoPaciente.UseVisualStyleBackColor = true;
             this.btn_AccesoPaciente.Click += new System.EventHandler(this.btn_AccesoPaciente_Click);
+            // 
+            // btn_MisRecetas
+            // 
+            this.btn_MisRecetas.Location = new System.Drawing.Point(0, 541);
+            this.btn_MisRecetas.Name = "btn_MisRecetas";
+            this.btn_MisRecetas.Size = new System.Drawing.Size(300, 52);
+            this.btn_MisRecetas.TabIndex = 20;
+            this.btn_MisRecetas.Text = "Mis recetas";
+            this.btn_MisRecetas.UseVisualStyleBackColor = true;
+            this.btn_MisRecetas.Click += new System.EventHandler(this.btn_MisRecetas_Click);
             // 
             // btn_AccesoMedico
             // 
@@ -286,6 +298,7 @@
         private System.Windows.Forms.Button btn_SubUsuariosRoles;
         private System.Windows.Forms.Button btn_SubUsuariosHistorial;
         private System.Windows.Forms.Button btn_AccesoPaciente;
+        private System.Windows.Forms.Button btn_MisRecetas;
         private System.Windows.Forms.Button btn_AccesoMedico;
         private System.Windows.Forms.Button btnGestionIdiomas;
         private System.Windows.Forms.Label lblUsuario;

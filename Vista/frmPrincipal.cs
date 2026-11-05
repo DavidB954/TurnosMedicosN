@@ -130,6 +130,7 @@ namespace Vista
             btnGestionIdiomas.Visible = PuedeAbrir(nameof(frmABM));
             btn_AccesoMedico.Visible = PuedeAbrir(nameof(frm_AccesoMedico));
             btn_AccesoPaciente.Visible = PuedeAbrir(nameof(frm_AccesoPaciente));
+            btn_MisRecetas.Visible = PuedeAbrir(nameof(frmMisRecetas));
             btn_GestionMedicos.Visible = PuedeAbrir(nameof(frmGestionMedicos));
             btn_GestionTurnos.Visible = PuedeAbrir(nameof(frmGestionTurnos));
 
@@ -162,6 +163,7 @@ namespace Vista
                 btnGestionIdiomas,
                 btn_AccesoMedico,
                 btn_AccesoPaciente,
+                btn_MisRecetas,
                 btn_GestionMedicos,
                 btn_GestionTurnos
             };
@@ -261,6 +263,11 @@ namespace Vista
         private void btn_AccesoPaciente_Click(object sender, EventArgs e)
         {
             AbrirSiTieneAcceso<frm_AccesoPaciente>();
+        }
+
+        private void btn_MisRecetas_Click(object sender, EventArgs e)
+        {
+            AbrirSiTieneAcceso<frmMisRecetas>();
         }
 
         private void btn_Salir_Click(object sender, EventArgs e)
