@@ -103,7 +103,7 @@ namespace Vista
                 string estado = cbEstado.SelectedIndex > 0 ? estadosFiltro[cbEstado.SelectedIndex] : null;
 
                 dgvTurnos.DataSource = null;
-                dgvTurnos.DataSource = bll_turno.Filtrar(idTurno, desde, hasta, estado);
+                dgvTurnos.DataSource = bll_turno.Filtrar(idTurno, desde, hasta, estado, txtPaciente.Text);
 
                 lblTotalRegistros.Text = dgvTurnos.Rows.Count.ToString();
             }
@@ -125,6 +125,7 @@ namespace Vista
         private void btnLimpiarFiltros_Click(object sender, EventArgs e)
         {
             txtIdTurno.Clear();
+            txtPaciente.Clear();
             dtpDesde.Value = DateTime.Now;
             dtpDesde.Checked = false;
             dtpHasta.Value = DateTime.Now;

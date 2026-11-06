@@ -29,6 +29,8 @@ namespace Vista
             this.lblDesde = new System.Windows.Forms.Label();
             this.txtIdTurno = new System.Windows.Forms.TextBox();
             this.lblIdTurno = new System.Windows.Forms.Label();
+            this.txtPaciente = new System.Windows.Forms.TextBox();
+            this.lblPaciente = new System.Windows.Forms.Label();
             this.dgvTurnos = new System.Windows.Forms.DataGridView();
             this.btnCancelarTurno = new System.Windows.Forms.Button();
             this.lblTotalDeRegistros = new System.Windows.Forms.Label();
@@ -60,13 +62,15 @@ namespace Vista
             this.groupBoxFiltros.Controls.Add(this.lblDesde);
             this.groupBoxFiltros.Controls.Add(this.txtIdTurno);
             this.groupBoxFiltros.Controls.Add(this.lblIdTurno);
+            this.groupBoxFiltros.Controls.Add(this.txtPaciente);
+            this.groupBoxFiltros.Controls.Add(this.lblPaciente);
             this.groupBoxFiltros.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxFiltros.ForeColor = System.Drawing.Color.RoyalBlue;
             this.groupBoxFiltros.Location = new System.Drawing.Point(494, 83);
             this.groupBoxFiltros.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBoxFiltros.Name = "groupBoxFiltros";
             this.groupBoxFiltros.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBoxFiltros.Size = new System.Drawing.Size(1340, 125);
+            this.groupBoxFiltros.Size = new System.Drawing.Size(1340, 200);
             this.groupBoxFiltros.TabIndex = 1;
             this.groupBoxFiltros.TabStop = false;
             this.groupBoxFiltros.Text = "Filtros de Busqueda";
@@ -178,12 +182,30 @@ namespace Vista
             this.lblIdTurno.TabIndex = 0;
             this.lblIdTurno.Text = "N° Turno:";
             //
+            // txtPaciente
+            //
+            this.txtPaciente.Location = new System.Drawing.Point(146, 150);
+            this.txtPaciente.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPaciente.Name = "txtPaciente";
+            this.txtPaciente.Size = new System.Drawing.Size(958, 35);
+            this.txtPaciente.TabIndex = 10;
+            //
+            // lblPaciente
+            //
+            this.lblPaciente.AutoSize = true;
+            this.lblPaciente.Location = new System.Drawing.Point(26, 155);
+            this.lblPaciente.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPaciente.Name = "lblPaciente";
+            this.lblPaciente.Size = new System.Drawing.Size(260, 29);
+            this.lblPaciente.TabIndex = 11;
+            this.lblPaciente.Text = "Paciente (nombre, DNI o H.C.):";
+            //
             // dgvTurnos
             //
             this.dgvTurnos.AllowUserToAddRows = false;
             this.dgvTurnos.AllowUserToDeleteRows = false;
             this.dgvTurnos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTurnos.Location = new System.Drawing.Point(494, 218);
+            this.dgvTurnos.Location = new System.Drawing.Point(494, 293);
             this.dgvTurnos.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgvTurnos.MultiSelect = false;
             this.dgvTurnos.Name = "dgvTurnos";
@@ -198,7 +220,7 @@ namespace Vista
             this.btnCancelarTurno.BackColor = System.Drawing.Color.IndianRed;
             this.btnCancelarTurno.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancelarTurno.ForeColor = System.Drawing.Color.White;
-            this.btnCancelarTurno.Location = new System.Drawing.Point(494, 840);
+            this.btnCancelarTurno.Location = new System.Drawing.Point(494, 915);
             this.btnCancelarTurno.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCancelarTurno.Name = "btnCancelarTurno";
             this.btnCancelarTurno.Size = new System.Drawing.Size(300, 49);
@@ -210,7 +232,7 @@ namespace Vista
             // lblTotalDeRegistros
             //
             this.lblTotalDeRegistros.AutoSize = true;
-            this.lblTotalDeRegistros.Location = new System.Drawing.Point(1513, 840);
+            this.lblTotalDeRegistros.Location = new System.Drawing.Point(1513, 915);
             this.lblTotalDeRegistros.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTotalDeRegistros.Name = "lblTotalDeRegistros";
             this.lblTotalDeRegistros.Size = new System.Drawing.Size(113, 20);
@@ -220,7 +242,7 @@ namespace Vista
             // lblTotalRegistros
             //
             this.lblTotalRegistros.AutoSize = true;
-            this.lblTotalRegistros.Location = new System.Drawing.Point(1798, 840);
+            this.lblTotalRegistros.Location = new System.Drawing.Point(1798, 915);
             this.lblTotalRegistros.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTotalRegistros.Name = "lblTotalRegistros";
             this.lblTotalRegistros.Size = new System.Drawing.Size(0, 20);
@@ -230,7 +252,7 @@ namespace Vista
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1970, 923);
+            this.ClientSize = new System.Drawing.Size(1970, 998);
             this.Controls.Add(this.lblTotalRegistros);
             this.Controls.Add(this.lblTotalDeRegistros);
             this.Controls.Add(this.btnCancelarTurno);
@@ -263,6 +285,8 @@ namespace Vista
         private System.Windows.Forms.Label lblDesde;
         private System.Windows.Forms.TextBox txtIdTurno;
         private System.Windows.Forms.Label lblIdTurno;
+        private System.Windows.Forms.TextBox txtPaciente;
+        private System.Windows.Forms.Label lblPaciente;
         private System.Windows.Forms.DataGridView dgvTurnos;
         private System.Windows.Forms.Button btnCancelarTurno;
         private System.Windows.Forms.Label lblTotalDeRegistros;

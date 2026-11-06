@@ -115,7 +115,7 @@ namespace DAL
                     conexion.Open();
                     SqlCommand cmd = new SqlCommand(@"
                         SELECT t.IdTurno, t.IdPaciente, t.IdHorario, t.Fecha, t.Estado,
-                               mh.IdMedico, mh.HoraInicio, mh.HoraFin,
+                               mh.IdMedico, mh.HoraInicio, mh.HoraFin, mh.IdEspecialidad,
                                u.Nombre, u.Apellido, esp.Nombre AS NombreEspecialidad
                         FROM Turno t
                         INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
@@ -137,6 +137,7 @@ namespace DAL
                         turno.Fecha = Convert.ToDateTime(lector["Fecha"]);
                         turno.Estado = lector["Estado"].ToString();
                         turno.IdMedico = idMedico;
+                        turno.IdEspecialidad = lector["IdEspecialidad"] == DBNull.Value ? (int?)null : Convert.ToInt32(lector["IdEspecialidad"]);
                         turno.HoraInicio = (TimeSpan)lector["HoraInicio"];
                         turno.HoraFin = (TimeSpan)lector["HoraFin"];
                         turno.NombreApellidoMedico = lector["Nombre"].ToString() + " " + lector["Apellido"].ToString();
@@ -258,7 +259,7 @@ namespace DAL
         // Turnos de cualquier paciente, con filtros opcionales, para la pantalla de Gestion
         // de Turnos usada por Administrativo/Administrador (RF 01.2: cancelar el turno de
         // cualquier paciente). A diferencia de ListarPorPaciente, no filtra por IdPaciente.
-        public List<BE_Turno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string estado)
+        public List<BE_Turno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string estado, string textoPaciente = null)
         {
             try
             {
@@ -279,16 +280,29 @@ namespace DAL
                         LEFT JOIN Especialidades esp ON esp.IdEspecialidad = mh.IdEspecialidad
                         INNER JOIN Usuario um ON um.IdUsuario = mh.IdMedico
                         INNER JOIN Usuario up ON up.IdUsuario = t.IdPaciente
+                        LEFT JOIN Paciente pp ON pp.IdUsuario = t.IdPaciente
                         WHERE (@idTurno IS NULL OR t.IdTurno = @idTurno)
                           AND (@desde IS NULL OR t.Fecha >= @desde)
                           AND (@hasta IS NULL OR t.Fecha <= @hasta)
                           AND (@estado IS NULL OR t.Estado = @estado)
+                          AND (@textoPaciente IS NULL
+                               OR (up.Nombre + ' ' + up.Apellido) LIKE @patronPaciente
+                               OR (up.Apellido + ' ' + up.Nombre) LIKE @patronPaciente
+                               OR pp.DNI LIKE @patronPaciente
+                               OR (@numeroHC IS NOT NULL AND pp.NroHistoriaClinica = @numeroHC))
                         ORDER BY t.Fecha DESC, mh.HoraInicio", conexion);
 
                     cmd.Parameters.Add("@idTurno", SqlDbType.Int).Value = (object)idTurno ?? DBNull.Value;
                     cmd.Parameters.Add("@desde", SqlDbType.Date).Value = (object)desde ?? DBNull.Value;
                     cmd.Parameters.Add("@hasta", SqlDbType.Date).Value = (object)hasta ?? DBNull.Value;
                     cmd.Parameters.Add("@estado", SqlDbType.VarChar, 20).Value = (object)estado ?? DBNull.Value;
+
+                    string textoBusqueda = string.IsNullOrWhiteSpace(textoPaciente) ? null : textoPaciente.Trim();
+                    int numeroHC = 0;
+                    bool esNumero = textoBusqueda != null && int.TryParse(textoBusqueda, out numeroHC);
+                    cmd.Parameters.Add("@textoPaciente", SqlDbType.VarChar, 120).Value = (object)textoBusqueda ?? DBNull.Value;
+                    cmd.Parameters.Add("@patronPaciente", SqlDbType.VarChar, 122).Value = textoBusqueda == null ? (object)DBNull.Value : "%" + textoBusqueda + "%";
+                    cmd.Parameters.Add("@numeroHC", SqlDbType.Int).Value = (esNumero ? (object)numeroHC : DBNull.Value);
 
                     SqlDataReader lector = cmd.ExecuteReader();
                     while (lector.Read())

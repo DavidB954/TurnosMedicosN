@@ -73,5 +73,10 @@ namespace Vista
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void ucSelectorEspecialidad_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

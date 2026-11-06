@@ -9,11 +9,11 @@ namespace BLL
     {
         DAL_BitacoraEventoTurno dal_bitacoraEventoTurno = new DAL_BitacoraEventoTurno();
 
-        public List<BE_BitacoraEventoTurno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta)
+        public List<BE_BitacoraEventoTurno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string textoPaciente = null)
         {
             try
             {
-                return dal_bitacoraEventoTurno.Filtrar(idTurno, desde, hasta);
+                return dal_bitacoraEventoTurno.Filtrar(idTurno, desde, hasta, textoPaciente);
             }
             catch (Exception ex)
             {

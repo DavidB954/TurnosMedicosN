@@ -22,6 +22,7 @@ namespace Vista
         private DateTime? fechaCargada = null;
         private bool calendarioAbierto = false;
         private bool accesoPermitido = false;
+        private bool ajustandoFecha = false;
 
         private bool puedeAtender = true;
         private bool puedeMarcarAusente = true;
@@ -205,6 +206,21 @@ namespace Vista
             try
             {
                 DateTime fecha = dtpFecha.Value.Date;
+
+                // Si la fecha elegida no tiene ningun turno, se salta directo a la proxima que si
+                // tenga (si existe), en vez de obligar al medico a ir probando fecha por fecha.
+                if (!ajustandoFecha)
+                {
+                    DateTime? proximaConTurnos = bll_atencion.ObtenerProximaFechaConTurnos(IdMedico, fecha);
+                    if (proximaConTurnos.HasValue && proximaConTurnos.Value.Date != fecha)
+                    {
+                        ajustandoFecha = true;
+                        try { dtpFecha.Value = proximaConTurnos.Value.Date; }
+                        finally { ajustandoFecha = false; }
+                        return;
+                    }
+                }
+
                 bool esHoy = fecha == DateTime.Today;
 
                 agenda = bll_atencion.ObtenerAgenda(IdMedico, fecha, registrarConsulta);

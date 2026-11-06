@@ -86,7 +86,7 @@ namespace Vista
                 DateTime? hasta = dtpHasta.Checked ? dtpHasta.Value.Date.AddDays(1).AddSeconds(-1) : (DateTime?)null;
 
                 dgvEventos.DataSource = null;
-                dgvEventos.DataSource = bll_bitacoraEventoTurno.Filtrar(idTurno, desde, hasta);
+                dgvEventos.DataSource = bll_bitacoraEventoTurno.Filtrar(idTurno, desde, hasta, txtPaciente.Text);
 
                 lblTotalRegistros.Text = dgvEventos.Rows.Count.ToString();
             }
@@ -114,6 +114,7 @@ namespace Vista
         private void btnLimpiarFiltros_Click(object sender, EventArgs e)
         {
             txtIdTurno.Clear();
+            txtPaciente.Clear();
             dtpDesde.Value = DateTime.Now;
             dtpDesde.Checked = false;
             dtpHasta.Value = DateTime.Now;

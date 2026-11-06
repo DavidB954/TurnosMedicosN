@@ -43,27 +43,27 @@
             this.txtMatricula = new System.Windows.Forms.TextBox();
             this.btnGuardarMatricula = new System.Windows.Forms.Button();
             this.groupBoxHorariosMedicos = new System.Windows.Forms.GroupBox();
-            this.ucMedicoHorario = new Vista.ucSelectorMedico();
-            this.ucEspecialidadHorario = new Vista.ucSelectorEspecialidad();
-            this.lblFranjaHoraria = new System.Windows.Forms.Label();
-            this.lblDesde = new System.Windows.Forms.Label();
-            this.lblHasta = new System.Windows.Forms.Label();
-            this.lblTurnosCadaXMin = new System.Windows.Forms.Label();
-            this.lblDiasTrabajados = new System.Windows.Forms.Label();
-            this.checkBoxLunes = new System.Windows.Forms.CheckBox();
-            this.checkBoxMartes = new System.Windows.Forms.CheckBox();
-            this.checkBoxMiercoles = new System.Windows.Forms.CheckBox();
-            this.checkBoxJueves = new System.Windows.Forms.CheckBox();
-            this.checkBoxViernes = new System.Windows.Forms.CheckBox();
-            this.checkBoxSabado = new System.Windows.Forms.CheckBox();
-            this.btnAsignarDiaYHorario = new System.Windows.Forms.Button();
+            this.txtTurnosCada = new System.Windows.Forms.TextBox();
+            this.txtHasta = new System.Windows.Forms.TextBox();
+            this.txtDesde = new System.Windows.Forms.TextBox();
             this.btnModificarDiasYHorarios = new System.Windows.Forms.Button();
+            this.btnAsignarDiaYHorario = new System.Windows.Forms.Button();
+            this.checkBoxSabado = new System.Windows.Forms.CheckBox();
+            this.checkBoxViernes = new System.Windows.Forms.CheckBox();
+            this.checkBoxJueves = new System.Windows.Forms.CheckBox();
+            this.checkBoxMiercoles = new System.Windows.Forms.CheckBox();
+            this.checkBoxMartes = new System.Windows.Forms.CheckBox();
+            this.checkBoxLunes = new System.Windows.Forms.CheckBox();
+            this.lblDiasTrabajados = new System.Windows.Forms.Label();
+            this.lblTurnosCadaXMin = new System.Windows.Forms.Label();
+            this.lblHasta = new System.Windows.Forms.Label();
+            this.lblDesde = new System.Windows.Forms.Label();
+            this.lblFranjaHoraria = new System.Windows.Forms.Label();
+            this.ucEspecialidadHorario = new Vista.ucSelectorEspecialidad();
+            this.ucMedicoHorario = new Vista.ucSelectorMedico();
             this.btnEditarFranjas = new System.Windows.Forms.Button();
             this.dataGridViewMedicosDiasHorarios = new System.Windows.Forms.DataGridView();
             this.checkBoxMostrarInactivos = new System.Windows.Forms.CheckBox();
-            this.txtDesde = new System.Windows.Forms.TextBox();
-            this.txtHasta = new System.Windows.Forms.TextBox();
-            this.txtTurnosCada = new System.Windows.Forms.TextBox();
             this.groupBoxEspecialidades.SuspendLayout();
             this.groupBoxAsignacionEspecialidades.SuspendLayout();
             this.groupBoxHorariosMedicos.SuspendLayout();
@@ -71,7 +71,7 @@
             this.SuspendLayout();
             // 
             // groupBoxEspecialidades
-            //
+            // 
             this.groupBoxEspecialidades.Controls.Add(this.ucEspecialidadCrud);
             this.groupBoxEspecialidades.Controls.Add(this.btnEspecialidadEliminar);
             this.groupBoxEspecialidades.Controls.Add(this.btnEspecialidadCrear);
@@ -88,14 +88,14 @@
             this.groupBoxEspecialidades.Text = "Especialidades";
             // 
             // ucEspecialidadCrud
-            //
+            // 
             this.ucEspecialidadCrud.Etiqueta = "Especialidades:";
             this.ucEspecialidadCrud.Location = new System.Drawing.Point(11, 70);
             this.ucEspecialidadCrud.Margin = new System.Windows.Forms.Padding(2);
             this.ucEspecialidadCrud.Name = "ucEspecialidadCrud";
             this.ucEspecialidadCrud.Size = new System.Drawing.Size(460, 30);
             this.ucEspecialidadCrud.TabIndex = 4;
-            //
+            // 
             // btnEspecialidadEliminar
             // 
             this.btnEspecialidadEliminar.Location = new System.Drawing.Point(383, 116);
@@ -106,7 +106,7 @@
             this.btnEspecialidadEliminar.Text = "Eliminar";
             this.btnEspecialidadEliminar.UseVisualStyleBackColor = true;
             this.btnEspecialidadEliminar.Click += new System.EventHandler(this.btnEspecialidadEliminar_Click);
-            //
+            // 
             // btnEspecialidadCrear
             // 
             this.btnEspecialidadCrear.Location = new System.Drawing.Point(270, 116);
@@ -176,33 +176,42 @@
             this.btnAsignarEspecialidad.Click += new System.EventHandler(this.btnAsignarEspecialidad_Click);
             // 
             // ucEspecialidadAsignar
-            //
+            // 
             this.ucEspecialidadAsignar.Etiqueta = "Seleccione una Especialidad:";
             this.ucEspecialidadAsignar.Location = new System.Drawing.Point(14, 104);
             this.ucEspecialidadAsignar.Name = "ucEspecialidadAsignar";
             this.ucEspecialidadAsignar.Size = new System.Drawing.Size(460, 30);
             this.ucEspecialidadAsignar.TabIndex = 3;
-            //
+            // 
+            // ucMedicoAsignar
+            // 
+            this.ucMedicoAsignar.Etiqueta = "Seleccione un Medico:";
+            this.ucMedicoAsignar.Location = new System.Drawing.Point(14, 28);
+            this.ucMedicoAsignar.Margin = new System.Windows.Forms.Padding(2);
+            this.ucMedicoAsignar.Name = "ucMedicoAsignar";
+            this.ucMedicoAsignar.Size = new System.Drawing.Size(460, 30);
+            this.ucMedicoAsignar.TabIndex = 2;
+            // 
             // lblMatricula
-            //
+            // 
             this.lblMatricula.AutoSize = true;
             this.lblMatricula.Location = new System.Drawing.Point(14, 70);
             this.lblMatricula.Name = "lblMatricula";
-            this.lblMatricula.Size = new System.Drawing.Size(95, 20);
+            this.lblMatricula.Size = new System.Drawing.Size(87, 20);
             this.lblMatricula.TabIndex = 6;
             this.lblMatricula.Text = "Matrícula:";
-            //
+            // 
             // txtMatricula
-            //
+            // 
             this.txtMatricula.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtMatricula.Location = new System.Drawing.Point(130, 67);
             this.txtMatricula.MaxLength = 20;
             this.txtMatricula.Name = "txtMatricula";
             this.txtMatricula.Size = new System.Drawing.Size(150, 23);
             this.txtMatricula.TabIndex = 7;
-            //
+            // 
             // btnGuardarMatricula
-            //
+            // 
             this.btnGuardarMatricula.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnGuardarMatricula.Location = new System.Drawing.Point(290, 63);
             this.btnGuardarMatricula.Name = "btnGuardarMatricula";
@@ -211,16 +220,7 @@
             this.btnGuardarMatricula.Text = "Guardar matrícula";
             this.btnGuardarMatricula.UseVisualStyleBackColor = true;
             this.btnGuardarMatricula.Click += new System.EventHandler(this.btnGuardarMatricula_Click);
-            //
-            // ucMedicoAsignar
-            //
-            this.ucMedicoAsignar.Etiqueta = "Seleccione un Medico:";
-            this.ucMedicoAsignar.Location = new System.Drawing.Point(14, 28);
-            this.ucMedicoAsignar.Margin = new System.Windows.Forms.Padding(2);
-            this.ucMedicoAsignar.Name = "ucMedicoAsignar";
-            this.ucMedicoAsignar.Size = new System.Drawing.Size(460, 30);
-            this.ucMedicoAsignar.TabIndex = 2;
-            //
+            // 
             // groupBoxHorariosMedicos
             // 
             this.groupBoxHorariosMedicos.Controls.Add(this.txtTurnosCada);
@@ -249,119 +249,46 @@
             this.groupBoxHorariosMedicos.TabStop = false;
             this.groupBoxHorariosMedicos.Text = "Asignacion de Horarios";
             // 
-            // ucEspecialidadHorario
+            // txtTurnosCada
             // 
-            this.ucEspecialidadHorario.Etiqueta = "Especialidad:";
-            this.ucEspecialidadHorario.Location = new System.Drawing.Point(5, 206);
-            this.ucEspecialidadHorario.Margin = new System.Windows.Forms.Padding(2);
-            this.ucEspecialidadHorario.Name = "ucEspecialidadHorario";
-            this.ucEspecialidadHorario.Size = new System.Drawing.Size(385, 30);
-            this.ucEspecialidadHorario.TabIndex = 4;
+            this.txtTurnosCada.Location = new System.Drawing.Point(149, 199);
+            this.txtTurnosCada.Name = "txtTurnosCada";
+            this.txtTurnosCada.Size = new System.Drawing.Size(100, 26);
+            this.txtTurnosCada.TabIndex = 20;
             // 
-            // ucMedicoHorario
-            //
-            this.ucMedicoHorario.Etiqueta = "Seleccione un Medico:";
-            this.ucMedicoHorario.Location = new System.Drawing.Point(5, 26);
-            this.ucMedicoHorario.Margin = new System.Windows.Forms.Padding(2);
-            this.ucMedicoHorario.Name = "ucMedicoHorario";
-            this.ucMedicoHorario.Size = new System.Drawing.Size(365, 30);
-            this.ucMedicoHorario.TabIndex = 3;
-            //
-            // lblFranjaHoraria
+            // txtHasta
             // 
-            this.lblFranjaHoraria.AutoSize = true;
-            this.lblFranjaHoraria.Location = new System.Drawing.Point(9, 86);
-            this.lblFranjaHoraria.Name = "lblFranjaHoraria";
-            this.lblFranjaHoraria.Size = new System.Drawing.Size(206, 20);
-            this.lblFranjaHoraria.TabIndex = 5;
-            this.lblFranjaHoraria.Text = "Ingrese la franja horaria:";
-            this.lblFranjaHoraria.Click += new System.EventHandler(this.lblFranjaHoraria_Click);
+            this.txtHasta.Location = new System.Drawing.Point(276, 150);
+            this.txtHasta.Name = "txtHasta";
+            this.txtHasta.Size = new System.Drawing.Size(100, 26);
+            this.txtHasta.TabIndex = 19;
             // 
-            // lblDesde
+            // txtDesde
             // 
-            this.lblDesde.AutoSize = true;
-            this.lblDesde.Location = new System.Drawing.Point(35, 121);
-            this.lblDesde.Name = "lblDesde";
-            this.lblDesde.Size = new System.Drawing.Size(61, 20);
-            this.lblDesde.TabIndex = 6;
-            this.lblDesde.Text = "Desde";
+            this.txtDesde.Location = new System.Drawing.Point(97, 150);
+            this.txtDesde.Name = "txtDesde";
+            this.txtDesde.Size = new System.Drawing.Size(89, 26);
+            this.txtDesde.TabIndex = 18;
             // 
-            // lblHasta
+            // btnModificarDiasYHorarios
             // 
-            this.lblHasta.AutoSize = true;
-            this.lblHasta.Location = new System.Drawing.Point(208, 121);
-            this.lblHasta.Name = "lblHasta";
-            this.lblHasta.Size = new System.Drawing.Size(57, 20);
-            this.lblHasta.TabIndex = 7;
-            this.lblHasta.Text = "Hasta";
+            this.btnModificarDiasYHorarios.Location = new System.Drawing.Point(256, 323);
+            this.btnModificarDiasYHorarios.Name = "btnModificarDiasYHorarios";
+            this.btnModificarDiasYHorarios.Size = new System.Drawing.Size(124, 32);
+            this.btnModificarDiasYHorarios.TabIndex = 17;
+            this.btnModificarDiasYHorarios.Text = "Modificar";
+            this.btnModificarDiasYHorarios.UseVisualStyleBackColor = true;
+            this.btnModificarDiasYHorarios.Click += new System.EventHandler(this.btnModificarDiasYHorarios_Click);
             // 
-            // lblTurnosCadaXMin
+            // btnAsignarDiaYHorario
             // 
-            this.lblTurnosCadaXMin.AutoSize = true;
-            this.lblTurnosCadaXMin.Location = new System.Drawing.Point(35, 170);
-            this.lblTurnosCadaXMin.Name = "lblTurnosCadaXMin";
-            this.lblTurnosCadaXMin.Size = new System.Drawing.Size(113, 20);
-            this.lblTurnosCadaXMin.TabIndex = 8;
-            this.lblTurnosCadaXMin.Text = "Turnos cada:";
-            // 
-            // lblDiasTrabajados
-            // 
-            this.lblDiasTrabajados.AutoSize = true;
-            this.lblDiasTrabajados.Location = new System.Drawing.Point(13, 248);
-            this.lblDiasTrabajados.Name = "lblDiasTrabajados";
-            this.lblDiasTrabajados.Size = new System.Drawing.Size(144, 20);
-            this.lblDiasTrabajados.TabIndex = 9;
-            this.lblDiasTrabajados.Text = "Dias Trabajados:";
-            // 
-            // checkBoxLunes
-            // 
-            this.checkBoxLunes.AutoSize = true;
-            this.checkBoxLunes.Location = new System.Drawing.Point(17, 281);
-            this.checkBoxLunes.Name = "checkBoxLunes";
-            this.checkBoxLunes.Size = new System.Drawing.Size(38, 24);
-            this.checkBoxLunes.TabIndex = 10;
-            this.checkBoxLunes.Text = "L";
-            this.checkBoxLunes.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxMartes
-            // 
-            this.checkBoxMartes.AutoSize = true;
-            this.checkBoxMartes.Location = new System.Drawing.Point(62, 281);
-            this.checkBoxMartes.Name = "checkBoxMartes";
-            this.checkBoxMartes.Size = new System.Drawing.Size(54, 24);
-            this.checkBoxMartes.TabIndex = 11;
-            this.checkBoxMartes.Text = "MA";
-            this.checkBoxMartes.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxMiercoles
-            // 
-            this.checkBoxMiercoles.AutoSize = true;
-            this.checkBoxMiercoles.Location = new System.Drawing.Point(123, 281);
-            this.checkBoxMiercoles.Name = "checkBoxMiercoles";
-            this.checkBoxMiercoles.Size = new System.Drawing.Size(48, 24);
-            this.checkBoxMiercoles.TabIndex = 12;
-            this.checkBoxMiercoles.Text = "MI";
-            this.checkBoxMiercoles.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxJueves
-            // 
-            this.checkBoxJueves.AutoSize = true;
-            this.checkBoxJueves.Location = new System.Drawing.Point(188, 281);
-            this.checkBoxJueves.Name = "checkBoxJueves";
-            this.checkBoxJueves.Size = new System.Drawing.Size(37, 24);
-            this.checkBoxJueves.TabIndex = 13;
-            this.checkBoxJueves.Text = "J";
-            this.checkBoxJueves.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxViernes
-            // 
-            this.checkBoxViernes.AutoSize = true;
-            this.checkBoxViernes.Location = new System.Drawing.Point(231, 281);
-            this.checkBoxViernes.Name = "checkBoxViernes";
-            this.checkBoxViernes.Size = new System.Drawing.Size(40, 24);
-            this.checkBoxViernes.TabIndex = 14;
-            this.checkBoxViernes.Text = "V";
-            this.checkBoxViernes.UseVisualStyleBackColor = true;
+            this.btnAsignarDiaYHorario.Location = new System.Drawing.Point(17, 323);
+            this.btnAsignarDiaYHorario.Name = "btnAsignarDiaYHorario";
+            this.btnAsignarDiaYHorario.Size = new System.Drawing.Size(225, 32);
+            this.btnAsignarDiaYHorario.TabIndex = 16;
+            this.btnAsignarDiaYHorario.Text = "Asignar Dias y Horarios";
+            this.btnAsignarDiaYHorario.UseVisualStyleBackColor = true;
+            this.btnAsignarDiaYHorario.Click += new System.EventHandler(this.btnAsignarDiaYHorario_Click);
             // 
             // checkBoxSabado
             // 
@@ -373,18 +300,122 @@
             this.checkBoxSabado.Text = "S";
             this.checkBoxSabado.UseVisualStyleBackColor = true;
             // 
-            // btnAsignarDiaYHorario
+            // checkBoxViernes
             // 
-            this.btnAsignarDiaYHorario.Location = new System.Drawing.Point(17, 323);
-            this.btnAsignarDiaYHorario.Name = "btnAsignarDiaYHorario";
-            this.btnAsignarDiaYHorario.Size = new System.Drawing.Size(225, 32);
-            this.btnAsignarDiaYHorario.TabIndex = 16;
-            this.btnAsignarDiaYHorario.Text = "Asignar Dias y Horarios";
-            this.btnAsignarDiaYHorario.UseVisualStyleBackColor = true;
-            this.btnAsignarDiaYHorario.Click += new System.EventHandler(this.btnAsignarDiaYHorario_Click);
-            //
+            this.checkBoxViernes.AutoSize = true;
+            this.checkBoxViernes.Location = new System.Drawing.Point(231, 281);
+            this.checkBoxViernes.Name = "checkBoxViernes";
+            this.checkBoxViernes.Size = new System.Drawing.Size(40, 24);
+            this.checkBoxViernes.TabIndex = 14;
+            this.checkBoxViernes.Text = "V";
+            this.checkBoxViernes.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxJueves
+            // 
+            this.checkBoxJueves.AutoSize = true;
+            this.checkBoxJueves.Location = new System.Drawing.Point(188, 281);
+            this.checkBoxJueves.Name = "checkBoxJueves";
+            this.checkBoxJueves.Size = new System.Drawing.Size(37, 24);
+            this.checkBoxJueves.TabIndex = 13;
+            this.checkBoxJueves.Text = "J";
+            this.checkBoxJueves.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxMiercoles
+            // 
+            this.checkBoxMiercoles.AutoSize = true;
+            this.checkBoxMiercoles.Location = new System.Drawing.Point(123, 281);
+            this.checkBoxMiercoles.Name = "checkBoxMiercoles";
+            this.checkBoxMiercoles.Size = new System.Drawing.Size(48, 24);
+            this.checkBoxMiercoles.TabIndex = 12;
+            this.checkBoxMiercoles.Text = "MI";
+            this.checkBoxMiercoles.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxMartes
+            // 
+            this.checkBoxMartes.AutoSize = true;
+            this.checkBoxMartes.Location = new System.Drawing.Point(62, 281);
+            this.checkBoxMartes.Name = "checkBoxMartes";
+            this.checkBoxMartes.Size = new System.Drawing.Size(54, 24);
+            this.checkBoxMartes.TabIndex = 11;
+            this.checkBoxMartes.Text = "MA";
+            this.checkBoxMartes.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxLunes
+            // 
+            this.checkBoxLunes.AutoSize = true;
+            this.checkBoxLunes.Location = new System.Drawing.Point(17, 281);
+            this.checkBoxLunes.Name = "checkBoxLunes";
+            this.checkBoxLunes.Size = new System.Drawing.Size(38, 24);
+            this.checkBoxLunes.TabIndex = 10;
+            this.checkBoxLunes.Text = "L";
+            this.checkBoxLunes.UseVisualStyleBackColor = true;
+            // 
+            // lblDiasTrabajados
+            // 
+            this.lblDiasTrabajados.AutoSize = true;
+            this.lblDiasTrabajados.Location = new System.Drawing.Point(13, 248);
+            this.lblDiasTrabajados.Name = "lblDiasTrabajados";
+            this.lblDiasTrabajados.Size = new System.Drawing.Size(144, 20);
+            this.lblDiasTrabajados.TabIndex = 9;
+            this.lblDiasTrabajados.Text = "Dias Trabajados:";
+            // 
+            // lblTurnosCadaXMin
+            // 
+            this.lblTurnosCadaXMin.AutoSize = true;
+            this.lblTurnosCadaXMin.Location = new System.Drawing.Point(30, 202);
+            this.lblTurnosCadaXMin.Name = "lblTurnosCadaXMin";
+            this.lblTurnosCadaXMin.Size = new System.Drawing.Size(113, 20);
+            this.lblTurnosCadaXMin.TabIndex = 8;
+            this.lblTurnosCadaXMin.Text = "Turnos cada:";
+            // 
+            // lblHasta
+            // 
+            this.lblHasta.AutoSize = true;
+            this.lblHasta.Location = new System.Drawing.Point(203, 153);
+            this.lblHasta.Name = "lblHasta";
+            this.lblHasta.Size = new System.Drawing.Size(57, 20);
+            this.lblHasta.TabIndex = 7;
+            this.lblHasta.Text = "Hasta";
+            // 
+            // lblDesde
+            // 
+            this.lblDesde.AutoSize = true;
+            this.lblDesde.Location = new System.Drawing.Point(30, 153);
+            this.lblDesde.Name = "lblDesde";
+            this.lblDesde.Size = new System.Drawing.Size(61, 20);
+            this.lblDesde.TabIndex = 6;
+            this.lblDesde.Text = "Desde";
+            // 
+            // lblFranjaHoraria
+            // 
+            this.lblFranjaHoraria.AutoSize = true;
+            this.lblFranjaHoraria.Location = new System.Drawing.Point(4, 118);
+            this.lblFranjaHoraria.Name = "lblFranjaHoraria";
+            this.lblFranjaHoraria.Size = new System.Drawing.Size(206, 20);
+            this.lblFranjaHoraria.TabIndex = 5;
+            this.lblFranjaHoraria.Text = "Ingrese la franja horaria:";
+            this.lblFranjaHoraria.Click += new System.EventHandler(this.lblFranjaHoraria_Click);
+            // 
+            // ucEspecialidadHorario
+            // 
+            this.ucEspecialidadHorario.Etiqueta = "Especialidad:";
+            this.ucEspecialidadHorario.Location = new System.Drawing.Point(5, 65);
+            this.ucEspecialidadHorario.Margin = new System.Windows.Forms.Padding(2);
+            this.ucEspecialidadHorario.Name = "ucEspecialidadHorario";
+            this.ucEspecialidadHorario.Size = new System.Drawing.Size(385, 30);
+            this.ucEspecialidadHorario.TabIndex = 4;
+            // 
+            // ucMedicoHorario
+            // 
+            this.ucMedicoHorario.Etiqueta = "Seleccione un Medico:";
+            this.ucMedicoHorario.Location = new System.Drawing.Point(5, 27);
+            this.ucMedicoHorario.Margin = new System.Windows.Forms.Padding(2);
+            this.ucMedicoHorario.Name = "ucMedicoHorario";
+            this.ucMedicoHorario.Size = new System.Drawing.Size(385, 30);
+            this.ucMedicoHorario.TabIndex = 3;
+            // 
             // btnEditarFranjas
-            //
+            // 
             this.btnEditarFranjas.Location = new System.Drawing.Point(600, 396);
             this.btnEditarFranjas.Name = "btnEditarFranjas";
             this.btnEditarFranjas.Size = new System.Drawing.Size(265, 30);
@@ -392,56 +423,25 @@
             this.btnEditarFranjas.Text = "Editar / inactivar franjas de un medico";
             this.btnEditarFranjas.UseVisualStyleBackColor = true;
             this.btnEditarFranjas.Click += new System.EventHandler(this.btnEditarFranjas_Click);
-            //
-            // btnModificarDiasYHorarios
-            //
-            this.btnModificarDiasYHorarios.Location = new System.Drawing.Point(256, 323);
-            this.btnModificarDiasYHorarios.Name = "btnModificarDiasYHorarios";
-            this.btnModificarDiasYHorarios.Size = new System.Drawing.Size(124, 32);
-            this.btnModificarDiasYHorarios.TabIndex = 17;
-            this.btnModificarDiasYHorarios.Text = "Modificar";
-            this.btnModificarDiasYHorarios.UseVisualStyleBackColor = true;
-            this.btnModificarDiasYHorarios.Click += new System.EventHandler(this.btnModificarDiasYHorarios_Click);
             // 
             // dataGridViewMedicosDiasHorarios
-            //
+            // 
             this.dataGridViewMedicosDiasHorarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewMedicosDiasHorarios.Location = new System.Drawing.Point(365, 432);
             this.dataGridViewMedicosDiasHorarios.Name = "dataGridViewMedicosDiasHorarios";
             this.dataGridViewMedicosDiasHorarios.Size = new System.Drawing.Size(906, 127);
             this.dataGridViewMedicosDiasHorarios.TabIndex = 3;
-            //
+            // 
             // checkBoxMostrarInactivos
-            //
+            // 
             this.checkBoxMostrarInactivos.AutoSize = true;
             this.checkBoxMostrarInactivos.Location = new System.Drawing.Point(365, 404);
             this.checkBoxMostrarInactivos.Name = "checkBoxMostrarInactivos";
-            this.checkBoxMostrarInactivos.Size = new System.Drawing.Size(220, 24);
+            this.checkBoxMostrarInactivos.Size = new System.Drawing.Size(146, 17);
             this.checkBoxMostrarInactivos.TabIndex = 21;
             this.checkBoxMostrarInactivos.Text = "Mostrar horarios inactivos";
             this.checkBoxMostrarInactivos.UseVisualStyleBackColor = true;
             this.checkBoxMostrarInactivos.CheckedChanged += new System.EventHandler(this.checkBoxMostrarInactivos_CheckedChanged);
-            //
-            // txtDesde
-            // 
-            this.txtDesde.Location = new System.Drawing.Point(102, 118);
-            this.txtDesde.Name = "txtDesde";
-            this.txtDesde.Size = new System.Drawing.Size(89, 26);
-            this.txtDesde.TabIndex = 18;
-            // 
-            // txtHasta
-            // 
-            this.txtHasta.Location = new System.Drawing.Point(281, 118);
-            this.txtHasta.Name = "txtHasta";
-            this.txtHasta.Size = new System.Drawing.Size(100, 26);
-            this.txtHasta.TabIndex = 19;
-            // 
-            // txtTurnosCada
-            // 
-            this.txtTurnosCada.Location = new System.Drawing.Point(154, 167);
-            this.txtTurnosCada.Name = "txtTurnosCada";
-            this.txtTurnosCada.Size = new System.Drawing.Size(100, 26);
-            this.txtTurnosCada.TabIndex = 20;
             // 
             // frmGestionMedicos
             // 
@@ -466,6 +466,7 @@
             this.groupBoxHorariosMedicos.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMedicosDiasHorarios)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

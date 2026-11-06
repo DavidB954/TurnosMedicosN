@@ -128,7 +128,11 @@ namespace Vista
             btn_Bitacora.Visible = PuedeAbrir(nameof(frmBitacora));
             btn_BitacoraTurno.Visible = PuedeAbrir(nameof(frm_BitacoraTurno));
             btnGestionIdiomas.Visible = PuedeAbrir(nameof(frmABM));
-            btn_AccesoMedico.Visible = PuedeAbrir(nameof(frm_AccesoMedico));
+            // Mi Agenda muestra contenido clinico exclusivo del rol Medico (ver frm_AccesoMedico
+            // y BLL_Atencion): aunque el Administrador tenga, por diseno, la patente de todos los
+            // formularios, el boton no se muestra si no tiene tambien ese rol, para no ofrecer un
+            // acceso que siempre va a terminar en "Acceso denegado".
+            btn_AccesoMedico.Visible = PuedeAbrir(nameof(frm_AccesoMedico)) && Sesion.Instancia().TieneRol("Medico");
             btn_AccesoPaciente.Visible = PuedeAbrir(nameof(frm_AccesoPaciente));
             btn_MisRecetas.Visible = PuedeAbrir(nameof(frmMisRecetas));
             btn_GestionMedicos.Visible = PuedeAbrir(nameof(frmGestionMedicos));

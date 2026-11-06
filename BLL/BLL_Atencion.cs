@@ -24,6 +24,27 @@ namespace BLL
 
         // ---------------------------------------------------------------- Agenda (CU-02.2 / 02.3)
 
+        // Primera fecha (desde "desde" en adelante) en que el medico tiene algun turno asignado.
+        // Se usa para saltar directo a una fecha con contenido si la elegida no tiene nada.
+        public DateTime? ObtenerProximaFechaConTurnos(int idMedico, DateTime desde)
+        {
+            try
+            {
+                ValidarRolMedico();
+                ValidarMedicoLogueado(idMedico);
+
+                return dal.ObtenerProximaFechaConTurnos(idMedico, desde);
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudo buscar la proxima fecha con turnos: " + ex.Message, ex);
+            }
+        }
+
         // Turnos del medico para la fecha (sin Cancelados), ordenados por hora. Con la fecha
         // actual es la Agenda del Dia (CU-02.2); con otra fecha, la Agenda General (CU-02.3).
         public List<BE_Turno> ObtenerAgenda(int idMedico, DateTime fecha, bool registrarConsulta = true)

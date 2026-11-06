@@ -226,47 +226,57 @@ namespace Vista
             }
         }
 
+        private void RegistrarClaveSiFalta(string clave, string textoPorDefecto, List<Idioma> idiomas, List<Traduccion> existentes, ref int agregados)
+        {
+            foreach (var idioma in idiomas)
+            {
+                bool yaExiste = existentes.Exists(t => t.Clave == clave && t.IdIdioma == idioma.Id);
+                if (yaExiste)
+                    continue;
+
+                Traduccion nueva = new Traduccion
+                {
+                    Clave = clave,
+                    IdIdioma = idioma.Id,
+                    Texto = textoPorDefecto
+                };
+                bll.Guardar(nueva);
+
+                // Se agrega a "existentes" al toque: si no, dos controles con el mismo nombre
+                // (ej. "lblEtiqueta" dentro de cada instancia de ucSelectorMedico/ucSelectorEspecialidad)
+                // generan la misma clave y, al no verse entre si en esta misma pasada, se duplican.
+                existentes.Add(nueva);
+                agregados++;
+            }
+        }
+
         private void EscanearControles(Control.ControlCollection controles, string nombreForm, List<Idioma> idiomas, List<Traduccion> existentes, ref int agregados)
         {
             foreach (Control ctrl in controles)
             {
                 if (ctrl is Label || ctrl is Button || ctrl is GroupBox || ctrl is CheckBox)
                 {
-                    string clave = $"{nombreForm}.{ctrl.Name}";
-                    foreach (var idioma in idiomas)
-                    {
-                        bool yaExiste = existentes.Exists(t => t.Clave == clave && t.IdIdioma == idioma.Id);
-                        if (yaExiste)
-                            continue;
-                        bll.Guardar(new Traduccion
-                        {
-                            Clave = clave,
-                            IdIdioma = idioma.Id,
-                            Texto = ctrl.Text
-                        });
-                        agregados++;
-                    }
+                    RegistrarClaveSiFalta($"{nombreForm}.{ctrl.Name}", ctrl.Text, idiomas, existentes, ref agregados);
+                }
+
+                // ucSelectorEspecialidad/ucSelectorMedico son UserControl reutilizados en varias
+                // pantallas (frmGestionMedicos los repite varias veces): se registran por el nombre
+                // de la instancia, no por sus controles internos (ej. "lblEtiqueta"), que se llaman
+                // igual en todas las instancias y generarian la misma clave repetida. Ver el mismo
+                // criterio en frmBase.AplicarIdiomaEnControles.
+                if (ctrl is ucSelectorEspecialidad || ctrl is ucSelectorMedico)
+                {
+                    string etiqueta = ctrl is ucSelectorEspecialidad
+                        ? ((ucSelectorEspecialidad)ctrl).Etiqueta
+                        : ((ucSelectorMedico)ctrl).Etiqueta;
+                    RegistrarClaveSiFalta($"{nombreForm}.{ctrl.Name}", etiqueta, idiomas, existentes, ref agregados);
+                    continue;
                 }
 
                 if (ctrl is DataGridView dgv)
                 {
                     foreach (DataGridViewColumn col in dgv.Columns)
-                    {
-                        string claveCol = $"{nombreForm}.{dgv.Name}.{col.Name}";
-                        foreach (var idioma in idiomas)
-                        {
-                            bool yaExiste = existentes.Exists(t => t.Clave == claveCol && t.IdIdioma == idioma.Id);
-                            if (yaExiste)
-                                continue;
-                            bll.Guardar(new Traduccion
-                            {
-                                Clave = claveCol,
-                                IdIdioma = idioma.Id,
-                                Texto = col.HeaderText
-                            });
-                            agregados++;
-                        }
-                    }
+                        RegistrarClaveSiFalta($"{nombreForm}.{dgv.Name}.{col.Name}", col.HeaderText, idiomas, existentes, ref agregados);
                 }
 
                 if (ctrl.Controls.Count > 0)

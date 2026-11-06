@@ -2,6 +2,8 @@ using BE;
 using BLL;
 using Servicios;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Vista
@@ -10,17 +12,20 @@ namespace Vista
     {
         BLL_MedicoHorario bll_medicoHorario = new BLL_MedicoHorario();
         BLL_Turno bll_turno = new BLL_Turno();
-        BLL_Atencion bll_atencion = new BLL_Atencion();
+
+        // Dias (0=Domingo..6=Sabado, igual que DayOfWeek) en que atiende el medico/especialidad
+        // elegidos. Vacio = sin medico seleccionado todavia (no se restringe nada).
+        private List<int> diasAtencionMedico = new List<int>();
+        private bool ajustandoFecha = false;
 
         public frm_AccesoPaciente()
         {
             InitializeComponent();
-            dtpFecha.MinDate = DateTime.Today;
-            dtpFecha.Value = DateTime.Today;
+            mcFecha.MinDate = DateTime.Today;
+            mcFecha.SetDate(DateTime.Today);
 
             ucEspecialidad.EspecialidadSeleccionada += ucEspecialidad_EspecialidadSeleccionada;
             ucMedico.MedicoSeleccionado += ucMedico_MedicoSeleccionado;
-            dtpFecha.ValueChanged += dtpFecha_ValueChanged;
         }
 
         private void frm_AccesoPaciente_Load(object sender, EventArgs e)
@@ -28,6 +33,7 @@ namespace Vista
             try
             {
                 ucEspecialidad.CargarEspecialidades();
+                ActualizarDiasDeAtencion();
                 CargarMisTurnos();
             }
             catch (Exception ex)
@@ -57,7 +63,9 @@ namespace Vista
             else
                 ucMedico.CargarMedicosPorEspecialidad(ucEspecialidad.IdEspecialidadSeleccionada.Value);
 
-            // Los horarios ofrecidos dependen tambien de la especialidad elegida.
+            // Los horarios ofrecidos y los dias resaltados en el calendario dependen tambien
+            // de la especialidad elegida.
+            ActualizarDiasDeAtencion();
             CargarHorariosDelMedico();
         }
 
@@ -65,6 +73,7 @@ namespace Vista
         {
             try
             {
+                ActualizarDiasDeAtencion();
                 CargarHorariosDelMedico();
             }
             catch (Exception ex)
@@ -73,15 +82,101 @@ namespace Vista
             }
         }
 
-        private void dtpFecha_ValueChanged(object sender, EventArgs e)
+        private void mcFecha_DateChanged(object sender, DateRangeEventArgs e)
         {
+            if (ajustandoFecha)
+                return;
+
             try
             {
+                // Si el dia elegido no es uno de los que el medico atiende, se avisa y se lo
+                // lleva al proximo dia valido (ademas de quedar resaltado en negrita en el
+                // calendario, esto deja bien claro cuales se pueden elegir).
+                if (diasAtencionMedico.Count > 0 && !diasAtencionMedico.Contains((int)mcFecha.SelectionStart.DayOfWeek))
+                {
+                    DateTime fechaValida = ProximaFechaDeAtencion(mcFecha.SelectionStart.Date);
+
+                    MessageBox.Show(
+                        $"El médico no atiende ese día. Atiende los: {TextoDiasAtencion()}.\nSe lo llevó al {fechaValida:dddd dd/MM/yyyy}.",
+                        "Día sin atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    ajustandoFecha = true;
+                    try { mcFecha.SetDate(fechaValida); }
+                    finally { ajustandoFecha = false; }
+                }
+
                 CargarHorariosDelMedico();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string TextoDiasAtencion()
+        {
+            return string.Join(", ", diasAtencionMedico.OrderBy(d => d).Select(BE_MedicoHorario.NombreDia));
+        }
+
+        // Primer dia, desde "desde" en adelante, que el medico atiende.
+        private DateTime ProximaFechaDeAtencion(DateTime desde)
+        {
+            for (int i = 0; i < 14; i++)
+            {
+                DateTime candidata = desde.AddDays(i);
+                if (diasAtencionMedico.Contains((int)candidata.DayOfWeek))
+                    return candidata;
+            }
+            return desde;
+        }
+
+        // Resalta en el calendario los dias (de hoy en adelante) en que el medico/especialidad
+        // elegidos atienden, y los describe en texto, para distinguir claramente que fechas se
+        // pueden elegir antes de intentar buscar horarios.
+        private void ActualizarDiasDeAtencion()
+        {
+            if (ucMedico.IdMedicoSeleccionado == null)
+            {
+                diasAtencionMedico = new List<int>();
+                mcFecha.BoldedDates = new DateTime[0];
+                mcFecha.UpdateBoldedDates();
+                lblDiasAtencion.Text = "Elija especialidad y médico para ver sus días de atención (resaltados en el calendario).";
+                return;
+            }
+
+            diasAtencionMedico = bll_medicoHorario.ListarPorMedico(ucMedico.IdMedicoSeleccionado.Value)
+                .Where(h => h.Activo
+                         && (ucEspecialidad.IdEspecialidadSeleccionada == null
+                             || h.IdEspecialidad == null
+                             || h.IdEspecialidad == ucEspecialidad.IdEspecialidadSeleccionada))
+                .Select(h => h.DiaSemana)
+                .Distinct()
+                .ToList();
+
+            const int diasAMostrar = 90;
+            List<DateTime> fechasResaltadas = new List<DateTime>();
+            for (int i = 0; i < diasAMostrar; i++)
+            {
+                DateTime fecha = DateTime.Today.AddDays(i);
+                if (diasAtencionMedico.Contains((int)fecha.DayOfWeek))
+                    fechasResaltadas.Add(fecha);
+            }
+
+            mcFecha.BoldedDates = fechasResaltadas.ToArray();
+            mcFecha.UpdateBoldedDates();
+
+            lblDiasAtencion.Text = diasAtencionMedico.Count == 0
+                ? "El médico no tiene horarios configurados para esa especialidad."
+                : "Atiende los días en negrita: " + TextoDiasAtencion() + ".";
+
+            // Si al cambiar de medico/especialidad la fecha ya elegida dejo de ser valida, se la
+            // reacomoda en silencio (sin cartel: es consecuencia de haber cambiado de medico, no
+            // de haber tocado mal el calendario).
+            if (diasAtencionMedico.Count > 0 && !diasAtencionMedico.Contains((int)mcFecha.SelectionStart.DayOfWeek))
+            {
+                ajustandoFecha = true;
+                try { mcFecha.SetDate(ProximaFechaDeAtencion(mcFecha.SelectionStart.Date)); }
+                finally { ajustandoFecha = false; }
             }
         }
 
@@ -95,8 +190,13 @@ namespace Vista
                 return;
             }
 
-            lstHorarios.DataSource = bll_medicoHorario._listaDisponibles(ucMedico.IdMedicoSeleccionado.Value, dtpFecha.Value.Date, ucEspecialidad.IdEspecialidadSeleccionada);
+            lstHorarios.DataSource = bll_medicoHorario._listaDisponibles(ucMedico.IdMedicoSeleccionado.Value, mcFecha.SelectionStart.Date, ucEspecialidad.IdEspecialidadSeleccionada);
             lstHorarios.DisplayMember = "RangoHorario";
+
+            // Al asignar DataSource, el ListBox autoselecciona el primer horario (comportamiento
+            // propio del binding). Sin esto, "Reservar"/"Modificar" tomaban ese horario aunque el
+            // paciente no hubiera elegido ninguno a proposito.
+            lstHorarios.ClearSelected();
         }
 
         private void btnReservarTurno_Click(object sender, EventArgs e)
@@ -112,7 +212,7 @@ namespace Vista
                 BE_MedicoHorario horario = (BE_MedicoHorario)lstHorarios.SelectedItem;
                 int idPaciente = Sesion.Instancia().UsuarioActual.IdUsuario;
 
-                bll_turno.SolicitarTurno(idPaciente, horario.IdHorario, dtpFecha.Value.Date);
+                bll_turno.SolicitarTurno(idPaciente, horario.IdHorario, mcFecha.SelectionStart.Date);
 
                 MessageBox.Show("Turno reservado correctamente.");
                 CargarHorariosDelMedico();
@@ -148,15 +248,49 @@ namespace Vista
                 BE_MedicoHorario horario = (BE_MedicoHorario)lstHorarios.SelectedItem;
                 int idPaciente = Sesion.Instancia().UsuarioActual.IdUsuario;
 
-                bll_turno.ModificarTurno(idTurno, horario.IdHorario, dtpFecha.Value.Date, idPaciente);
+                bll_turno.ModificarTurno(idTurno, horario.IdHorario, mcFecha.SelectionStart.Date, idPaciente);
 
-                MessageBox.Show("Turno modificado correctamente.");
+                MessageBox.Show("Turno modificado: el turno anterior quedó Cancelado y se reservó el nuevo horario elegido.");
                 CargarHorariosDelMedico();
                 CargarMisTurnos();
             }
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Al elegir un turno en "Mis Turnos" se precargan arriba su especialidad y medico, para
+        // no tener que volver a buscarlos a mano antes de elegir el nuevo horario y Modificar.
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                    return;
+
+                BE_Turno turno = dataGridView1.CurrentRow.DataBoundItem as BE_Turno;
+                if (turno == null)
+                    return;
+
+                if (turno.IdEspecialidad.HasValue)
+                {
+                    // Dispara CargarMedicosPorEspecialidad() (filtra ucMedico por esa especialidad).
+                    ucEspecialidad.SeleccionarEspecialidad(turno.IdEspecialidad.Value);
+                }
+                else
+                {
+                    // La franja del turno no tenia una especialidad puntual asignada: se muestra
+                    // el medico igual, sin filtro de especialidad.
+                    ucEspecialidad.Limpiar();
+                    ucMedico.CargarMedicos();
+                }
+
+                ucMedico.SeleccionarMedico(turno.IdMedico);
             }
             catch (Exception ex)
             {
@@ -193,47 +327,6 @@ namespace Vista
             }
         }
 
-        // Receta de un turno Atendido (solo la receta: el motivo y las indicaciones son de la
-        // Historia Clinica, exclusiva del Medico). Desde la ventana se descarga en PDF.
-        private void btnVerReceta_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (dataGridView1.CurrentRow == null)
-                {
-                    MessageBox.Show("Seleccione, en 'Mis Turnos', un turno Atendido.");
-                    return;
-                }
-
-                int idTurno = Convert.ToInt32(dataGridView1.CurrentRow.Cells["colIdTurno"].Value);
-                BE_AtencionMedica receta = bll_atencion.ObtenerMiReceta(idTurno);
-
-                using (frmMiReceta frm = new frmMiReceta(receta))
-                {
-                    frm.ShowDialog(this);
-                }
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message, "Mi receta", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // Doble clic en un turno Atendido: abre su receta.
-        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0 || !btnVerReceta.Visible)
-                return;
-
-            BE_Turno turno = dataGridView1.Rows[e.RowIndex].DataBoundItem as BE_Turno;
-            if (turno != null && turno.Estado == "Atendido")
-                btnVerReceta_Click(btnVerReceta, EventArgs.Empty);
-        }
-
         public void CargarMisTurnos()
         {
             try
@@ -248,6 +341,7 @@ namespace Vista
                 colIdTurno.Name = "colIdTurno";
                 colIdTurno.DataPropertyName = "IdTurno";
                 colIdTurno.Visible = false;
+                colIdTurno.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dataGridView1.Columns.Add(colIdTurno);
 
                 DataGridViewTextBoxColumn colFecha = new DataGridViewTextBoxColumn();
@@ -255,6 +349,10 @@ namespace Vista
                 colFecha.HeaderText = "Fecha";
                 colFecha.DataPropertyName = "FechaTexto";
                 colFecha.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                // NotSortable: "FechaTexto" es "dd/MM/yyyy", un texto. Ordenarlo por columna lo
+                // haria alfabeticamente (ej. "01/12" antes que "09/11"), no cronologicamente. El
+                // orden real ya viene correcto desde la base (DAL_Turno.ListarPorPaciente).
+                colFecha.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dataGridView1.Columns.Add(colFecha);
 
                 DataGridViewTextBoxColumn colHora = new DataGridViewTextBoxColumn();
@@ -262,6 +360,7 @@ namespace Vista
                 colHora.HeaderText = "Turno";
                 colHora.DataPropertyName = "RangoHorario";
                 colHora.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                colHora.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dataGridView1.Columns.Add(colHora);
 
                 DataGridViewTextBoxColumn colEspecialidad = new DataGridViewTextBoxColumn();
@@ -269,6 +368,7 @@ namespace Vista
                 colEspecialidad.HeaderText = "Especialidad";
                 colEspecialidad.DataPropertyName = "Especialidades";
                 colEspecialidad.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                colEspecialidad.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dataGridView1.Columns.Add(colEspecialidad);
 
                 DataGridViewTextBoxColumn colMedico = new DataGridViewTextBoxColumn();
@@ -276,6 +376,7 @@ namespace Vista
                 colMedico.HeaderText = "Medico";
                 colMedico.DataPropertyName = "NombreApellidoMedico";
                 colMedico.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                colMedico.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dataGridView1.Columns.Add(colMedico);
 
                 DataGridViewTextBoxColumn colEstado = new DataGridViewTextBoxColumn();
@@ -283,9 +384,17 @@ namespace Vista
                 colEstado.HeaderText = "Estado";
                 colEstado.DataPropertyName = "Estado";
                 colEstado.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                colEstado.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dataGridView1.Columns.Add(colEstado);
 
-                dataGridView1.DataSource = bll_turno._listaPorPaciente(idPaciente);
+                // Solo Confirmados: Cancelar/Modificar requieren ese estado (BLL_Turno ya lo exige),
+                // y Atendido/Ausente/Cancelado son historial, no algo sobre lo que el paciente pueda
+                // actuar aqui. Orden cronologico: mas reciente/proximo primero, y por hora.
+                dataGridView1.DataSource = bll_turno._listaPorPaciente(idPaciente)
+                    .Where(t => t.Estado == "Confirmado")
+                    .OrderByDescending(t => t.Fecha)
+                    .ThenBy(t => t.HoraInicio)
+                    .ToList();
             }
             catch (Exception ex)
             {

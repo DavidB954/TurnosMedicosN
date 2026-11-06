@@ -27,6 +27,33 @@ namespace DAL
             LEFT JOIN Paciente p ON p.IdUsuario = t.IdPaciente
             LEFT JOIN Medico md ON md.IdUsuario = mh.IdMedico";
 
+        // Primera fecha (desde "desde" en adelante, inclusive) en que el medico tiene al menos
+        // un turno no Cancelado. Null si no tiene ninguno de ahi en adelante.
+        public DateTime? ObtenerProximaFechaConTurnos(int idMedico, DateTime desde)
+        {
+            try
+            {
+                using (SqlConnection cn = conexion.ObtenerConexion())
+                {
+                    cn.Open();
+                    SqlCommand cmd = new SqlCommand(@"
+                        SELECT MIN(t.Fecha)
+                        FROM Turno t
+                        INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
+                        WHERE mh.IdMedico = @idMedico AND t.Fecha >= @desde AND t.Estado <> 'Cancelado'", cn);
+                    cmd.Parameters.Add("@idMedico", SqlDbType.Int).Value = idMedico;
+                    cmd.Parameters.Add("@desde", SqlDbType.Date).Value = desde.Date;
+
+                    object resultado = cmd.ExecuteScalar();
+                    return resultado == null || resultado == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(resultado);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         // Turnos del medico para una fecha, sin los Cancelados (liberaron el horario), por hora.
         public List<BE_Turno> ObtenerAgenda(int idMedico, DateTime fecha)
         {

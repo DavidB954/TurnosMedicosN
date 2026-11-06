@@ -27,6 +27,8 @@ namespace Vista
             this.lblDesde = new System.Windows.Forms.Label();
             this.txtIdTurno = new System.Windows.Forms.TextBox();
             this.lblIdTurno = new System.Windows.Forms.Label();
+            this.txtPaciente = new System.Windows.Forms.TextBox();
+            this.lblPaciente = new System.Windows.Forms.Label();
             this.dgvEventos = new System.Windows.Forms.DataGridView();
             this.btnActualizar = new System.Windows.Forms.Button();
             this.lblTotalDeRegistros = new System.Windows.Forms.Label();
@@ -56,13 +58,15 @@ namespace Vista
             this.groupBoxFiltros.Controls.Add(this.lblDesde);
             this.groupBoxFiltros.Controls.Add(this.txtIdTurno);
             this.groupBoxFiltros.Controls.Add(this.lblIdTurno);
+            this.groupBoxFiltros.Controls.Add(this.txtPaciente);
+            this.groupBoxFiltros.Controls.Add(this.lblPaciente);
             this.groupBoxFiltros.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxFiltros.ForeColor = System.Drawing.Color.RoyalBlue;
             this.groupBoxFiltros.Location = new System.Drawing.Point(494, 83);
             this.groupBoxFiltros.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBoxFiltros.Name = "groupBoxFiltros";
             this.groupBoxFiltros.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBoxFiltros.Size = new System.Drawing.Size(1119, 125);
+            this.groupBoxFiltros.Size = new System.Drawing.Size(1119, 200);
             this.groupBoxFiltros.TabIndex = 1;
             this.groupBoxFiltros.TabStop = false;
             this.groupBoxFiltros.Text = "Filtros de Busqueda";
@@ -152,13 +156,31 @@ namespace Vista
             this.lblIdTurno.Size = new System.Drawing.Size(124, 29);
             this.lblIdTurno.TabIndex = 0;
             this.lblIdTurno.Text = "N° Turno:";
-            // 
+            //
+            // txtPaciente
+            //
+            this.txtPaciente.Location = new System.Drawing.Point(146, 150);
+            this.txtPaciente.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPaciente.Name = "txtPaciente";
+            this.txtPaciente.Size = new System.Drawing.Size(737, 35);
+            this.txtPaciente.TabIndex = 8;
+            //
+            // lblPaciente
+            //
+            this.lblPaciente.AutoSize = true;
+            this.lblPaciente.Location = new System.Drawing.Point(26, 155);
+            this.lblPaciente.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPaciente.Name = "lblPaciente";
+            this.lblPaciente.Size = new System.Drawing.Size(260, 29);
+            this.lblPaciente.TabIndex = 7;
+            this.lblPaciente.Text = "Paciente (nombre, DNI o H.C.):";
+            //
             // dgvEventos
             // 
             this.dgvEventos.AllowUserToAddRows = false;
             this.dgvEventos.AllowUserToDeleteRows = false;
             this.dgvEventos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEventos.Location = new System.Drawing.Point(494, 218);
+            this.dgvEventos.Location = new System.Drawing.Point(494, 293);
             this.dgvEventos.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgvEventos.Name = "dgvEventos";
             this.dgvEventos.ReadOnly = true;
@@ -170,7 +192,7 @@ namespace Vista
             // 
             this.btnActualizar.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.btnActualizar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnActualizar.Location = new System.Drawing.Point(494, 840);
+            this.btnActualizar.Location = new System.Drawing.Point(494, 915);
             this.btnActualizar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnActualizar.Name = "btnActualizar";
             this.btnActualizar.Size = new System.Drawing.Size(246, 49);
@@ -182,7 +204,7 @@ namespace Vista
             // lblTotalDeRegistros
             // 
             this.lblTotalDeRegistros.AutoSize = true;
-            this.lblTotalDeRegistros.Location = new System.Drawing.Point(1343, 840);
+            this.lblTotalDeRegistros.Location = new System.Drawing.Point(1343, 915);
             this.lblTotalDeRegistros.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTotalDeRegistros.Name = "lblTotalDeRegistros";
             this.lblTotalDeRegistros.Size = new System.Drawing.Size(113, 20);
@@ -192,7 +214,7 @@ namespace Vista
             // lblTotalRegistros
             // 
             this.lblTotalRegistros.AutoSize = true;
-            this.lblTotalRegistros.Location = new System.Drawing.Point(1628, 840);
+            this.lblTotalRegistros.Location = new System.Drawing.Point(1628, 915);
             this.lblTotalRegistros.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTotalRegistros.Name = "lblTotalRegistros";
             this.lblTotalRegistros.Size = new System.Drawing.Size(0, 20);
@@ -202,7 +224,7 @@ namespace Vista
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1800, 923);
+            this.ClientSize = new System.Drawing.Size(1800, 998);
             this.Controls.Add(this.lblTotalRegistros);
             this.Controls.Add(this.lblTotalDeRegistros);
             this.Controls.Add(this.btnActualizar);
@@ -233,6 +255,8 @@ namespace Vista
         private System.Windows.Forms.Label lblDesde;
         private System.Windows.Forms.TextBox txtIdTurno;
         private System.Windows.Forms.Label lblIdTurno;
+        private System.Windows.Forms.TextBox txtPaciente;
+        private System.Windows.Forms.Label lblPaciente;
         private System.Windows.Forms.DataGridView dgvEventos;
         private System.Windows.Forms.Button btnActualizar;
         private System.Windows.Forms.Label lblTotalDeRegistros;

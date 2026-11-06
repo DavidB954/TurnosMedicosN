@@ -145,19 +145,22 @@ namespace Vista
             for (int i = 0; i < clbRoles.Items.Count; i++)
                 clbRoles.SetItemChecked(i, idsRoles.Contains(((RolComposite)clbRoles.Items[i]).Id));
 
+            RolComposite permisosEfectivos = bll_roles.ObtenerPermisosUsuario(usuario.IdUsuario);
+
             arbolPermisos.Marcar(
                 rolesUsuario.Where(r => r.EsFormulario).Select(r => r.Id),
-                bll_roles.ObtenerPermisosDirectosUsuario(usuario.IdUsuario).Select(p => p.Id));
+                bll_roles.ObtenerPermisosDirectosUsuario(usuario.IdUsuario).Select(p => p.Id),
+                permisosEfectivos);
 
-            CargarPermisosEfectivos(usuario.IdUsuario);
+            CargarPermisosEfectivos(usuario.IdUsuario, permisosEfectivos);
         }
 
-        private void CargarPermisosEfectivos(int idUsuario)
+        private void CargarPermisosEfectivos(int idUsuario, RolComposite permisos = null)
         {
             tvPermisosEfectivos.BeginUpdate();
             tvPermisosEfectivos.Nodes.Clear();
 
-            RolComposite permisos = bll_roles.ObtenerPermisosUsuario(idUsuario);
+            permisos = permisos ?? bll_roles.ObtenerPermisosUsuario(idUsuario);
             TreeNode raiz = new TreeNode(UsuarioSeleccionado()?.NombreApellido ?? permisos.Nombre) { Tag = permisos };
             TreeViewHelper.AgregarNodosRecursivo(permisos, raiz);
 

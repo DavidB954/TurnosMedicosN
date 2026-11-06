@@ -130,7 +130,7 @@ namespace Vista
             this.groupBoxPermisosDirectos.Size = new System.Drawing.Size(560, 700);
             this.groupBoxPermisosDirectos.TabIndex = 3;
             this.groupBoxPermisosDirectos.TabStop = false;
-            this.groupBoxPermisosDirectos.Text = "Permisos directos (página o botón)";
+            this.groupBoxPermisosDirectos.Text = "Permisos directos (página o botón) — en gris: ya los tiene por un rol";
             //
             // tvPermisosDirectos
             //

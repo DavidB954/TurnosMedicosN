@@ -112,9 +112,9 @@ namespace BLL
 
         // Turnos de cualquier paciente, con filtros opcionales. Usado por frmGestionTurnos
         // (Administrativo/Administrador) para ubicar el turno que van a cancelar.
-        public List<BE_Turno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string estado)
+        public List<BE_Turno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string estado, string textoPaciente = null)
         {
-            return dal_turno.Filtrar(idTurno, desde, hasta, estado);
+            return dal_turno.Filtrar(idTurno, desde, hasta, estado, textoPaciente);
         }
 
         // Cierra automaticamente los turnos vencidos (RF 01.3): Confirmado -> Ausente para los

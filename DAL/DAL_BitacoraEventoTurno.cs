@@ -11,7 +11,7 @@ namespace DAL
     {
         DAL_Conexion conex = new DAL_Conexion();
 
-        public List<BE_BitacoraEventoTurno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta)
+        public List<BE_BitacoraEventoTurno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string textoPaciente = null)
         {
             try
             {
@@ -30,17 +30,30 @@ namespace DAL
                         FROM BitacoraEventosTurno bet
                         INNER JOIN Turno t ON t.IdTurno = bet.IdTurno
                         INNER JOIN Usuario up ON up.IdUsuario = t.IdPaciente
+                        LEFT JOIN Paciente pp ON pp.IdUsuario = t.IdPaciente
                         INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
                         INNER JOIN Usuario um ON um.IdUsuario = mh.IdMedico
                         LEFT JOIN Usuario uc ON uc.IdUsuario = bet.IdUsuarioCambio
                         WHERE (@idTurno IS NULL OR bet.IdTurno = @idTurno)
                           AND (@desde IS NULL OR bet.FechaHora >= @desde)
                           AND (@hasta IS NULL OR bet.FechaHora <= @hasta)
+                          AND (@textoPaciente IS NULL
+                               OR (up.Nombre + ' ' + up.Apellido) LIKE @patronPaciente
+                               OR (up.Apellido + ' ' + up.Nombre) LIKE @patronPaciente
+                               OR pp.DNI LIKE @patronPaciente
+                               OR (@numeroHC IS NOT NULL AND pp.NroHistoriaClinica = @numeroHC))
                         ORDER BY bet.FechaHora DESC", conexion);
 
                     cmd.Parameters.Add("@idTurno", SqlDbType.Int).Value = (object)idTurno ?? DBNull.Value;
                     cmd.Parameters.Add("@desde", SqlDbType.DateTime).Value = (object)desde ?? DBNull.Value;
                     cmd.Parameters.Add("@hasta", SqlDbType.DateTime).Value = (object)hasta ?? DBNull.Value;
+
+                    string textoBusqueda = string.IsNullOrWhiteSpace(textoPaciente) ? null : textoPaciente.Trim();
+                    int numeroHC = 0;
+                    bool esNumero = textoBusqueda != null && int.TryParse(textoBusqueda, out numeroHC);
+                    cmd.Parameters.Add("@textoPaciente", SqlDbType.VarChar, 120).Value = (object)textoBusqueda ?? DBNull.Value;
+                    cmd.Parameters.Add("@patronPaciente", SqlDbType.VarChar, 122).Value = textoBusqueda == null ? (object)DBNull.Value : "%" + textoBusqueda + "%";
+                    cmd.Parameters.Add("@numeroHC", SqlDbType.Int).Value = (esNumero ? (object)numeroHC : DBNull.Value);
 
                     SqlDataReader lector = cmd.ExecuteReader();
                     while (lector.Read())

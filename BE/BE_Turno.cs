@@ -17,6 +17,10 @@ namespace BE
 
         public int IdMedico { get; set; }
 
+        // Especialidad con la que se reservo (la de la franja horaria); null = el horario no
+        // tenia una especialidad puntual asignada (franjas creadas antes de esa funcionalidad).
+        public int? IdEspecialidad { get; set; }
+
         public TimeSpan HoraInicio { get; set; }
 
         public TimeSpan HoraFin { get; set; }

@@ -1,6 +1,7 @@
 ﻿using BE.Composite;
 using Servicios;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -56,7 +57,11 @@ namespace Vista
         }
 
         // Marca las familias completas y las patentes sueltas indicadas; desmarca el resto.
-        public void Marcar(IEnumerable<int> idsFormularios, IEnumerable<int> idsPermisos)
+        // permisosEfectivos (opcional): todo lo que el usuario puede hacer (roles + directos). Lo
+        // que tiene por ahi pero NO esta tildado aca (es decir, lo tiene por un rol y no por una
+        // asignacion directa) se pinta en gris, para no confundir "no esta tildado" con "no se
+        // autocompleto": ver groupBoxPermisosDirectos en frmUsuarioRoles.
+        public void Marcar(IEnumerable<int> idsFormularios, IEnumerable<int> idsPermisos, RolComposite permisosEfectivos = null)
         {
             var formularios = new HashSet<int>(idsFormularios);
             var permisos = new HashSet<int>(idsPermisos);
@@ -66,11 +71,20 @@ namespace Vista
             {
                 foreach (TreeNode nodoFormulario in tree.Nodes)
                 {
-                    bool completo = formularios.Contains(((RolComposite)nodoFormulario.Tag).Id);
+                    RolComposite familia = (RolComposite)nodoFormulario.Tag;
+                    bool completo = formularios.Contains(familia.Id);
                     nodoFormulario.Checked = completo;
+                    nodoFormulario.ForeColor = (!completo && permisosEfectivos != null && permisosEfectivos.TienePermiso($"{familia.Formulario}.Ver"))
+                        ? Color.Gray : Color.Empty;
 
                     foreach (TreeNode nodoPermiso in nodoFormulario.Nodes)
-                        nodoPermiso.Checked = completo || permisos.Contains(((Permiso)nodoPermiso.Tag).Id);
+                    {
+                        Permiso permiso = (Permiso)nodoPermiso.Tag;
+                        bool tildado = completo || permisos.Contains(permiso.Id);
+                        nodoPermiso.Checked = tildado;
+                        nodoPermiso.ForeColor = (!tildado && permisosEfectivos != null && permisosEfectivos.TienePermiso(permiso.Nombre))
+                            ? Color.Gray : Color.Empty;
+                    }
 
                     // Se expanden solo los formularios con algún botón suelto, para que se vea cuál es
                     if (!completo && nodoFormulario.Nodes.Cast<TreeNode>().Any(n => n.Checked))

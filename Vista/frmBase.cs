@@ -72,9 +72,7 @@ namespace Vista
             }
         }
 
-        // frmPrincipal muestra su menu (groupBox_Menu) encima del area MDI, sin acoplarlo. Las
-        // pantallas con layout acoplado (Dock) llaman a este metodo para dejar a la izquierda un
-        // margen igual al ancho real del menu (en pixeles reales: funciona con cualquier escalado).
+       
         protected void DejarLugarAlMenu(Control contenedor)
         {
             if (MdiParent == null || contenedor == null)
