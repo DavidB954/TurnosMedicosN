@@ -56,7 +56,7 @@ namespace Vista
         {
             try
             {
-                // RNF-01 / P-14: el contenido clinico es exclusivo del rol Medico.
+                // El contenido clinico es exclusivo del rol Medico.
                 if (Sesion.Instancia().UsuarioActual == null || !Sesion.Instancia().TieneRol("Medico"))
                 {
                     MessageBox.Show(T("Msg.AccesoDenegado", "Acceso denegado: Mi Agenda es exclusiva del rol Médico."),

@@ -47,7 +47,7 @@ namespace BLL
         }
 
         // Turnos del medico para la fecha (sin Cancelados), ordenados por hora. Con la fecha
-        // actual es la Agenda del Dia (CU-02.2); con otra fecha, la Agenda General (CU-02.3).
+        // actual es la agenda del dia (CU-01.5); con otra fecha, se muestra en solo lectura.
         public List<BE_Turno> ObtenerAgenda(int idMedico, DateTime fecha, bool registrarConsulta = true)
         {
             try
@@ -179,7 +179,7 @@ namespace BLL
                 $"Turno {turno.IdTurno} (paciente {turno.IdPaciente}) marcado como Atendido por el medico {idMedico}.");
         }
 
-        // RN-1: solo turnos Confirmados de la fecha actual. La pertenencia al medico se valida antes.
+        // RN1.7: solo turnos Confirmados de la fecha actual. La pertenencia al medico se valida antes.
         private void ValidarTurnoAtendible(BE_Turno t)
         {
             if (t.Fecha.Date != DateTime.Today)
@@ -385,7 +385,7 @@ namespace BLL
             }
         }
 
-        // Solo lectura. Toda consulta queda auditada (RN-2: datos de salud sensibles).
+        // Solo lectura. Toda consulta queda auditada (datos de salud sensibles).
         public List<BE_AtencionMedica> ObtenerHistoriaClinica(int nroHC)
         {
             ValidarRolMedico();
@@ -472,7 +472,7 @@ namespace BLL
                 throw new ArgumentException("Acceso denegado: esta funcion es exclusiva del rol Medico.");
         }
 
-        // RN-1 CU-02.2: el Medico solo ve y opera su propia agenda.
+        // RN1.7: el Medico solo ve y opera su propia agenda.
         private void ValidarMedicoLogueado(int idMedico)
         {
             if (Sesion.Instancia().UsuarioActual.IdUsuario != idMedico)
