@@ -19,6 +19,12 @@ namespace BE
 
         public bool Activo { get; set; }
 
+        // CU-01.4: el horario no se atiende en la fecha consultada (tabla Medico_HorarioInactivo).
+        public bool InactivoEnFecha { get; set; }
+
+        // CU-01.4: paciente con turno confirmado en el horario en la fecha consultada (vacio si no hay).
+        public string PacienteEnFecha { get; set; }
+
         // Especialidad con la que el medico atiende en esta franja. null = cualquiera de
         // las especialidades del medico (franjas anteriores a que se pudiera elegir).
         public int? IdEspecialidad { get; set; }

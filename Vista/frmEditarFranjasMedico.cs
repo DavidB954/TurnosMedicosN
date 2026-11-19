@@ -1,277 +1,211 @@
 using BE;
 using BLL;
+using Servicios;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Vista
 {
-    // Pantalla simplificada para ver los dias y horarios de un medico y elegir cuales
-    // franjas inactivar o reactivar. Se arma por codigo (sin Designer) para no tocar el
-    // formulario principal de gestion de medicos.
-    public class frmEditarFranjasMedico : Form
+    // CU-01.4 Administrar agenda medica, subflujo Inactivar o reactivar horarios: el recepcionista elige el
+    // medico y una fecha (por ejemplo, el lunes 20) y deja de ofrecer algunos horarios solo en esa fecha
+    // (por ejemplo, de 10 a 12). Los demas lunes esos horarios siguen activos.
+    public partial class frmEditarFranjasMedico : frmBase
     {
-        const string TodosLosDias = "Todos los dias";
-
         BLL_MedicoHorario bll_medicoHorario = new BLL_MedicoHorario();
 
-        ucSelectorMedico ucMedico = new ucSelectorMedico();
-        Label lblResumen = new Label();
-        ComboBox cboDia = new ComboBox();
-        DataGridView grilla = new DataGridView();
-        Button btnSeleccionarTodo = new Button();
-        Button btnInactivar = new Button();
-        Button btnReactivar = new Button();
-        Button btnCerrar = new Button();
-
-        List<BE_MedicoHorario> franjas = new List<BE_MedicoHorario>();
-        bool cargando = false;
+        private int? idMedicoInicial;
+        private bool cargando = false;
 
         public frmEditarFranjasMedico(int? idMedicoInicial = null)
         {
-            Text = "Editar franjas horarias de un medico";
-            ClientSize = new Size(760, 560);
-            StartPosition = FormStartPosition.CenterParent;
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
+            InitializeComponent();
+            this.idMedicoInicial = idMedicoInicial;
+        }
 
-            ucMedico.Etiqueta = "Seleccione un Medico:";
-            ucMedico.Location = new Point(12, 10);
-            ucMedico.Size = new Size(400, 30);
-            ucMedico.MedicoSeleccionado += (s, e) => CargarFranjas();
+        public override void AplicarIdioma()
+        {
+            AplicarIdiomaAutomatico();
+        }
 
-            Label lblTitResumen = new Label { Text = "Dias y horarios en los que trabaja (franjas activas):", AutoSize = true, Location = new Point(12, 50), Font = new Font(Font, FontStyle.Bold) };
-            lblResumen.Location = new Point(12, 72);
-            lblResumen.Size = new Size(736, 110);
-            lblResumen.BorderStyle = BorderStyle.FixedSingle;
-            lblResumen.BackColor = SystemColors.Info;
-            lblResumen.Padding = new Padding(6);
-
-            Label lblFiltro = new Label { Text = "Ver dia:", AutoSize = true, Location = new Point(12, 197) };
-            cboDia.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboDia.Location = new Point(70, 193);
-            cboDia.Width = 160;
-            cboDia.SelectedIndexChanged += (s, e) => { if (!cargando) MostrarGrilla(); };
-
-            btnSeleccionarTodo.Text = "Seleccionar todo lo visible";
-            btnSeleccionarTodo.Location = new Point(245, 191);
-            btnSeleccionarTodo.Size = new Size(190, 28);
-            btnSeleccionarTodo.Click += (s, e) => grilla.SelectAll();
-
-            Label lblAyuda = new Label { Text = "Seleccione una o varias franjas (Ctrl / Shift) y elija la accion.", AutoSize = true, Location = new Point(12, 228), ForeColor = SystemColors.GrayText };
-
-            grilla.Location = new Point(12, 250);
-            grilla.Size = new Size(736, 250);
-            grilla.AllowUserToAddRows = false;
-            grilla.AllowUserToDeleteRows = false;
-            grilla.ReadOnly = true;
-            grilla.MultiSelect = true;
-            grilla.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            grilla.RowHeadersVisible = false;
-            grilla.BackgroundColor = SystemColors.Window;
-            grilla.Columns.Add("colDia", "Dia");
-            grilla.Columns.Add("colEspecialidad", "Especialidad");
-            grilla.Columns.Add("colHorario", "Horario");
-            grilla.Columns.Add("colEstado", "Estado");
-            grilla.Columns.Add("colTurnos", "Turnos reservados");
-            foreach (DataGridViewColumn col in grilla.Columns)
-                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            btnInactivar.Text = "Inactivar seleccionadas";
-            btnInactivar.Location = new Point(12, 512);
-            btnInactivar.Size = new Size(190, 34);
-            btnInactivar.Click += (s, e) => CambiarEstadoSeleccion(false);
-
-            btnReactivar.Text = "Reactivar seleccionadas";
-            btnReactivar.Location = new Point(212, 512);
-            btnReactivar.Size = new Size(190, 34);
-            btnReactivar.Click += (s, e) => CambiarEstadoSeleccion(true);
-
-            btnCerrar.Text = "Cerrar";
-            btnCerrar.Location = new Point(638, 512);
-            btnCerrar.Size = new Size(110, 34);
-            btnCerrar.DialogResult = DialogResult.Cancel;
-
-            CancelButton = btnCerrar;
-
-            Controls.AddRange(new Control[] { ucMedico, lblTitResumen, lblResumen, lblFiltro, cboDia, btnSeleccionarTodo, lblAyuda, grilla, btnInactivar, btnReactivar, btnCerrar });
-
-            Load += (s, e) =>
+        private void frmEditarFranjasMedico_Load(object sender, EventArgs e)
+        {
+            cargando = true;
+            try
             {
+                ConfigurarGrilla();
+                dtpFecha.MinDate = DateTime.Today;
+                dtpFecha.Value = DateTime.Today;
                 ucMedico.CargarMedicos();
                 if (idMedicoInicial != null)
                     ucMedico.SeleccionarMedico(idMedicoInicial.Value);
-                CargarFranjas();
-            };
-        }
-
-        private void CargarFranjas()
-        {
-            try
-            {
-                cargando = true;
-
-                franjas = ucMedico.IdMedicoSeleccionado == null
-                    ? new List<BE_MedicoHorario>()
-                    : bll_medicoHorario.ListarPorMedico(ucMedico.IdMedicoSeleccionado.Value);
-
-                string diaElegido = cboDia.SelectedItem as string;
-                cboDia.Items.Clear();
-                cboDia.Items.Add(TodosLosDias);
-                foreach (int dia in franjas.Select(f => f.DiaSemana).Distinct().OrderBy(d => d))
-                    cboDia.Items.Add(BE_MedicoHorario.NombreDia(dia));
-                cboDia.SelectedItem = diaElegido != null && cboDia.Items.Contains(diaElegido) ? diaElegido : TodosLosDias;
-
-                lblResumen.Text = ArmarResumen();
-                cargando = false;
-
-                MostrarGrilla();
+                ucMedico.MedicoSeleccionado += (s, ev) => CargarHorarios();
             }
             catch (Exception ex)
             {
-                cargando = false;
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
+            finally
+            {
+                cargando = false;
+            }
+            CargarHorarios();
         }
 
-        private void MostrarGrilla()
+        private void ConfigurarGrilla()
+        {
+            dgvHorarios.Columns.Clear();
+            AgregarColumna("colHorario", "Horario", 70);
+            AgregarColumna("colEspecialidad", "Especialidad", 100);
+            AgregarColumna("colEstado", "Estado en la fecha", 90);
+            AgregarColumna("colPaciente", "Turno reservado", 120);
+        }
+
+        private void AgregarColumna(string nombre, string encabezado, float peso)
+        {
+            DataGridViewTextBoxColumn columna = new DataGridViewTextBoxColumn();
+            columna.Name = nombre;
+            columna.HeaderText = TraduccionServicio.Instancia.TraducirODefecto($"{Name}.{dgvHorarios.Name}.{nombre}", encabezado);
+            columna.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            columna.FillWeight = peso;
+            columna.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dgvHorarios.Columns.Add(columna);
+        }
+
+        private void dtpFecha_ValueChanged(object sender, EventArgs e)
         {
             try
             {
-                grilla.Rows.Clear();
-                string filtro = cboDia.SelectedItem as string;
-
-                foreach (BE_MedicoHorario f in franjas)
-                {
-                    if (filtro != null && filtro != TodosLosDias && f.DiaSemanaTexto != filtro)
-                        continue;
-
-                    int turnos = bll_medicoHorario.ObtenerTurnosAfectadosPorInactivacion(f.IdHorario).Count;
-                    int i = grilla.Rows.Add(f.DiaSemanaTexto, f.Especialidades, f.RangoHorario, f.Activo ? "Activa" : "Inactiva", turnos);
-                    grilla.Rows[i].Tag = f;
-
-                    if (!f.Activo)
-                        grilla.Rows[i].DefaultCellStyle.ForeColor = SystemColors.GrayText;
-                }
-
-                grilla.ClearSelection();
+                if (!cargando)
+                    CargarHorarios();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
-        // Une las franjas activas contiguas de cada dia en bloques: "Lunes: 08:00 a 12:00 y 13:00 a 17:00".
-        private string ArmarResumen()
-        {
-            if (franjas.Count == 0)
-                return "El medico seleccionado no tiene horarios asignados.";
-
-            List<string> lineas = new List<string>();
-            int sinAtencion = 0;
-
-            foreach (var grupo in franjas.GroupBy(f => new { f.DiaSemana, f.IdEspecialidad }).OrderBy(g => g.Key.DiaSemana).ThenBy(g => g.Min(f => f.HoraInicio)))
-            {
-                List<BE_MedicoHorario> activas = grupo.Where(f => f.Activo).OrderBy(f => f.HoraInicio).ToList();
-                int inactivas = grupo.Count() - activas.Count;
-                string esp = grupo.First().NombreEspecialidad;
-                string nombre = BE_MedicoHorario.NombreDia(grupo.Key.DiaSemana) + (esp != null ? " (" + esp + ")" : string.Empty);
-
-                // Los grupos sin ninguna franja activa no se resumen (se ven en gris en la grilla).
-                if (activas.Count == 0)
-                {
-                    sinAtencion += inactivas;
-                    continue;
-                }
-
-                int minutos = (int)(activas[0].HoraFin - activas[0].HoraInicio).TotalMinutes;
-                string linea = $"{nombre}: {BE_MedicoHorario.ResumirBloques(activas)} (turnos cada {minutos} min)";
-                if (inactivas > 0)
-                    linea += $" - {inactivas} franja(s) inactiva(s)";
-                lineas.Add(linea);
-            }
-
-            if (sinAtencion > 0)
-                lineas.Add($"({sinAtencion} franja(s) inactiva(s) sin otra atencion: se ven en gris en la grilla)");
-
-            return string.Join(Environment.NewLine, lineas);
-        }
-
-        private void CambiarEstadoSeleccion(bool activar)
+        // Horarios del medico para el dia de la semana de la fecha elegida, con su estado en esa fecha.
+        private void CargarHorarios()
         {
             try
             {
-                List<BE_MedicoHorario> elegidas = grilla.SelectedRows.Cast<DataGridViewRow>()
+                dgvHorarios.Rows.Clear();
+                string dia = dtpFecha.Value.ToString("dddd dd/MM/yyyy", new CultureInfo("es-AR"));
+                lblHorarios.Text = "Horarios del " + dia;
+                if (ucMedico.IdMedicoSeleccionado == null)
+                    return;
+
+                List<BE_MedicoHorario> horarios = bll_medicoHorario.ListarHorariosDelDia(ucMedico.IdMedicoSeleccionado.Value, dtpFecha.Value.Date);
+                if (horarios.Count == 0)
+                    lblHorarios.Text = "El médico no atiende el " + dia + ".";
+
+                foreach (BE_MedicoHorario h in horarios)
+                {
+                    int i = dgvHorarios.Rows.Add(h.RangoHorario, h.NombreEspecialidad,
+                        h.InactivoEnFecha ? "Inactivo" : "Activo", h.PacienteEnFecha);
+                    dgvHorarios.Rows[i].Tag = h;
+                    if (h.InactivoEnFecha)
+                        dgvHorarios.Rows[i].DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                }
+                dgvHorarios.ClearSelection();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void btnInactivar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CambiarEstado(false);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void btnReactivar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CambiarEstado(true);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void CambiarEstado(bool reactivar)
+        {
+            try
+            {
+                if (dgvHorarios.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Seleccione uno o más horarios de la grilla (Ctrl o Shift para elegir varios).");
+                    return;
+                }
+
+                List<int> ids = dgvHorarios.SelectedRows.Cast<DataGridViewRow>()
                     .Select(r => (BE_MedicoHorario)r.Tag)
-                    .Where(f => f.Activo != activar)
+                    .Where(h => h.InactivoEnFecha == reactivar)
+                    .Select(h => h.IdHorario)
                     .ToList();
-
-                if (grilla.SelectedRows.Count == 0)
+                if (ids.Count == 0)
                 {
-                    MessageBox.Show("Seleccione al menos una franja de la grilla.");
-                    return;
-                }
-                if (elegidas.Count == 0)
-                {
-                    MessageBox.Show(activar ? "Las franjas seleccionadas ya estan activas." : "Las franjas seleccionadas ya estan inactivas.");
+                    MessageBox.Show(reactivar ? "Los horarios seleccionados ya están activos en esa fecha."
+                                              : "Los horarios seleccionados ya están inactivos en esa fecha.");
                     return;
                 }
 
-                List<int> ids = elegidas.Select(f => f.IdHorario).ToList();
-
-                if (!activar)
+                DateTime fecha = dtpFecha.Value.Date;
+                int idUsuario = Sesion.Instancia().UsuarioActual.IdUsuario;
+                if (reactivar)
                 {
-                    List<BE_Turno> turnos = bll_medicoHorario.ObtenerTurnosAfectadosPorInactivacion(ids);
+                    bll_medicoHorario.ReactivarEnFecha(ids, fecha, idUsuario);
+                    MessageBox.Show("Horarios reactivados en esa fecha.");
+                }
+                else
+                {
+                    // Punto de extension Turnos afectados (flujo alternativo A4 si no confirma).
+                    List<BE_Turno> turnos = bll_medicoHorario.ObtenerTurnosAfectados(ids, fecha);
                     if (turnos.Count > 0 && !ConfirmarCancelacionTurnos(turnos))
                         return;
+
+                    bll_medicoHorario.InactivarEnFecha(ids, fecha, idUsuario);
+                    MessageBox.Show("Horarios inactivados solo en esa fecha. Los demás días siguen activos.");
                 }
-
-                bll_medicoHorario.CambiarActivo(ids, activar, Servicios.Sesion.Instancia().UsuarioActual.IdUsuario);
-
-                MessageBox.Show(activar ? "Franjas reactivadas correctamente." : "Franjas inactivadas correctamente.");
-                CargarFranjas();
+                CargarHorarios();
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
         private bool ConfirmarCancelacionTurnos(List<BE_Turno> turnos)
         {
-            System.Text.StringBuilder mensaje = new System.Text.StringBuilder();
+            StringBuilder mensaje = new StringBuilder();
             mensaje.AppendLine("Se van a cancelar los siguientes turnos:");
             mensaje.AppendLine();
-
             foreach (BE_Turno turno in turnos)
                 mensaje.AppendLine($"- {turno.NombreApellidoPaciente}: {turno.FechaTexto} {turno.RangoHorario}");
-
             mensaje.AppendLine();
             mensaje.Append("¿Confirma?");
 
-            return MessageBox.Show(mensaje.ToString(), "Turnos asignados", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // frmEditarFranjasMedico
-            // 
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Name = "frmEditarFranjasMedico";
-            this.Load += new System.EventHandler(this.frmEditarFranjasMedico_Load);
-            this.ResumeLayout(false);
-
-        }
-
-        private void frmEditarFranjasMedico_Load(object sender, EventArgs e)
-        {
-
+            return MessageBox.Show(mensaje.ToString(), "Turnos afectados", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
         }
     }
 }

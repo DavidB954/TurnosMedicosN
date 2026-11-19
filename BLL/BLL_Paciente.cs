@@ -4,61 +4,80 @@ using Servicios;
 using System;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BLL
 {
-    // Datos de paciente (DNI, fecha de nacimiento, telefono) que se cargan desde ABM de Usuarios.
-    // Al guardarlos por primera vez se abre la Historia Clinica (N° de HC generado por la base).
+    // Pacientes (CU-01.1). El recepcionista busca al paciente por DNI y, si concurre por primera vez,
+    // lo registra: al registrarlo se abre su Historia Clinica (N° de HC generado por la base).
     public class BLL_Paciente
     {
         DAL_Paciente dal_paciente = new DAL_Paciente();
         BLL_Bitacora bll_bitacora = new BLL_Bitacora();
 
-        public BE_Paciente ObtenerPorUsuario(int idUsuario)
+        // Devuelve el paciente con ese DNI o null si no esta registrado (flujo alternativo A1 de CU-01.1).
+        public BE_Paciente BuscarPorDni(string dni)
         {
+            string normalizado = NormalizarDni(dni);
+            if (!DniValido(normalizado))
+                throw new ArgumentException("El DNI debe tener 7 u 8 números.");
+
             try
             {
-                return dal_paciente.ObtenerPorUsuario(idUsuario);
+                return dal_paciente.ObtenerPorDni(normalizado);
             }
             catch (Exception ex)
             {
-                throw new Exception("No se pudieron obtener los datos del paciente: " + ex.Message, ex);
+                throw new Exception("No se pudo buscar al paciente: " + ex.Message, ex);
             }
         }
 
-        // Valida formato y que el DNI no lo tenga otro paciente. Se llama ANTES de crear el
-        // usuario, para no dejar un usuario creado con datos de paciente invalidos.
+        // Valida los datos antes de registrar (flujo alternativo A2 de CU-01.1). Deja los datos
+        // normalizados: DNI sin puntos y textos sin espacios sobrantes.
         public void ValidarDatosPaciente(BE_Paciente paciente)
         {
             if (paciente == null)
                 throw new ArgumentException("Faltan los datos del paciente.");
 
-            paciente.DNI = (paciente.DNI ?? "").Trim().Replace(".", "");
+            paciente.DNI = NormalizarDni(paciente.DNI);
+            paciente.Nombre = (paciente.Nombre ?? "").Trim();
+            paciente.Apellido = (paciente.Apellido ?? "").Trim();
             paciente.Telefono = string.IsNullOrWhiteSpace(paciente.Telefono) ? null : paciente.Telefono.Trim();
+            paciente.Email = string.IsNullOrWhiteSpace(paciente.Email) ? null : paciente.Email.Trim();
 
-            if (paciente.DNI.Length < 7 || paciente.DNI.Length > 8 || !paciente.DNI.All(char.IsDigit))
-                throw new ArgumentException("El DNI debe tener 7 u 8 numeros.");
+            if (!DniValido(paciente.DNI))
+                throw new ArgumentException("El DNI debe tener 7 u 8 números.");
+            if (paciente.Nombre.Length == 0 || paciente.Apellido.Length == 0)
+                throw new ArgumentException("El nombre y el apellido del paciente son obligatorios.");
+            if (paciente.Nombre.Length > 50 || paciente.Apellido.Length > 50)
+                throw new ArgumentException("El nombre y el apellido no pueden superar los 50 caracteres.");
 
             if (paciente.FechaNacimiento.HasValue)
             {
                 if (paciente.FechaNacimiento.Value.Date > DateTime.Today)
                     throw new ArgumentException("La fecha de nacimiento no puede ser futura.");
                 if (paciente.FechaNacimiento.Value.Year < 1900)
-                    throw new ArgumentException("La fecha de nacimiento no es valida.");
+                    throw new ArgumentException("La fecha de nacimiento no es válida.");
             }
 
             if (paciente.Telefono != null)
             {
                 if (paciente.Telefono.Length > 30)
-                    throw new ArgumentException("El telefono no puede superar los 30 caracteres.");
+                    throw new ArgumentException("El teléfono no puede superar los 30 caracteres.");
                 if (!paciente.Telefono.All(c => char.IsDigit(c) || c == ' ' || c == '-' || c == '+' || c == '(' || c == ')'))
-                    throw new ArgumentException("El telefono solo puede tener numeros, espacios y los signos + - ( ).");
+                    throw new ArgumentException("El teléfono solo puede tener números, espacios y los signos + - ( ).");
+            }
+
+            if (paciente.Email != null)
+            {
+                if (paciente.Email.Length > 100 || !Regex.IsMatch(paciente.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                    throw new ArgumentException("El email no es válido.");
             }
 
             try
             {
-                if (dal_paciente.ExisteDNI(paciente.DNI, paciente.IdUsuario))
-                    throw new ArgumentException($"Ya existe otro paciente con el DNI {paciente.DNI}.");
+                if (dal_paciente.ExisteDNI(paciente.DNI, paciente.IdPaciente))
+                    throw new ArgumentException($"Ya existe un paciente con el DNI {paciente.DNI}.");
             }
             catch (ArgumentException)
             {
@@ -70,45 +89,37 @@ namespace BLL
             }
         }
 
-        // Alta (abre la HC) o modificacion de los datos del paciente.
-        public void GuardarDatosPaciente(BE_Paciente paciente)
+        // Registra al paciente y abre su Historia Clinica (RN1.1).
+        public void RegistrarPaciente(BE_Paciente paciente)
         {
             ValidarDatosPaciente(paciente);
 
-            int? idEditor = Sesion.Instancia().UsuarioActual?.IdUsuario;
             try
             {
-                BE_Paciente existente = dal_paciente.ObtenerPorUsuario(paciente.IdUsuario);
-                if (existente == null)
-                {
-                    dal_paciente.Insertar(paciente);
-                    bll_bitacora.RegistrarEvento(idEditor, AccionBitacora.PACIENTE_ALTA, "USUARIO",
-                        $"Historia Clinica N° {paciente.NroHistoriaClinica} abierta para el usuario {paciente.IdUsuario}.");
-                }
-                else
-                {
-                    paciente.NroHistoriaClinica = existente.NroHistoriaClinica;
-                    paciente.FechaAperturaHC = existente.FechaAperturaHC;
-
-                    bool cambio = existente.DNI != paciente.DNI
-                        || existente.FechaNacimiento?.Date != paciente.FechaNacimiento?.Date
-                        || (existente.Telefono ?? "") != (paciente.Telefono ?? "");
-                    if (!cambio)
-                        return;
-
-                    dal_paciente.Modificar(paciente);
-                    bll_bitacora.RegistrarEvento(idEditor, AccionBitacora.PACIENTE_MODIFICACION, "USUARIO",
-                        $"Datos de paciente modificados para el usuario {paciente.IdUsuario} (HC {paciente.NroHistoriaClinica}).");
-                }
+                dal_paciente.Insertar(paciente);
             }
             catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
             {
-                throw new ArgumentException($"Ya existe otro paciente con el DNI {paciente.DNI}.");
+                throw new ArgumentException($"Ya existe un paciente con el DNI {paciente.DNI}.");
             }
             catch (Exception ex)
             {
-                throw new Exception("No se pudieron guardar los datos del paciente: " + ex.Message, ex);
+                throw new Exception("No se pudo registrar al paciente: " + ex.Message, ex);
             }
+
+            int? idUsuario = Sesion.Instancia().UsuarioActual?.IdUsuario;
+            bll_bitacora.RegistrarEvento(idUsuario, AccionBitacora.PACIENTE_ALTA, "TURNOS",
+                $"Paciente {paciente.NombreApellido} (DNI {paciente.DNI}) registrado. Historia Clinica N° {paciente.NroHistoriaClinica}.");
+        }
+
+        private static string NormalizarDni(string dni)
+        {
+            return (dni ?? "").Trim().Replace(".", "").Replace(" ", "");
+        }
+
+        private static bool DniValido(string dni)
+        {
+            return dni.Length >= 7 && dni.Length <= 8 && dni.All(char.IsDigit);
         }
     }
 }

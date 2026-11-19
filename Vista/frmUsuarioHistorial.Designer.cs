@@ -44,7 +44,7 @@ namespace Vista
             this.GroupBoxUsuarioHistorial.Controls.Add(this.btnRestaurar);
             this.GroupBoxUsuarioHistorial.Controls.Add(this.dgvHistorial);
             this.GroupBoxUsuarioHistorial.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GroupBoxUsuarioHistorial.Location = new System.Drawing.Point(327, 28);
+            this.GroupBoxUsuarioHistorial.Location = new System.Drawing.Point(30, 28);
             this.GroupBoxUsuarioHistorial.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.GroupBoxUsuarioHistorial.Name = "GroupBoxUsuarioHistorial";
             this.GroupBoxUsuarioHistorial.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);

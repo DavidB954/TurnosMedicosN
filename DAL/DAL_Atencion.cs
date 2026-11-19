@@ -16,15 +16,14 @@ namespace DAL
         private const string SelectTurnoConPaciente = @"
             SELECT t.IdTurno, t.IdPaciente, t.IdHorario, t.Fecha, t.Estado,
                    mh.IdMedico, mh.HoraInicio, mh.HoraFin,
-                   up.Nombre AS NombrePaciente, up.Apellido AS ApellidoPaciente,
+                   p.Nombre AS NombrePaciente, p.Apellido AS ApellidoPaciente,
                    um.Nombre AS NombreMedico, um.Apellido AS ApellidoMedico,
-                   p.DNI, p.NroHistoriaClinica, p.FechaNacimiento, p.Telefono, p.FechaAperturaHC,
+                   p.DNI, p.NroHistoriaClinica, p.FechaNacimiento, p.Telefono, p.Email, p.FechaAperturaHC,
                    md.Matricula
             FROM Turno t
             INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
-            INNER JOIN Usuario up ON up.IdUsuario = t.IdPaciente
+            INNER JOIN Paciente p ON p.IdPaciente = t.IdPaciente
             INNER JOIN Usuario um ON um.IdUsuario = mh.IdMedico
-            LEFT JOIN Paciente p ON p.IdUsuario = t.IdPaciente
             LEFT JOIN Medico md ON md.IdUsuario = mh.IdMedico";
 
         // Primera fecha (desde "desde" en adelante, inclusive) en que el medico tiene al menos
@@ -220,9 +219,34 @@ namespace DAL
                 throw new InvalidOperationException("Ese turno ya no esta activo.");
         }
 
-        // "Finalizar atencion": pasa a Ausente, en una sola transaccion, todos los turnos del
-        // medico para esa fecha que siguen Confirmados. Devuelve los ids marcados.
-        public List<int> MarcarAusentesPendientes(int idMedico, DateTime fecha)
+        // Cantidad de turnos del medico que siguen Confirmados con fecha hasta "hasta" inclusive
+        // (los del dia y los de dias anteriores que nadie cerro).
+        public int ContarPendientes(int idMedico, DateTime hasta)
+        {
+            try
+            {
+                using (SqlConnection cn = conexion.ObtenerConexion())
+                {
+                    cn.Open();
+                    SqlCommand cmd = new SqlCommand(@"
+                        SELECT COUNT(1)
+                        FROM Turno t
+                        INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
+                        WHERE mh.IdMedico = @idMedico AND t.Fecha <= @hasta AND t.Estado = 'Confirmado'", cn);
+                    cmd.Parameters.Add("@idMedico", SqlDbType.Int).Value = idMedico;
+                    cmd.Parameters.Add("@hasta", SqlDbType.Date).Value = hasta.Date;
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // "Finalizar atencion" (RN1.9): pasa a Ausente, en una sola transaccion, todos los turnos del
+        // medico con fecha hasta "hasta" inclusive que siguen Confirmados. Devuelve los ids marcados.
+        public List<int> MarcarAusentesPendientes(int idMedico, DateTime hasta)
         {
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
@@ -233,17 +257,17 @@ namespace DAL
                     {
                         DAL_Conexion.EstablecerUsuarioAuditoria(cn, transaccion, idMedico);
 
-                        // Turno tiene triggers (BitacoraEventosTurno): SQL Server exige OUTPUT ... INTO.
+                        // Turno tiene un trigger (TR_Turno_Historial): SQL Server exige OUTPUT ... INTO.
                         SqlCommand cmd = new SqlCommand(@"
                             DECLARE @marcados TABLE (IdTurno INT);
                             UPDATE t SET t.Estado = 'Ausente'
                             OUTPUT INSERTED.IdTurno INTO @marcados
                             FROM Turno t
                             INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
-                            WHERE mh.IdMedico = @idMedico AND t.Fecha = @fecha AND t.Estado = 'Confirmado';
+                            WHERE mh.IdMedico = @idMedico AND t.Fecha <= @hasta AND t.Estado = 'Confirmado';
                             SELECT IdTurno FROM @marcados;", cn, transaccion);
                         cmd.Parameters.Add("@idMedico", SqlDbType.Int).Value = idMedico;
-                        cmd.Parameters.Add("@fecha", SqlDbType.Date).Value = fecha.Date;
+                        cmd.Parameters.Add("@hasta", SqlDbType.Date).Value = hasta.Date;
 
                         List<int> ids = new List<int>();
                         using (SqlDataReader lector = cmd.ExecuteReader())
@@ -274,15 +298,14 @@ namespace DAL
                 {
                     cn.Open();
                     SqlCommand cmd = new SqlCommand(@"
-                        SELECT u.IdUsuario, u.Nombre, u.Apellido, u.Email,
-                               p.DNI, p.NroHistoriaClinica, p.FechaNacimiento, p.Telefono, p.FechaAperturaHC
+                        SELECT p.IdPaciente, p.Nombre AS NombrePaciente, p.Apellido AS ApellidoPaciente,
+                               p.DNI, p.NroHistoriaClinica, p.FechaNacimiento, p.Telefono, p.Email, p.FechaAperturaHC
                         FROM Paciente p
-                        INNER JOIN Usuario u ON u.IdUsuario = p.IdUsuario
-                        WHERE (u.Nombre + ' ' + u.Apellido) LIKE @patron
-                           OR (u.Apellido + ' ' + u.Nombre) LIKE @patron
+                        WHERE (p.Nombre + ' ' + p.Apellido) LIKE @patron
+                           OR (p.Apellido + ' ' + p.Nombre) LIKE @patron
                            OR p.DNI LIKE @patron
                            OR (@numero IS NOT NULL AND p.NroHistoriaClinica = @numero)
-                        ORDER BY u.Apellido, u.Nombre", cn);
+                        ORDER BY p.Apellido, p.Nombre", cn);
 
                     int numero;
                     bool esNumero = int.TryParse(texto, out numero);
@@ -294,10 +317,7 @@ namespace DAL
                         while (lector.Read())
                         {
                             BE_Paciente paciente = MapearPaciente(lector);
-                            paciente.IdUsuario = Convert.ToInt32(lector["IdUsuario"]);
-                            paciente.Nombre = lector["Nombre"].ToString();
-                            paciente.Apellido = lector["Apellido"].ToString();
-                            paciente.Email = lector["Email"].ToString();
+                            paciente.IdPaciente = Convert.ToInt32(lector["IdPaciente"]);
                             lista.Add(paciente);
                         }
                     }
@@ -315,18 +335,6 @@ namespace DAL
         public List<BE_AtencionMedica> ObtenerHistoriaClinica(int nroHC)
         {
             return ObtenerAtenciones("p.NroHistoriaClinica = @valor", nroHC);
-        }
-
-        // La atencion de un turno puntual (lo que ve el paciente en "Mis Turnos"), o null si no tiene.
-        public BE_AtencionMedica ObtenerAtencionPorTurno(int idTurno)
-        {
-            return ObtenerAtenciones("t.IdTurno = @valor", idTurno).FirstOrDefault();
-        }
-
-        // Todas las atenciones del paciente que tienen receta (menu "Mis recetas"), de la mas reciente a la mas antigua.
-        public List<BE_AtencionMedica> ObtenerRecetasPorPaciente(int idPaciente)
-        {
-            return ObtenerAtenciones("t.IdPaciente = @valor AND r.IdReceta IS NOT NULL", idPaciente);
         }
 
         // Consulta comun: la condicion es fija (la arma esta clase), el valor va siempre por parametro.
@@ -349,12 +357,11 @@ namespace DAL
                                          INNER JOIN Especialidades e2 ON e2.IdEspecialidad = me.IdEsp
                                          WHERE me.IdMedico = mh.IdMedico)) AS Especialidad,
                                r.IdReceta, r.NroReceta, r.FechaEmision,
-                               up.Nombre AS NombrePaciente, up.Apellido AS ApellidoPaciente,
+                               p.Nombre AS NombrePaciente, p.Apellido AS ApellidoPaciente,
                                p.DNI, p.NroHistoriaClinica, md.Matricula
                         FROM AtencionMedica am
                         INNER JOIN Turno t ON t.IdTurno = am.IdTurno
-                        INNER JOIN Paciente p ON p.IdUsuario = t.IdPaciente
-                        INNER JOIN Usuario up ON up.IdUsuario = t.IdPaciente
+                        INNER JOIN Paciente p ON p.IdPaciente = t.IdPaciente
                         INNER JOIN Medico_Horario mh ON mh.IdHorario = t.IdHorario
                         INNER JOIN Usuario um ON um.IdUsuario = mh.IdMedico
                         LEFT JOIN Medico md ON md.IdUsuario = mh.IdMedico
@@ -390,7 +397,7 @@ namespace DAL
                             turno.NombreApellidoPaciente = lector["NombrePaciente"] + " " + lector["ApellidoPaciente"];
                             turno.Paciente = new BE_Paciente
                             {
-                                IdUsuario = turno.IdPaciente,
+                                IdPaciente = turno.IdPaciente,
                                 Nombre = lector["NombrePaciente"].ToString(),
                                 Apellido = lector["ApellidoPaciente"].ToString(),
                                 DNI = lector["DNI"].ToString(),
@@ -502,28 +509,28 @@ namespace DAL
             turno.MatriculaMedico = lector["Matricula"] as string;
 
             BE_Paciente paciente = MapearPaciente(lector);
-            paciente.IdUsuario = turno.IdPaciente;
-            paciente.Nombre = lector["NombrePaciente"].ToString();
-            paciente.Apellido = lector["ApellidoPaciente"].ToString();
+            paciente.IdPaciente = turno.IdPaciente;
             turno.Paciente = paciente;
+            turno.DNIPaciente = paciente.DNI;
 
             return turno;
         }
 
-        // Datos propios de la tabla Paciente (pueden venir NULL por el LEFT JOIN si el usuario
-        // todavia no tiene Historia Clinica: en ese caso NroHistoriaClinica queda en 0).
+        // Datos de la tabla Paciente (columnas NombrePaciente, ApellidoPaciente, DNI, NroHistoriaClinica,
+        // FechaNacimiento, Telefono, Email y FechaAperturaHC).
         private BE_Paciente MapearPaciente(SqlDataReader lector)
         {
-            BE_Paciente paciente = new BE_Paciente();
-            if (lector["NroHistoriaClinica"] != DBNull.Value)
+            return new BE_Paciente
             {
-                paciente.DNI = lector["DNI"].ToString();
-                paciente.NroHistoriaClinica = Convert.ToInt32(lector["NroHistoriaClinica"]);
-                paciente.FechaNacimiento = lector["FechaNacimiento"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(lector["FechaNacimiento"]);
-                paciente.Telefono = lector["Telefono"] as string;
-                paciente.FechaAperturaHC = Convert.ToDateTime(lector["FechaAperturaHC"]);
-            }
-            return paciente;
+                Nombre = lector["NombrePaciente"].ToString(),
+                Apellido = lector["ApellidoPaciente"].ToString(),
+                DNI = lector["DNI"].ToString(),
+                NroHistoriaClinica = Convert.ToInt32(lector["NroHistoriaClinica"]),
+                FechaNacimiento = lector["FechaNacimiento"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(lector["FechaNacimiento"]),
+                Telefono = lector["Telefono"] as string,
+                Email = lector["Email"] as string,
+                FechaAperturaHC = Convert.ToDateTime(lector["FechaAperturaHC"])
+            };
         }
     }
 }

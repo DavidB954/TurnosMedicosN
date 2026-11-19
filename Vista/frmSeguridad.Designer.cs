@@ -43,7 +43,7 @@
             // 
             this.groupBox_FilasCorruptas.Controls.Add(this.dgvSeguridad);
             this.groupBox_FilasCorruptas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_FilasCorruptas.Location = new System.Drawing.Point(376, 28);
+            this.groupBox_FilasCorruptas.Location = new System.Drawing.Point(30, 28);
             this.groupBox_FilasCorruptas.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_FilasCorruptas.Name = "groupBox_FilasCorruptas";
             this.groupBox_FilasCorruptas.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -100,7 +100,7 @@
             this.groupBox_Opciones.Controls.Add(this.btnBackUp);
             this.groupBox_Opciones.Controls.Add(this.btnBloquearUsuYRecalcular);
             this.groupBox_Opciones.Controls.Add(this.btnRestaurarBD);
-            this.groupBox_Opciones.Location = new System.Drawing.Point(376, 420);
+            this.groupBox_Opciones.Location = new System.Drawing.Point(30, 420);
             this.groupBox_Opciones.Name = "groupBox_Opciones";
             this.groupBox_Opciones.Size = new System.Drawing.Size(812, 215);
             this.groupBox_Opciones.TabIndex = 8;
@@ -116,7 +116,7 @@
             this.Controls.Add(this.groupBox_FilasCorruptas);
             this.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.Name = "frmSeguridad";
-            this.Text = "frm_Seguridad";
+            this.Text = "Seguridad";
             this.Load += new System.EventHandler(this.frm_Seguridad_Load);
             this.groupBox_FilasCorruptas.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSeguridad)).EndInit();

@@ -114,7 +114,7 @@
             this.ClientSize = new System.Drawing.Size(1283, 541);
             this.Controls.Add(this.groupBox_Login);
             this.Name = "frmLogin";
-            this.Text = "frmLogin";
+            this.Text = "Iniciar sesión - Sanatorio Córdoba";
             this.Load += new System.EventHandler(this.frmLogin_Load);
             this.groupBox_Login.ResumeLayout(false);
             this.groupBox_Login.PerformLayout();

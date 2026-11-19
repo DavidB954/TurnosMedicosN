@@ -1,75 +1,366 @@
-using BE;
+﻿using BE;
 using BLL;
 using Servicios;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Vista
 {
-    // Pantalla de Administrativo/Administrador para RF 01.2: a diferencia de
-    // frm_AccesoPaciente (donde el paciente solo ve y cancela sus propios turnos), aca se
-    // puede buscar el turno de cualquier paciente y cancelarlo.
+    // RF1 - Gestion de turnos (recepcionista): CU-01.1 Registrar turno (incluye registrar al
+    // paciente que concurre por primera vez), CU-01.2 Modificar turno y CU-01.3 Cancelar turno.
     public partial class frmGestionTurnos : frmBase
     {
+        BLL_Paciente bll_paciente = new BLL_Paciente();
+        BLL_MedicoHorario bll_medicoHorario = new BLL_MedicoHorario();
         BLL_Turno bll_turno = new BLL_Turno();
+
+        private BE_Paciente pacienteSeleccionado = null;
+        private BE_Turno turnoSeleccionado = null;
+
+        // Dias (0=Domingo..6=Sabado, igual que DayOfWeek) en que atiende el medico en la
+        // especialidad elegida. Vacio = sin medico seleccionado (no se restringe el calendario).
+        private List<int> diasAtencionMedico = new List<int>();
+        private bool ajustandoFecha = false;
+        private bool cargandoGrilla = false;
 
         public frmGestionTurnos()
         {
             InitializeComponent();
-        }
+            dtpFecha.MinDate = DateTime.Today;
+            dtpFecha.Value = DateTime.Today;
 
-        // Valores del filtro de estado tal como están en la base (índice 0 = Todos = sin filtro).
-        // El combo muestra el texto traducido; el filtro usa siempre este valor.
-        private static readonly string[] estadosFiltro = { null, "Confirmado", "Cancelado", "Atendido", "Ausente" };
+            ucEspecialidad.EspecialidadSeleccionada += ucEspecialidad_EspecialidadSeleccionada;
+            ucMedico.MedicoSeleccionado += ucMedico_MedicoSeleccionado;
+        }
 
         public override void AplicarIdioma()
         {
             AplicarIdiomaAutomatico();
-            CargarComboEstado();
-        }
-
-        private void CargarComboEstado()
-        {
-            var t = Servicios.TraduccionServicio.Instancia;
-            int indice = cbEstado.SelectedIndex < 0 ? 1 : cbEstado.SelectedIndex;
-
-            cbEstado.Items.Clear();
-            cbEstado.Items.Add(t.TraducirODefecto($"{Name}.Estado.Todos", "Todos"));
-            foreach (string estado in estadosFiltro.Skip(1))
-                cbEstado.Items.Add(t.TraducirODefecto($"{Name}.Estado.{estado}", estado));
-            cbEstado.SelectedIndex = indice;
         }
 
         private void frmGestionTurnos_Load(object sender, EventArgs e)
         {
             try
             {
-                dtpDesde.Checked = false;
-                dtpHasta.Checked = false;
-
-                CargarComboEstado();
-
-                ConfigurarColumnas();
-                CargarTurnos();
+                ConfigurarGrilla();
+                LimpiarPaciente();
+                // T06b: el recepcionista ve el historial del turno; restaurar es solo del administrador.
+                btnVerHistorial.Visible = Sesion.Instancia().TieneAccesoFormulario(nameof(frmHistorialTurnos));
+                ucEspecialidad.CargarEspecialidades();
+                ActualizarDiasDeAtencion();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error al cargar la gestion de turnos",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Errores.Mostrar(ex);
             }
         }
 
-        private void ConfigurarColumnas()
-        {
-            dgvTurnos.AutoGenerateColumns = false;
-            dgvTurnos.Columns.Clear();
+        // ---------------------------------------------------------------- Paciente (CU-01.1 pasos 2 a 5)
 
-            AgregarColumna("colIdTurno", "Turno", "IdTurno");
+        private void txtDNI_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.SuppressKeyPress = true;
+                    btnBuscarPaciente_Click(sender, EventArgs.Empty);
+                }
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        // Si el recepcionista cambia el DNI despues de buscar, el paciente mostrado deja de valer.
+        private void txtDNI_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (pacienteSeleccionado != null && txtDNI.Text.Trim() != pacienteSeleccionado.DNI)
+                    LimpiarPaciente();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void btnBuscarPaciente_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                BE_Paciente paciente = bll_paciente.BuscarPorDni(txtDNI.Text);
+
+                if (paciente == null)
+                {
+                    // Flujo alternativo A1: el paciente concurre por primera vez.
+                    LimpiarPaciente();
+                    HabilitarCargaPaciente(true);
+                    txtNombre.Focus();
+                    MessageBox.Show("No hay un paciente registrado con ese DNI. Complete sus datos y presione \"Registrar paciente\".",
+                        "Paciente no registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                MostrarPaciente(paciente);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void btnRegistrarPaciente_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                BE_Paciente paciente = new BE_Paciente
+                {
+                    DNI = txtDNI.Text,
+                    Nombre = txtNombre.Text,
+                    Apellido = txtApellido.Text,
+                    FechaNacimiento = dtpFechaNacimiento.Checked ? dtpFechaNacimiento.Value.Date : (DateTime?)null,
+                    Telefono = txtTelefono.Text,
+                    Email = txtEmail.Text
+                };
+
+                bll_paciente.RegistrarPaciente(paciente);
+
+                MostrarPaciente(paciente);
+                MessageBox.Show($"Paciente registrado. Se abrió la Historia Clínica N° {paciente.NroHistoriaClinica}.",
+                    "Paciente registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void MostrarPaciente(BE_Paciente paciente)
+        {
+            pacienteSeleccionado = paciente;
+            txtDNI.Text = paciente.DNI;
+            txtHC.Text = paciente.NroHistoriaClinica.ToString();
+            txtNombre.Text = paciente.Nombre;
+            txtApellido.Text = paciente.Apellido;
+            dtpFechaNacimiento.Checked = paciente.FechaNacimiento.HasValue;
+            if (paciente.FechaNacimiento.HasValue)
+                dtpFechaNacimiento.Value = paciente.FechaNacimiento.Value;
+            txtTelefono.Text = paciente.Telefono;
+            txtEmail.Text = paciente.Email;
+
+            HabilitarCargaPaciente(false);
+            CargarTurnosDelPaciente();
+        }
+
+        private void LimpiarPaciente()
+        {
+            pacienteSeleccionado = null;
+            turnoSeleccionado = null;
+            txtHC.Clear();
+            txtNombre.Clear();
+            txtApellido.Clear();
+            dtpFechaNacimiento.Value = DateTime.Today;
+            dtpFechaNacimiento.Checked = false;
+            txtTelefono.Clear();
+            txtEmail.Clear();
+            HabilitarCargaPaciente(false);
+
+            cargandoGrilla = true;
+            try { dgvTurnosPaciente.DataSource = null; }
+            finally { cargandoGrilla = false; }
+        }
+
+        // Los datos del paciente solo se escriben al registrarlo; un paciente existente se muestra
+        // en modo lectura.
+        private void HabilitarCargaPaciente(bool habilitar)
+        {
+            txtNombre.ReadOnly = !habilitar;
+            txtApellido.ReadOnly = !habilitar;
+            dtpFechaNacimiento.Enabled = habilitar;
+            txtTelefono.ReadOnly = !habilitar;
+            txtEmail.ReadOnly = !habilitar;
+            btnRegistrarPaciente.Enabled = habilitar;
+        }
+
+        // ---------------------------------------------------------------- Nuevo turno (CU-01.1 pasos 6 a 10)
+
+        private void ucEspecialidad_EspecialidadSeleccionada(object sender, EventArgs e)
+        {
+            try
+            {
+                // Solo se listan los medicos que tienen asignada la especialidad elegida.
+                if (ucEspecialidad.IdEspecialidadSeleccionada == null)
+                    ucMedico.Limpiar();
+                else
+                    ucMedico.CargarMedicosPorEspecialidad(ucEspecialidad.IdEspecialidadSeleccionada.Value);
+
+                ActualizarDiasDeAtencion();
+                CargarHorariosDelMedico();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void ucMedico_MedicoSeleccionado(object sender, EventArgs e)
+        {
+            try
+            {
+                ActualizarDiasDeAtencion();
+                CargarHorariosDelMedico();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void dtpFecha_ValueChanged(object sender, EventArgs e)
+        {
+            if (ajustandoFecha)
+                return;
+
+            try
+            {
+                // Si el dia elegido no es de atencion del medico, se avisa y se pasa al proximo dia valido.
+                if (diasAtencionMedico.Count > 0 && !diasAtencionMedico.Contains((int)dtpFecha.Value.DayOfWeek))
+                {
+                    DateTime fechaValida = ProximaFechaDeAtencion(dtpFecha.Value.Date);
+
+                    MessageBox.Show(
+                        $"El médico no atiende ese día. Atiende los: {TextoDiasAtencion()}.\nSe seleccionó el {fechaValida:dddd dd/MM/yyyy}.",
+                        "Día sin atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    ajustandoFecha = true;
+                    try { dtpFecha.Value = fechaValida; }
+                    finally { ajustandoFecha = false; }
+                }
+
+                CargarHorariosDelMedico();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private string TextoDiasAtencion()
+        {
+            return string.Join(", ", diasAtencionMedico.OrderBy(d => d).Select(BE_MedicoHorario.NombreDia));
+        }
+
+        private DateTime ProximaFechaDeAtencion(DateTime desde)
+        {
+            for (int i = 0; i < 14; i++)
+            {
+                DateTime candidata = desde.AddDays(i);
+                if (diasAtencionMedico.Contains((int)candidata.DayOfWeek))
+                    return candidata;
+            }
+            return desde;
+        }
+
+        // Dias en que el medico atiende la especialidad elegida: si la fecha elegida no es uno de ellos,
+        // se pasa sin aviso al proximo dia de atencion (al elegir otra fecha a mano se avisa).
+        private void ActualizarDiasDeAtencion()
+        {
+            if (ucMedico.IdMedicoSeleccionado == null || ucEspecialidad.IdEspecialidadSeleccionada == null)
+            {
+                diasAtencionMedico = new List<int>();
+                return;
+            }
+
+            int idEspecialidad = ucEspecialidad.IdEspecialidadSeleccionada.Value;
+            diasAtencionMedico = bll_medicoHorario.ListarPorMedico(ucMedico.IdMedicoSeleccionado.Value)
+                .Where(h => h.Activo && h.IdEspecialidad == idEspecialidad)
+                .Select(h => h.DiaSemana)
+                .Distinct()
+                .ToList();
+
+            if (diasAtencionMedico.Count > 0 && !diasAtencionMedico.Contains((int)dtpFecha.Value.DayOfWeek))
+            {
+                ajustandoFecha = true;
+                try { dtpFecha.Value = ProximaFechaDeAtencion(dtpFecha.Value.Date); }
+                finally { ajustandoFecha = false; }
+            }
+        }
+
+        // CU-01.1 paso 8: horarios disponibles del medico en la fecha elegida.
+        private void CargarHorariosDelMedico()
+        {
+            if (ucMedico.IdMedicoSeleccionado == null || ucEspecialidad.IdEspecialidadSeleccionada == null)
+            {
+                lstHorarios.DataSource = null;
+                return;
+            }
+
+            lstHorarios.DataSource = bll_medicoHorario.ConsultarDisponibilidad(ucMedico.IdMedicoSeleccionado.Value,
+                dtpFecha.Value.Date, ucEspecialidad.IdEspecialidadSeleccionada);
+            lstHorarios.DisplayMember = "RangoHorario";
+
+            // Al asignar DataSource el ListBox selecciona el primer horario: se limpia para que el
+            // recepcionista elija uno a proposito.
+            lstHorarios.ClearSelected();
+        }
+
+        private void btnRegistrarTurno_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (pacienteSeleccionado == null)
+                {
+                    MessageBox.Show("Busque o registre al paciente antes de registrar el turno.");
+                    return;
+                }
+                if (lstHorarios.SelectedItem == null)
+                {
+                    MessageBox.Show("Seleccione un horario disponible.");
+                    return;
+                }
+
+                BE_MedicoHorario horario = (BE_MedicoHorario)lstHorarios.SelectedItem;
+                bll_turno.RegistrarTurno(pacienteSeleccionado.IdPaciente, horario.IdHorario, dtpFecha.Value.Date);
+
+                MessageBox.Show($"Turno registrado para {pacienteSeleccionado.NombreApellido}: " +
+                    $"{dtpFecha.Value:dd/MM/yyyy} {horario.RangoHorario}.");
+                CargarHorariosDelMedico();
+                CargarTurnosDelPaciente();
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+                CargarHorariosDelMedico();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        // ---------------------------------------------------------------- Turnos del paciente (CU-01.2 y CU-01.3)
+
+        private void ConfigurarGrilla()
+        {
+            dgvTurnosPaciente.AutoGenerateColumns = false;
+            dgvTurnosPaciente.Columns.Clear();
+
             AgregarColumna("colFecha", "Fecha", "FechaTexto");
-            AgregarColumna("colHorario", "Horario", "RangoHorario");
-            AgregarColumna("colPaciente", "Paciente", "NombreApellidoPaciente");
-            AgregarColumna("colMedico", "Medico", "NombreApellidoMedico");
+            AgregarColumna("colHora", "Hora", "HoraTexto");
+            AgregarColumna("colMedico", "Médico", "NombreApellidoMedico");
             AgregarColumna("colEspecialidad", "Especialidad", "Especialidades");
             AgregarColumna("colEstado", "Estado", "Estado");
         }
@@ -78,91 +369,154 @@ namespace Vista
         {
             DataGridViewTextBoxColumn columna = new DataGridViewTextBoxColumn();
             columna.Name = nombre;
-            columna.HeaderText = Servicios.TraduccionServicio.Instancia.TraducirODefecto($"{Name}.dgvTurnos.{nombre}", encabezado);
+            columna.HeaderText = TraduccionServicio.Instancia.TraducirODefecto($"{Name}.dgvTurnosPaciente.{nombre}", encabezado);
             columna.DataPropertyName = propiedad;
             columna.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvTurnos.Columns.Add(columna);
+            // Las fechas son texto "dd/MM/yyyy": el orden correcto ya viene armado.
+            columna.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dgvTurnosPaciente.Columns.Add(columna);
         }
 
-        public void CargarTurnos()
+        // Turnos del paciente: primero los confirmados (sobre los que se puede actuar) y despues el
+        // resto, del mas reciente al mas antiguo.
+        private void CargarTurnosDelPaciente()
+        {
+            turnoSeleccionado = null;
+            cargandoGrilla = true;
+            try
+            {
+                dgvTurnosPaciente.DataSource = null;
+                if (pacienteSeleccionado == null)
+                    return;
+
+                dgvTurnosPaciente.DataSource = bll_turno.ListarPorPaciente(pacienteSeleccionado.IdPaciente)
+                    .OrderBy(t => t.Estado == "Confirmado" ? 0 : 1)
+                    .ThenByDescending(t => t.Fecha)
+                    .ThenBy(t => t.HoraInicio)
+                    .ToList();
+                dgvTurnosPaciente.ClearSelection();
+                dgvTurnosPaciente.CurrentCell = null;
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+            finally
+            {
+                cargandoGrilla = false;
+            }
+        }
+
+        // Al elegir un turno se precargan su especialidad y su medico en "Nuevo turno", para elegir
+        // directamente el nuevo horario si se lo quiere modificar.
+        private void dgvTurnosPaciente_SelectionChanged(object sender, EventArgs e)
+        {
+            if (cargandoGrilla)
+                return;
+
+            try
+            {
+                turnoSeleccionado = dgvTurnosPaciente.CurrentRow?.DataBoundItem as BE_Turno;
+                if (turnoSeleccionado == null || turnoSeleccionado.Estado != "Confirmado")
+                    return;
+
+                if (turnoSeleccionado.IdEspecialidad.HasValue)
+                    ucEspecialidad.SeleccionarEspecialidad(turnoSeleccionado.IdEspecialidad.Value);
+                ucMedico.SeleccionarMedico(turnoSeleccionado.IdMedico);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void btnModificarTurno_Click(object sender, EventArgs e)
         {
             try
             {
-                int? idTurno = null;
-                if (!string.IsNullOrWhiteSpace(txtIdTurno.Text))
+                if (pacienteSeleccionado == null || turnoSeleccionado == null)
                 {
-                    int valor;
-                    if (!int.TryParse(txtIdTurno.Text, out valor))
-                        throw new ArgumentException("El numero de turno debe ser numerico.");
-                    idTurno = valor;
+                    MessageBox.Show("Seleccione, en \"Turnos del paciente\", el turno que quiere modificar.");
+                    return;
+                }
+                if (lstHorarios.SelectedItem == null)
+                {
+                    MessageBox.Show("Elija en \"Nuevo turno\" el nuevo horario disponible antes de modificar.");
+                    return;
                 }
 
-                DateTime? desde = dtpDesde.Checked ? dtpDesde.Value.Date : (DateTime?)null;
-                DateTime? hasta = dtpHasta.Checked ? dtpHasta.Value.Date : (DateTime?)null;
+                BE_MedicoHorario horario = (BE_MedicoHorario)lstHorarios.SelectedItem;
+                DialogResult confirmacion = MessageBox.Show(
+                    $"¿Modificar el turno del {turnoSeleccionado.FechaTexto} {turnoSeleccionado.RangoHorario} " +
+                    $"por el {dtpFecha.Value:dd/MM/yyyy} {horario.RangoHorario}?",
+                    "Confirmar modificación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirmacion != DialogResult.Yes)
+                    return;
 
-                string estado = cbEstado.SelectedIndex > 0 ? estadosFiltro[cbEstado.SelectedIndex] : null;
+                bll_turno.ModificarTurno(turnoSeleccionado.IdTurno, horario.IdHorario, dtpFecha.Value.Date,
+                    pacienteSeleccionado.IdPaciente);
 
-                dgvTurnos.DataSource = null;
-                dgvTurnos.DataSource = bll_turno.Filtrar(idTurno, desde, hasta, estado, txtPaciente.Text);
-
-                lblTotalRegistros.Text = dgvTurnos.Rows.Count.ToString();
+                MessageBox.Show("Turno modificado: el turno anterior quedó Cancelado y se registró el nuevo horario.");
+                CargarHorariosDelMedico();
+                CargarTurnosDelPaciente();
             }
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
+                CargarHorariosDelMedico();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error al buscar turnos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Errores.Mostrar(ex);
             }
         }
 
-        private void btnBuscar_Click(object sender, EventArgs e)
+        // T06b: abre el historial de cambios del turno seleccionado, para ver quién lo registró, modificó o
+        // canceló y cuándo.
+        private void btnVerHistorial_Click(object sender, EventArgs e)
         {
-            CargarTurnos();
-        }
+            try
+            {
+                if (turnoSeleccionado == null)
+                {
+                    MessageBox.Show("Seleccione, en \"Turnos del paciente\", el turno cuyo historial quiere ver.");
+                    return;
+                }
 
-        private void btnLimpiarFiltros_Click(object sender, EventArgs e)
-        {
-            txtIdTurno.Clear();
-            txtPaciente.Clear();
-            dtpDesde.Value = DateTime.Now;
-            dtpDesde.Checked = false;
-            dtpHasta.Value = DateTime.Now;
-            dtpHasta.Checked = false;
-            cbEstado.SelectedIndex = 0;
-            CargarTurnos();
+                frmPrincipal principal = MdiParent as frmPrincipal;
+                if (principal == null)
+                    return;
+                principal.AbrirFormulario<frmHistorialTurnos>();
+                principal.MdiChildren.OfType<frmHistorialTurnos>().First().MostrarTurno(turnoSeleccionado.IdTurno);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btnCancelarTurno_Click(object sender, EventArgs e)
         {
             try
             {
-                if (dgvTurnos.CurrentRow == null)
+                if (pacienteSeleccionado == null || turnoSeleccionado == null)
                 {
-                    MessageBox.Show("Seleccione, en la grilla, el turno que quiere cancelar.");
-                    return;
-                }
-
-                BE_Turno turno = (BE_Turno)dgvTurnos.CurrentRow.DataBoundItem;
-
-                if (turno.Estado != "Confirmado")
-                {
-                    MessageBox.Show("Solo se pueden cancelar turnos en estado Confirmado.");
+                    MessageBox.Show("Seleccione, en \"Turnos del paciente\", el turno que quiere cancelar.");
                     return;
                 }
 
                 DialogResult confirmacion = MessageBox.Show(
-                    $"¿Cancelar el turno {turno.IdTurno} de {turno.NombreApellidoPaciente} ({turno.FechaTexto} {turno.RangoHorario})?",
-                    "Confirmar cancelacion", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    $"¿Cancelar el turno del {turnoSeleccionado.FechaTexto} {turnoSeleccionado.RangoHorario} " +
+                    $"con {turnoSeleccionado.NombreApellidoMedico}?",
+                    "Confirmar cancelación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirmacion != DialogResult.Yes)
                     return;
 
-                int idUsuarioQueCancela = Sesion.Instancia().UsuarioActual.IdUsuario;
-                bll_turno.CancelarTurno(turno.IdTurno, idUsuarioQueCancela);
+                bll_turno.CancelarTurno(turnoSeleccionado.IdTurno, Sesion.Instancia().UsuarioActual.IdUsuario);
 
-                MessageBox.Show("Turno cancelado.");
-                CargarTurnos();
+                MessageBox.Show("Turno cancelado. El horario quedó disponible.");
+                CargarHorariosDelMedico();
+                CargarTurnosDelPaciente();
             }
             catch (ArgumentException ex)
             {
@@ -170,7 +524,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error al cancelar el turno", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Errores.Mostrar(ex);
             }
         }
     }

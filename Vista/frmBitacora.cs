@@ -78,6 +78,9 @@ namespace Vista
             if (dgvBitacora.Columns["IdUsuario"] != null)
                 dgvBitacora.Columns["IdUsuario"].Visible = false;
 
+            if (dgvBitacora.Columns["FechaHora"] != null)
+                dgvBitacora.Columns["FechaHora"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+
             if (dgvBitacora.Columns["NombreUsuario"] != null)
             {
                 dgvBitacora.Columns["NombreUsuario"].HeaderText = "Usuario";
@@ -87,7 +90,14 @@ namespace Vista
 
         private void btnActualizarBitacora_Click(object sender, EventArgs e)
         {
-            LimpiarActualizar();
+            try
+            {
+                LimpiarActualizar();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void dgvBitacora_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -125,11 +135,16 @@ namespace Vista
 
         public void CboModulos()
         {
-            cboModulo.Items.Add("LOGIN");
-            cboModulo.Items.Add("USUARIO");
-            cboModulo.Items.Add("SEGURIDAD");
-            cboModulo.Items.Add("ROLES");
+            cboModulo.Items.Add("ATENCION");
+            cboModulo.Items.Add("DISPONIBILIDAD");
+            cboModulo.Items.Add("HONORARIOS");
             cboModulo.Items.Add("IDIOMA");
+            cboModulo.Items.Add("LOGIN");
+            cboModulo.Items.Add("MEDICOS");
+            cboModulo.Items.Add("ROLES");
+            cboModulo.Items.Add("SEGURIDAD");
+            cboModulo.Items.Add("TURNOS");
+            cboModulo.Items.Add("USUARIO");
             cboModulo.SelectedIndex = -1;
         }
         public int? IdSeleccionado

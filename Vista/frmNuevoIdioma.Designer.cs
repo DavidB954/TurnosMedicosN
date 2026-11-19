@@ -100,7 +100,7 @@
             this.Controls.Add(this.lblNombre);
             this.Controls.Add(this.lblCodigo);
             this.Name = "frmNuevoIdioma";
-            this.Text = "frmNuevoIdioma";
+            this.Text = "Nuevo idioma";
             this.Load += new System.EventHandler(this.frmNuevoIdioma_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

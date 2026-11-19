@@ -38,6 +38,7 @@ namespace BE
         TURNO_CANCELADO,
         TURNO_MODIFICADO,
         TURNO_AUSENTE,
+        TURNO_RESTAURADO,
         DISPONIBILIDAD_MODIFICADA,
         // Proceso 2 - Atencion y Agenda Medica
         AGENDA_CONSULTADA,
@@ -51,6 +52,11 @@ namespace BE
         RECETA_CONSULTADA,
         RECETA_DESCARGADA,
         MEDICO_MATRICULA_MODIFICADA,
+
+        // RF2 - Liquidacion de honorarios
+        VALOR_TURNO_ACTUALIZADO,
+        LIQUIDACION_GENERADA,
+        RECIBO_EMITIDO,
         MODULO_GENERAL
     }
 }

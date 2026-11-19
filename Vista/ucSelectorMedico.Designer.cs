@@ -33,6 +33,7 @@ namespace Vista
             // cboMedico
             //
             this.cboMedico.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboMedico.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMedico.FormattingEnabled = true;
             this.cboMedico.Location = new System.Drawing.Point(160, 2);
             this.cboMedico.Name = "cboMedico";

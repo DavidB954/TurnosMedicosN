@@ -5,37 +5,29 @@ using System.Data.SqlClient;
 
 namespace DAL
 {
-    // Datos propios del paciente (tabla Paciente, 1:1 con Usuario). Se cargan desde ABM de Usuarios.
+    // Pacientes (tabla Paciente). El paciente no es usuario del sistema: lo registra el recepcionista.
     public class DAL_Paciente
     {
-        DAL_Conexion conexion = new DAL_Conexion();
+        DAL_Conexion conex = new DAL_Conexion();
 
-        public BE_Paciente ObtenerPorUsuario(int idUsuario)
+        public BE_Paciente ObtenerPorDni(string dni)
         {
             try
             {
-                using (SqlConnection cn = conexion.ObtenerConexion())
+                using (SqlConnection cn = conex.ObtenerConexion())
                 {
                     cn.Open();
                     SqlCommand cmd = new SqlCommand(@"
-                        SELECT IdUsuario, DNI, NroHistoriaClinica, FechaNacimiento, Telefono, FechaAperturaHC
-                        FROM Paciente WHERE IdUsuario = @idUsuario", cn);
-                    cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
+                        SELECT IdPaciente, DNI, Nombre, Apellido, FechaNacimiento, Telefono, Email,
+                               NroHistoriaClinica, FechaAperturaHC
+                        FROM Paciente WHERE DNI = @dni", cn);
+                    cmd.Parameters.Add("@dni", SqlDbType.VarChar, 10).Value = dni;
 
                     using (SqlDataReader lector = cmd.ExecuteReader())
                     {
                         if (!lector.Read())
                             return null;
-
-                        return new BE_Paciente
-                        {
-                            IdUsuario = Convert.ToInt32(lector["IdUsuario"]),
-                            DNI = lector["DNI"].ToString(),
-                            NroHistoriaClinica = Convert.ToInt32(lector["NroHistoriaClinica"]),
-                            FechaNacimiento = lector["FechaNacimiento"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(lector["FechaNacimiento"]),
-                            Telefono = lector["Telefono"] as string,
-                            FechaAperturaHC = Convert.ToDateTime(lector["FechaAperturaHC"])
-                        };
+                        return Mapear(lector);
                     }
                 }
             }
@@ -45,18 +37,18 @@ namespace DAL
             }
         }
 
-        // true si el DNI ya lo tiene OTRO paciente (se excluye al propio usuario al modificar).
-        public bool ExisteDNI(string dni, int idUsuarioExcluido)
+        // true si el DNI ya lo tiene OTRO paciente (se excluye al propio paciente al modificar).
+        public bool ExisteDNI(string dni, int idPacienteExcluido)
         {
             try
             {
-                using (SqlConnection cn = conexion.ObtenerConexion())
+                using (SqlConnection cn = conex.ObtenerConexion())
                 {
                     cn.Open();
                     SqlCommand cmd = new SqlCommand(
-                        "SELECT COUNT(1) FROM Paciente WHERE DNI = @dni AND IdUsuario <> @idUsuario", cn);
+                        "SELECT COUNT(1) FROM Paciente WHERE DNI = @dni AND IdPaciente <> @idPaciente", cn);
                     cmd.Parameters.Add("@dni", SqlDbType.VarChar, 10).Value = dni;
-                    cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuarioExcluido;
+                    cmd.Parameters.Add("@idPaciente", SqlDbType.Int).Value = idPacienteExcluido;
                     return (int)cmd.ExecuteScalar() > 0;
                 }
             }
@@ -66,25 +58,32 @@ namespace DAL
             }
         }
 
-        // Abre la Historia Clinica: el N° de HC lo genera la base (SEQ_NroHistoriaClinica).
+        // Registra al paciente y abre su Historia Clinica: el N° de HC y la fecha de apertura los
+        // genera la base (SEQ_NroHistoriaClinica y GETDATE) y se devuelven en el mismo objeto.
         public void Insertar(BE_Paciente paciente)
         {
             try
             {
-                using (SqlConnection cn = conexion.ObtenerConexion())
+                using (SqlConnection cn = conex.ObtenerConexion())
                 {
                     cn.Open();
                     SqlCommand cmd = new SqlCommand(@"
-                        INSERT INTO Paciente (IdUsuario, DNI, FechaNacimiento, Telefono)
-                        OUTPUT INSERTED.NroHistoriaClinica, INSERTED.FechaAperturaHC
-                        VALUES (@idUsuario, @dni, @fechaNacimiento, @telefono)", cn);
-                    AgregarParametros(cmd, paciente);
+                        INSERT INTO Paciente (DNI, Nombre, Apellido, FechaNacimiento, Telefono, Email)
+                        OUTPUT INSERTED.IdPaciente, INSERTED.NroHistoriaClinica, INSERTED.FechaAperturaHC
+                        VALUES (@dni, @nombre, @apellido, @fechaNacimiento, @telefono, @email)", cn);
+                    cmd.Parameters.Add("@dni", SqlDbType.VarChar, 10).Value = paciente.DNI;
+                    cmd.Parameters.Add("@nombre", SqlDbType.VarChar, 50).Value = paciente.Nombre;
+                    cmd.Parameters.Add("@apellido", SqlDbType.VarChar, 50).Value = paciente.Apellido;
+                    cmd.Parameters.Add("@fechaNacimiento", SqlDbType.Date).Value = (object)paciente.FechaNacimiento ?? DBNull.Value;
+                    cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 30).Value = (object)paciente.Telefono ?? DBNull.Value;
+                    cmd.Parameters.Add("@email", SqlDbType.VarChar, 100).Value = (object)paciente.Email ?? DBNull.Value;
 
                     using (SqlDataReader lector = cmd.ExecuteReader())
                     {
                         lector.Read();
-                        paciente.NroHistoriaClinica = lector.GetInt32(0);
-                        paciente.FechaAperturaHC = lector.GetDateTime(1);
+                        paciente.IdPaciente = lector.GetInt32(0);
+                        paciente.NroHistoriaClinica = lector.GetInt32(1);
+                        paciente.FechaAperturaHC = lector.GetDateTime(2);
                     }
                 }
             }
@@ -94,33 +93,20 @@ namespace DAL
             }
         }
 
-        // El N° de HC y la fecha de apertura no se modifican nunca.
-        public void Modificar(BE_Paciente paciente)
+        private BE_Paciente Mapear(SqlDataReader lector)
         {
-            try
+            return new BE_Paciente
             {
-                using (SqlConnection cn = conexion.ObtenerConexion())
-                {
-                    cn.Open();
-                    SqlCommand cmd = new SqlCommand(@"
-                        UPDATE Paciente SET DNI = @dni, FechaNacimiento = @fechaNacimiento, Telefono = @telefono
-                        WHERE IdUsuario = @idUsuario", cn);
-                    AgregarParametros(cmd, paciente);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private void AgregarParametros(SqlCommand cmd, BE_Paciente paciente)
-        {
-            cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = paciente.IdUsuario;
-            cmd.Parameters.Add("@dni", SqlDbType.VarChar, 10).Value = paciente.DNI;
-            cmd.Parameters.Add("@fechaNacimiento", SqlDbType.Date).Value = (object)paciente.FechaNacimiento ?? DBNull.Value;
-            cmd.Parameters.Add("@telefono", SqlDbType.VarChar, 30).Value = (object)paciente.Telefono ?? DBNull.Value;
+                IdPaciente = Convert.ToInt32(lector["IdPaciente"]),
+                DNI = lector["DNI"].ToString(),
+                Nombre = lector["Nombre"].ToString(),
+                Apellido = lector["Apellido"].ToString(),
+                FechaNacimiento = lector["FechaNacimiento"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(lector["FechaNacimiento"]),
+                Telefono = lector["Telefono"] as string,
+                Email = lector["Email"] as string,
+                NroHistoriaClinica = Convert.ToInt32(lector["NroHistoriaClinica"]),
+                FechaAperturaHC = Convert.ToDateTime(lector["FechaAperturaHC"])
+            };
         }
     }
 }

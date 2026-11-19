@@ -13,18 +13,28 @@ namespace Vista
         [STAThread]
         static void Main()
         {
-          
-         
-            BLL_DVV bll_dvv = new BLL_DVV();
-            bool integra = bll_dvv.VerificarIntegridad("Usuario");
-            if (!integra)
+            // Red de seguridad: cualquier error que no atrape una pantalla se informa y el programa sigue.
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += Application_ThreadException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            try
             {
-                Application.Run(new frmBaseCorrupta());
+                BLL_DVV bll_dvv = new BLL_DVV();
+                bool integra = bll_dvv.VerificarIntegridad("Usuario");
+                if (!integra)
+                {
+                    Application.Run(new frmBaseCorrupta());
+                }
+                else
+                {
+                    VerificarIntegridadHistoriaClinica();
+                    Application.Run(new frmLogin());
+                }
             }
-            else
+            catch (Exception ex)
             {
-               VerificarIntegridadHistoriaClinica();
-               Application.Run(new frmLogin());
+                MostrarError(ex);
             }
         }
 
@@ -63,8 +73,10 @@ namespace Vista
             MostrarError(e.ExceptionObject as Exception);
         }
 
+        // Errores que ninguna pantalla atrapo: se registran serializados (A03) y se informan; el sistema sigue.
         private static void MostrarError(Exception ex)
         {
+            Servicios.RegistroErrores.Registrar(ex, "Error no controlado");
             string mensaje = ex != null ? ex.Message : "Ocurrio un error inesperado.";
             MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }

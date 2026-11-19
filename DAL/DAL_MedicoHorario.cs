@@ -115,6 +115,9 @@ namespace DAL
                               SELECT 1 FROM Turno t
                               WHERE t.IdHorario = mh.IdHorario AND t.Fecha = @fecha AND t.Estado IN ('Confirmado', 'Atendido', 'Ausente')
                           )
+                          AND NOT EXISTS (
+                              SELECT 1 FROM Medico_HorarioInactivo hi WHERE hi.IdHorario = mh.IdHorario AND hi.Fecha = @fecha
+                          )
                           AND (@fecha > CAST(GETDATE() AS date) OR mh.HoraInicio > CAST(GETDATE() AS time))
                         ORDER BY mh.HoraInicio", conexion);
                     cmd.Parameters.Add("@idMedico", SqlDbType.Int).Value = idMedico;
@@ -144,17 +147,111 @@ namespace DAL
             }
         }
 
-        public void CambiarActivo(int idHorario, bool activo)
+        // CU-01.4: horarios activos del medico para el dia de la semana de la fecha, indicando si estan
+        // inactivos en esa fecha y que paciente tiene turno confirmado en cada uno.
+        public List<BE_MedicoHorario> ListarPorMedicoYFecha(int idMedico, DateTime fecha)
+        {
+            try
+            {
+                List<BE_MedicoHorario> lista = new List<BE_MedicoHorario>();
+                using (SqlConnection conexion = conex.ObtenerConexion())
+                {
+                    conexion.Open();
+                    SqlCommand cmd = new SqlCommand(@"
+                        SELECT mh.IdHorario, mh.IdMedico, mh.DiaSemana, mh.HoraInicio, mh.HoraFin, mh.Activo, mh.IdEspecialidad,
+                               esp.Nombre AS NombreEspecialidad,
+                               CASE WHEN hi.IdHorario IS NULL THEN 0 ELSE 1 END AS InactivoEnFecha,
+                               (SELECT TOP 1 p.Nombre + ' ' + p.Apellido FROM Turno t INNER JOIN Paciente p ON p.IdPaciente = t.IdPaciente
+                                WHERE t.IdHorario = mh.IdHorario AND t.Fecha = @fecha AND t.Estado = 'Confirmado') AS PacienteEnFecha
+                        FROM Medico_Horario mh
+                        LEFT JOIN Especialidades esp ON esp.IdEspecialidad = mh.IdEspecialidad
+                        LEFT JOIN Medico_HorarioInactivo hi ON hi.IdHorario = mh.IdHorario AND hi.Fecha = @fecha
+                        WHERE mh.IdMedico = @idMedico AND mh.DiaSemana = @diaSemana AND mh.Activo = 1
+                        ORDER BY mh.HoraInicio", conexion);
+                    cmd.Parameters.Add("@idMedico", SqlDbType.Int).Value = idMedico;
+                    cmd.Parameters.Add("@diaSemana", SqlDbType.TinyInt).Value = (int)fecha.DayOfWeek;
+                    cmd.Parameters.Add("@fecha", SqlDbType.Date).Value = fecha.Date;
+
+                    SqlDataReader lector = cmd.ExecuteReader();
+                    while (lector.Read())
+                    {
+                        BE_MedicoHorario horario = new BE_MedicoHorario();
+                        horario.IdHorario = Convert.ToInt32(lector["IdHorario"]);
+                        horario.IdMedico = Convert.ToInt32(lector["IdMedico"]);
+                        horario.DiaSemana = Convert.ToInt32(lector["DiaSemana"]);
+                        horario.HoraInicio = (TimeSpan)lector["HoraInicio"];
+                        horario.HoraFin = (TimeSpan)lector["HoraFin"];
+                        horario.Activo = Convert.ToBoolean(lector["Activo"]);
+                        horario.IdEspecialidad = lector["IdEspecialidad"] == DBNull.Value ? (int?)null : Convert.ToInt32(lector["IdEspecialidad"]);
+                        horario.NombreEspecialidad = lector["NombreEspecialidad"] == DBNull.Value ? null : lector["NombreEspecialidad"].ToString();
+                        horario.InactivoEnFecha = Convert.ToBoolean(lector["InactivoEnFecha"]);
+                        horario.PacienteEnFecha = lector["PacienteEnFecha"] == DBNull.Value ? string.Empty : lector["PacienteEnFecha"].ToString();
+                        lista.Add(horario);
+                    }
+                }
+                return lista;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // CU-01.4: el horario deja de atenderse solo en esa fecha.
+        public void InactivarEnFecha(int idHorario, DateTime fecha, int idUsuario)
         {
             try
             {
                 using (SqlConnection conexion = conex.ObtenerConexion())
                 {
                     conexion.Open();
-                    SqlCommand cmdActivo = new SqlCommand(@"UPDATE Medico_Horario SET Activo = @activo WHERE IdHorario = @idHorario", conexion);
-                    cmdActivo.Parameters.Add("@activo", SqlDbType.Bit).Value = activo;
-                    cmdActivo.Parameters.Add("@idHorario", SqlDbType.Int).Value = idHorario;
-                    cmdActivo.ExecuteNonQuery();
+                    SqlCommand cmd = new SqlCommand(@"
+                        IF NOT EXISTS (SELECT 1 FROM Medico_HorarioInactivo WHERE IdHorario = @idHorario AND Fecha = @fecha)
+                            INSERT INTO Medico_HorarioInactivo (IdHorario, Fecha, IdUsuario) VALUES (@idHorario, @fecha, @idUsuario)", conexion);
+                    cmd.Parameters.Add("@idHorario", SqlDbType.Int).Value = idHorario;
+                    cmd.Parameters.Add("@fecha", SqlDbType.Date).Value = fecha.Date;
+                    cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = idUsuario;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // CU-01.4: el horario vuelve a atenderse en esa fecha.
+        public void ReactivarEnFecha(int idHorario, DateTime fecha)
+        {
+            try
+            {
+                using (SqlConnection conexion = conex.ObtenerConexion())
+                {
+                    conexion.Open();
+                    SqlCommand cmd = new SqlCommand(@"DELETE FROM Medico_HorarioInactivo WHERE IdHorario = @idHorario AND Fecha = @fecha", conexion);
+                    cmd.Parameters.Add("@idHorario", SqlDbType.Int).Value = idHorario;
+                    cmd.Parameters.Add("@fecha", SqlDbType.Date).Value = fecha.Date;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // RN1.2: un horario inactivo en una fecha no admite turnos en esa fecha.
+        public bool EstaInactivoEnFecha(int idHorario, DateTime fecha)
+        {
+            try
+            {
+                using (SqlConnection conexion = conex.ObtenerConexion())
+                {
+                    conexion.Open();
+                    SqlCommand cmd = new SqlCommand(@"SELECT COUNT(1) FROM Medico_HorarioInactivo WHERE IdHorario = @idHorario AND Fecha = @fecha", conexion);
+                    cmd.Parameters.Add("@idHorario", SqlDbType.Int).Value = idHorario;
+                    cmd.Parameters.Add("@fecha", SqlDbType.Date).Value = fecha.Date;
+                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
                 }
             }
             catch (Exception)

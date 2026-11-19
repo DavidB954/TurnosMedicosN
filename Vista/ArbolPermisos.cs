@@ -1,4 +1,5 @@
-﻿using BE.Composite;
+﻿using System;
+using BE.Composite;
 using Servicios;
 using System.Collections.Generic;
 using System.Drawing;
@@ -122,8 +123,15 @@ namespace Vista
 
         private void Tree_BeforeCheck(object sender, TreeViewCancelEventArgs e)
         {
-            if (SoloLectura && !actualizando)
-                e.Cancel = true;
+            try
+            {
+                if (SoloLectura && !actualizando)
+                    e.Cancel = true;
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void Tree_AfterCheck(object sender, TreeViewEventArgs e)

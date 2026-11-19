@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // "Mi Agenda" del Medico (Proceso 2). En una misma pantalla (RNF-05):
+    // "Mi Agenda" - Medico (Proceso 2). En una misma pantalla (RNF-05):
     //  - CU-02.2 Agenda del Dia (con Atender / Ausente) y CU-02.3 Agenda General (otra fecha, solo lectura)
     //  - CU-02.6 Marcar Ausente y "Finalizar atencion" del dia
     //  - CU-02.4 Consultar Historia Clinica
@@ -66,8 +66,6 @@ namespace Vista
                 }
                 accesoPermitido = true;
 
-                DejarLugarAlMenu(tlpPrincipal);
-
                 puedeAtender = TienePatente("btnAtender");
                 puedeMarcarAusente = TienePatente("btnAusente");
 
@@ -99,13 +97,7 @@ namespace Vista
 
         private void ActualizarTextosDinamicos()
         {
-            BE_Usuario usuario = Sesion.Instancia().UsuarioActual;
-            Text = T("Titulo", "Mi Agenda");
-            lblMedico.Text = usuario != null ? $"{T("Msg.Medico", "Médico")}: {usuario.NombreApellido}" : "";
-
-            bool esHoy = dtpFecha.Value.Date == DateTime.Today;
-            lblModo.Text = esHoy ? "" : T("Msg.ModoSoloLectura", "Fecha distinta de hoy: agenda en modo solo lectura.");
-            lblAyudaAusente.Visible = esHoy;
+            Text = T("Titulo", "Mi agenda");
 
             if (lblSinTurnos.Visible)
                 lblSinTurnos.Text = TextoSinTurnos();
@@ -117,36 +109,27 @@ namespace Vista
         {
             dgvAgenda.AutoGenerateColumns = false;
             dgvAgenda.Columns.Clear();
-            dgvAgenda.RowTemplate.Height = 40;
+            dgvAgenda.RowTemplate.Height = 26;
             dgvAgenda.ScrollBars = ScrollBars.Vertical;
-            dgvAgenda.DefaultCellStyle.Font = new Font("Microsoft Sans Serif", 11F);
-            dgvAgenda.ColumnHeadersDefaultCellStyle.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
             dgvAgenda.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
             dgvAgenda.DefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvAgenda.EnableHeadersVisualStyles = false;
-            dgvAgenda.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(226, 232, 240);
 
-            AgregarColumnaTexto(dgvAgenda, "colFecha", "Fecha", "Fecha", 62);
-            dgvAgenda.Columns["colFecha"].DefaultCellStyle.Format = "dd/MM";
+            // Columnas del prototipo de CU-01.5: Hora | Paciente | H.C. | Estado | Atender | Ausente.
             AgregarColumnaTexto(dgvAgenda, "colHora", "Hora", "HoraTexto", 55);
-            AgregarColumnaTexto(dgvAgenda, "colPaciente", "Paciente", "NombreApellidoPaciente", 150);
-            AgregarColumnaTexto(dgvAgenda, "colHistoriaClinica", "Historia Clínica", "HistoriaClinicaTexto", 88);
-            AgregarColumnaTexto(dgvAgenda, "colEstado", "Estado", "Estado", 105);
-            AgregarColumnaBoton("colAtender", "Opciones", 95);
+            AgregarColumnaTexto(dgvAgenda, "colPaciente", "Paciente", "NombreApellidoPaciente", 170);
+            AgregarColumnaTexto(dgvAgenda, "colHistoriaClinica", "H.C.", "HistoriaClinicaTexto", 80);
+            AgregarColumnaTexto(dgvAgenda, "colEstado", "Estado", "Estado", 95);
+            AgregarColumnaBoton("colAtender", "Atender", 90);
             AgregarColumnaBoton("colAusente", "Ausente", 90);
-            dgvAgenda.Columns["colAusente"].HeaderText = "";
-
-            // Los pesos son los anchos (px) que entran en una pantalla de 1280 px logicos (1920 al 150 %);
-            // en pantallas mas grandes todas las columnas crecen en la misma proporcion.
         }
 
         private void ConfigurarGrillaPacientes()
         {
             dgvPacientes.AutoGenerateColumns = false;
             dgvPacientes.Columns.Clear();
+            AgregarColumnaTexto(dgvPacientes, "colDNI", "DNI", "DNI", 28);
             AgregarColumnaTexto(dgvPacientes, "colPaciente", "Paciente", "NombreApellido", 50);
-            AgregarColumnaTexto(dgvPacientes, "colDNI", "DNI", "DNI", 25);
-            AgregarColumnaTexto(dgvPacientes, "colHC", "N° HC", "NroHistoriaClinica", 25);
+            AgregarColumnaTexto(dgvPacientes, "colHC", "H.C.", "NroHistoriaClinica", 22);
         }
 
         private void AgregarColumnaTexto(DataGridView grilla, string nombre, string encabezado, string propiedad, float peso)
@@ -255,20 +238,41 @@ namespace Vista
 
         private void dtpFecha_DropDown(object sender, EventArgs e)
         {
-            calendarioAbierto = true;
+            try
+            {
+                calendarioAbierto = true;
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void dtpFecha_CloseUp(object sender, EventArgs e)
         {
-            calendarioAbierto = false;
-            CargarSiCambioLaFecha();
+            try
+            {
+                calendarioAbierto = false;
+                CargarSiCambioLaFecha();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void dtpFecha_ValueChanged(object sender, EventArgs e)
         {
-            // Mientras el calendario esta abierto no se consulta en cada clic: se espera al CloseUp.
-            if (!calendarioAbierto)
-                CargarSiCambioLaFecha();
+            try
+            {
+                // Mientras el calendario esta abierto no se consulta en cada clic: se espera al CloseUp.
+                if (!calendarioAbierto)
+                    CargarSiCambioLaFecha();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void CargarSiCambioLaFecha()
@@ -279,108 +283,156 @@ namespace Vista
 
         private void btnHoy_Click(object sender, EventArgs e)
         {
-            dtpFecha.Value = DateTime.Today;
-            CargarSiCambioLaFecha();
+            try
+            {
+                dtpFecha.Value = DateTime.Today;
+                CargarSiCambioLaFecha();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         // Cada minuto se repinta la grilla para habilitar «Ausente» cuando llega la hora del turno.
         // Si cambio el dia (la pantalla quedo abierta pasada la medianoche) se vuelve a hoy.
         private void timerAgenda_Tick(object sender, EventArgs e)
         {
-            if (fechaCargada.HasValue && fechaCargada.Value.AddDays(1) == DateTime.Today && dtpFecha.Value.Date == fechaCargada.Value)
-                dtpFecha.Value = DateTime.Today;
-            dgvAgenda.Invalidate();
+            try
+            {
+                if (fechaCargada.HasValue && fechaCargada.Value.AddDays(1) == DateTime.Today && dtpFecha.Value.Date == fechaCargada.Value)
+                    dtpFecha.Value = DateTime.Today;
+                dgvAgenda.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void dgvAgenda_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            BE_Turno turno = TurnoDeFila(e.RowIndex);
-            if (turno == null)
-                return;
+            try
+            {
+                BE_Turno turno = TurnoDeFila(e.RowIndex);
+                if (turno == null)
+                    return;
 
-            string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
-            if (columna == "colAtender" && AtenderHabilitado(turno))
-                btnAtender_Click(turno.IdTurno);
-            else if (columna == "colAusente" && AusenteHabilitado(turno))
-                btnAusente_Click(turno.IdTurno);
+                string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
+                if (columna == "colAtender" && AtenderHabilitado(turno))
+                    btnAtender_Click(turno.IdTurno);
+                else if (columna == "colAusente" && AusenteHabilitado(turno))
+                    btnAusente_Click(turno.IdTurno);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         // Doble clic en un turno: abre su Historia Clinica en el panel de la derecha (CU-02.4).
         private void dgvAgenda_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            BE_Turno turno = TurnoDeFila(e.RowIndex);
-            if (turno == null || turno.Paciente == null || turno.Paciente.NroHistoriaClinica <= 0)
-                return;
+            try
+            {
+                BE_Turno turno = TurnoDeFila(e.RowIndex);
+                if (turno == null || turno.Paciente == null || turno.Paciente.NroHistoriaClinica <= 0)
+                    return;
 
-            string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
-            if (columna == "colAtender" || columna == "colAusente")
-                return;
+                string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
+                if (columna == "colAtender" || columna == "colAusente")
+                    return;
 
-            txtBuscarHC.Text = turno.Paciente.NroHistoriaClinica.ToString();
-            btnBuscarHC_Click(btnBuscarHC, EventArgs.Empty);
+                txtBuscarHC.Text = turno.Paciente.NroHistoriaClinica.ToString();
+                btnBuscarHC_Click(btnBuscarHC, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void dgvAgenda_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
         {
-            BE_Turno turno = TurnoDeFila(e.RowIndex);
-            bool sobreBoton = false;
-            if (turno != null && e.ColumnIndex >= 0)
+            try
             {
-                string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
-                sobreBoton = (columna == "colAtender" && AtenderHabilitado(turno))
-                          || (columna == "colAusente" && AusenteHabilitado(turno));
+                BE_Turno turno = TurnoDeFila(e.RowIndex);
+                bool sobreBoton = false;
+                if (turno != null && e.ColumnIndex >= 0)
+                {
+                    string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
+                    sobreBoton = (columna == "colAtender" && AtenderHabilitado(turno))
+                              || (columna == "colAusente" && AusenteHabilitado(turno));
+                }
+                dgvAgenda.Cursor = sobreBoton ? Cursors.Hand : Cursors.Default;
             }
-            dgvAgenda.Cursor = sobreBoton ? Cursors.Hand : Cursors.Default;
+            catch (Exception)
+            {
+                // Sin mensaje: un error al dibujar se repetiria en cada repintado.
+            }
         }
 
         // Dibuja los botones Atender / Ausente (habilitados o deshabilitados) y el estado como etiqueta de color.
         private void dgvAgenda_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            BE_Turno turno = TurnoDeFila(e.RowIndex);
-            if (turno == null || e.ColumnIndex < 0)
-                return;
-
-            string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
-            if (columna != "colAtender" && columna != "colAusente" && columna != "colEstado")
-                return;
-
-            e.PaintBackground(e.CellBounds, false);
-            Rectangle zona = Rectangle.Inflate(e.CellBounds, -6, -6);
-
-            if (columna == "colEstado")
+            try
             {
-                Color fondo, texto;
-                ColoresEstado(turno.Estado, out fondo, out texto);
-                string estado = T($"Estado.{turno.Estado}", turno.Estado);
-                using (SolidBrush pincel = new SolidBrush(fondo))
-                    e.Graphics.FillRectangle(pincel, zona);
-                using (Font fuente = new Font(dgvAgenda.DefaultCellStyle.Font, FontStyle.Bold))
-                    TextRenderer.DrawText(e.Graphics, estado, fuente, zona, texto,
-                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            }
-            else if (turno.Estado != "Confirmado")
-            {
-                // Atendidos y Ausentes se muestran sin opciones (RN-3 CU-02.2)
-                TextRenderer.DrawText(e.Graphics, "—", dgvAgenda.DefaultCellStyle.Font, zona, Color.Gray,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            }
-            else
-            {
-                bool esAtender = columna == "colAtender";
-                bool habilitado = esAtender ? AtenderHabilitado(turno) : AusenteHabilitado(turno);
-                Color fondo = esAtender
-                    ? (habilitado ? ColorAtender : ColorAtenderDeshabilitado)
-                    : (habilitado ? ColorAusente : ColorAusenteDeshabilitado);
-                string texto = esAtender ? T("Msg.Atender", "Atender") : T("Msg.Ausente", "Ausente");
+                BE_Turno turno = TurnoDeFila(e.RowIndex);
+                if (turno == null || e.ColumnIndex < 0)
+                    return;
 
-                using (SolidBrush pincel = new SolidBrush(fondo))
-                    e.Graphics.FillRectangle(pincel, zona);
-                using (Font fuente = new Font(dgvAgenda.DefaultCellStyle.Font, FontStyle.Bold))
-                    TextRenderer.DrawText(e.Graphics, texto, fuente, zona, Color.White,
-                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            }
+                string columna = dgvAgenda.Columns[e.ColumnIndex].Name;
+                if (columna != "colAtender" && columna != "colAusente" && columna != "colEstado")
+                    return;
 
-            e.Handled = true;
+                e.PaintBackground(e.CellBounds, false);
+                Rectangle zona = Rectangle.Inflate(e.CellBounds, -6, -6);
+
+                if (columna == "colEstado")
+                {
+                    Color fondo, texto;
+                    ColoresEstado(turno.Estado, out fondo, out texto);
+                    string estado = T($"Estado.{turno.Estado}", turno.Estado);
+                    using (SolidBrush pincel = new SolidBrush(fondo))
+                        e.Graphics.FillRectangle(pincel, zona);
+                    using (Font fuente = new Font(dgvAgenda.DefaultCellStyle.Font, FontStyle.Bold))
+                        TextRenderer.DrawText(e.Graphics, estado, fuente, zona, texto,
+                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                }
+                else if (turno.Estado != "Confirmado")
+                {
+                    // Atendidos y Ausentes no tienen acciones: se marca con un tilde la columna que corresponde a su estado
+                    // (Atender para el Atendido, Ausente para el Ausente); la otra queda vacia.
+                    bool marca = (columna == "colAtender" && turno.Estado == "Atendido")
+                              || (columna == "colAusente" && turno.Estado == "Ausente");
+                    if (marca)
+                        using (Font fuente = new Font(dgvAgenda.DefaultCellStyle.Font, FontStyle.Bold))
+                            TextRenderer.DrawText(e.Graphics, "\u2714", fuente, zona,
+                                columna == "colAtender" ? ColorAtender : ColorAusente,
+                                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                }
+                else
+                {
+                    bool esAtender = columna == "colAtender";
+                    bool habilitado = esAtender ? AtenderHabilitado(turno) : AusenteHabilitado(turno);
+                    Color fondo = esAtender
+                        ? (habilitado ? ColorAtender : ColorAtenderDeshabilitado)
+                        : (habilitado ? ColorAusente : ColorAusenteDeshabilitado);
+                    string texto = esAtender ? T("Msg.Atender", "Atender") : T("Msg.Ausente", "Ausente");
+
+                    using (SolidBrush pincel = new SolidBrush(fondo))
+                        e.Graphics.FillRectangle(pincel, zona);
+                    using (Font fuente = new Font(dgvAgenda.DefaultCellStyle.Font, FontStyle.Bold))
+                        TextRenderer.DrawText(e.Graphics, texto, fuente, zona, Color.White,
+                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                }
+
+                e.Handled = true;
+            }
+            catch (Exception)
+            {
+                // Sin mensaje: un error al dibujar se repetiria en cada repintado.
+            }
         }
 
         private static void ColoresEstado(string estado, out Color fondo, out Color texto)
@@ -481,8 +533,11 @@ namespace Vista
                 }
                 else
                 {
+                    // RN1.9: tambien se cierran los turnos de dias anteriores que quedaron sin atender; se informan aparte.
+                    int anteriores = bll_atencion.ContarTurnosSinAtenderAnteriores(IdMedico);
                     string pregunta = string.Format(
-                        T("Msg.PreguntaAusentes", "Hay {0} turno(s) sin atender.\n¿Desea marcar como ausente los turnos no atendidos?"), sinAtender);
+                        T("Msg.PreguntaAusentesDetalle", "Hay {0} turno(s) sin atender: {1} de hoy y {2} de días anteriores que quedaron sin cerrar.\n¿Desea marcarlos como ausentes?"),
+                        sinAtender, sinAtender - anteriores, anteriores);
                     if (MessageBox.Show(pregunta, T("Msg.FinalizarAtencion", "Finalizar atención"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                         return;
@@ -510,10 +565,17 @@ namespace Vista
 
         private void txtBuscarHC_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            try
             {
-                e.SuppressKeyPress = true;
-                btnBuscarHC_Click(btnBuscarHC, EventArgs.Empty);
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.SuppressKeyPress = true;
+                    btnBuscarHC_Click(btnBuscarHC, EventArgs.Empty);
+                }
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
             }
         }
 
@@ -556,12 +618,19 @@ namespace Vista
 
         private void dgvPacientes_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0)
-                return;
+            try
+            {
+                if (e.RowIndex < 0)
+                    return;
 
-            BE_Paciente paciente = dgvPacientes.Rows[e.RowIndex].DataBoundItem as BE_Paciente;
-            if (paciente != null && (pacienteHC == null || pacienteHC.IdUsuario != paciente.IdUsuario))
-                MostrarHistoriaClinica(paciente, true);
+                BE_Paciente paciente = dgvPacientes.Rows[e.RowIndex].DataBoundItem as BE_Paciente;
+                if (paciente != null && (pacienteHC == null || pacienteHC.IdPaciente != paciente.IdPaciente))
+                    MostrarHistoriaClinica(paciente, true);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void LimpiarHistoriaClinica()
@@ -689,20 +758,34 @@ namespace Vista
 
         private void flpAtenciones_Resize(object sender, EventArgs e)
         {
-            int ancho = AnchoTarjeta();
-            foreach (Control tarjeta in flpAtenciones.Controls)
+            try
             {
-                tarjeta.MinimumSize = new Size(ancho, 0);
-                tarjeta.MaximumSize = new Size(ancho, 0);
-                tarjeta.Width = ancho;
-                foreach (Control etiqueta in tarjeta.Controls)
-                    etiqueta.MaximumSize = new Size(ancho - 24, 0);
+                int ancho = AnchoTarjeta();
+                foreach (Control tarjeta in flpAtenciones.Controls)
+                {
+                    tarjeta.MinimumSize = new Size(ancho, 0);
+                    tarjeta.MaximumSize = new Size(ancho, 0);
+                    tarjeta.Width = ancho;
+                    foreach (Control etiqueta in tarjeta.Controls)
+                        etiqueta.MaximumSize = new Size(ancho - 24, 0);
+                }
+            }
+            catch (Exception)
+            {
+                // Sin mensaje: un error al dibujar se repetiria en cada repintado.
             }
         }
 
         private void frm_AccesoMedico_FormClosed(object sender, FormClosedEventArgs e)
         {
-            timerAgenda.Stop();
+            try
+            {
+                timerAgenda.Stop();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
     }
 }

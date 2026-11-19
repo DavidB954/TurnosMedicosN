@@ -73,7 +73,7 @@ namespace BLL
             ValidarEspecialidadDelMedico(idMedico, idEspecialidad);
             ValidarSinSuperposicionConOtraEspecialidad(idMedico, diasSemana, inicios, duracion, idEspecialidad);
 
-            bll_turno.CancelarPorCambioDeHorario(ObtenerConflictosModificacion(idMedico, diasSemana, idEspecialidad), idUsuario);
+            bll_turno.CancelarPorCambioDeHorario(ObtenerConflictosModificacion(idMedico, diasSemana, desde, hasta, minutos, idEspecialidad), idUsuario);
 
             foreach (int dia in diasSemana)
             {
@@ -98,25 +98,29 @@ namespace BLL
             bll_bitacora.RegistrarEvento(idUsuario, AccionBitacora.DISPONIBILIDAD_MODIFICADA, "DISPONIBILIDAD", descripcion);
         }
 
-        // Turnos Confirmados de hoy en adelante que se veran afectados si se modifica el
-        // horario del medico (para esa especialidad) en estos dias, porque su horario original
-        // va a desactivarse.
-        public List<BE_Turno> ObtenerConflictosModificacion(int idMedico, List<int> diasSemana, int? idEspecialidad)
+        // Turnos Confirmados de hoy en adelante que se cancelarian al modificar el horario del medico (para esa
+        // especialidad) en estos dias: solo los de horarios que dejan de existir con los nuevos parametros. Un
+        // turno cuyo horario se mantiene (mismo inicio y misma duracion) conserva su horario y no se cancela.
+        public List<BE_Turno> ObtenerConflictosModificacion(int idMedico, List<int> diasSemana, TimeSpan desde, TimeSpan hasta, int minutos, int? idEspecialidad)
         {
+            List<TimeSpan> inicios = ValidarYGenerarFranjas(idMedico, diasSemana, desde, hasta, minutos);
+            TimeSpan duracion = TimeSpan.FromMinutes(minutos);
             List<BE_Turno> conflictos = new List<BE_Turno>();
 
             foreach (int dia in diasSemana)
-                conflictos.AddRange(dal_turno.ListarActivosPorMedicoYDiaDesde(idMedico, dia, DateTime.Today, idEspecialidad));
+                conflictos.AddRange(dal_turno.ListarActivosPorMedicoYDiaDesde(idMedico, dia, DateTime.Today, idEspecialidad)
+                    .FindAll(t => !(inicios.Contains(t.HoraInicio) && t.HoraFin == t.HoraInicio + duracion)));
 
             return conflictos;
         }
 
         private void ValidarEspecialidadDelMedico(int idMedico, int? idEspecialidad)
         {
+            // Cada horario de atencion corresponde a una especialidad (modelo conceptual RF1).
             if (idEspecialidad == null)
-                return;
+                throw new ArgumentException("Seleccione la especialidad del horario.");
 
-            if (!dal_especialidad.listaEspecialidadesPorMedico(idMedico).Exists(e => e.idEspecialidad == idEspecialidad.Value))
+            if (!dal_especialidad.ListarEspecialidadesPorMedico(idMedico).Exists(e => e.IdEspecialidad == idEspecialidad.Value))
                 throw new ArgumentException("El medico no tiene asignada la especialidad elegida.");
         }
 
@@ -177,46 +181,67 @@ namespace BLL
             return horario;
         }
 
-        // Turnos Confirmados de hoy en adelante de una franja puntual, que se cancelan si se la inactiva.
-        public List<BE_Turno> ObtenerTurnosAfectadosPorInactivacion(int idHorario)
-        {
-            return dal_turno.ListarConfirmadosPorHorarioDesde(idHorario, DateTime.Today);
-        }
-
-        // Al inactivar, cancela antes los turnos Confirmados futuros de la franja (la vista
-        // ya pidio confirmacion con ObtenerTurnosAfectadosPorInactivacion).
-        public void CambiarActivo(int idHorario, bool activo, int idUsuario)
-        {
-            if (!activo)
-                bll_turno.CancelarPorCambioDeHorario(ObtenerTurnosAfectadosPorInactivacion(idHorario), idUsuario);
-
-            dal_medicoHorario.CambiarActivo(idHorario, activo);
-        }
-
         // Todas las franjas (activas e inactivas) de un medico, ordenadas por dia y hora.
         public List<BE_MedicoHorario> ListarPorMedico(int idMedico)
         {
             return dal_medicoHorario.ListarParaGrid(true).FindAll(h => h.IdMedico == idMedico);
         }
 
-        // Turnos Confirmados futuros que se cancelarian al inactivar todas estas franjas.
-        public List<BE_Turno> ObtenerTurnosAfectadosPorInactivacion(List<int> idsHorario)
+        // CU-01.4 Inactivar o reactivar horarios en una fecha: horarios activos del medico para el dia de
+        // la semana de la fecha, con su estado en esa fecha y el paciente que tiene turno en cada uno.
+        public List<BE_MedicoHorario> ListarHorariosDelDia(int idMedico, DateTime fecha)
+        {
+            if (idMedico <= 0)
+                throw new ArgumentException("Debe seleccionar un medico.");
+            return dal_medicoHorario.ListarPorMedicoYFecha(idMedico, fecha);
+        }
+
+        // Turnos Confirmados de esa fecha en estos horarios: se cancelan si se los inactiva (punto de
+        // extension Turnos afectados).
+        public List<BE_Turno> ObtenerTurnosAfectados(List<int> idsHorario, DateTime fecha)
         {
             List<BE_Turno> turnos = new List<BE_Turno>();
             foreach (int idHorario in idsHorario)
-                turnos.AddRange(ObtenerTurnosAfectadosPorInactivacion(idHorario));
+                turnos.AddRange(dal_turno.ListarConfirmadosPorHorarioDesde(idHorario, fecha.Date).FindAll(t => t.Fecha.Date == fecha.Date));
 
-            turnos.Sort((a, b) => a.Fecha != b.Fecha ? a.Fecha.CompareTo(b.Fecha) : a.HoraInicio.CompareTo(b.HoraInicio));
+            turnos.Sort((a, b) => a.HoraInicio.CompareTo(b.HoraInicio));
             return turnos;
         }
 
-        public void CambiarActivo(List<int> idsHorario, bool activo, int idUsuario)
+        // El horario deja de atenderse solo en esa fecha; los demas dias de la semana sigue activo.
+        // Cancela antes los turnos Confirmados de esa fecha (la vista ya pidio confirmacion con
+        // ObtenerTurnosAfectados).
+        public void InactivarEnFecha(List<int> idsHorario, DateTime fecha, int idUsuario)
         {
+            ValidarInactivacion(idsHorario, fecha);
+
+            bll_turno.CancelarPorCambioDeHorario(ObtenerTurnosAfectados(idsHorario, fecha), idUsuario);
             foreach (int idHorario in idsHorario)
-                CambiarActivo(idHorario, activo, idUsuario);
+                dal_medicoHorario.InactivarEnFecha(idHorario, fecha, idUsuario);
 
             bll_bitacora.RegistrarEvento(idUsuario, AccionBitacora.DISPONIBILIDAD_MODIFICADA, "DISPONIBILIDAD",
-                $"Se {(activo ? "reactivan" : "inactivan")} {idsHorario.Count} franja(s) horaria(s) de medico (ids {string.Join(",", idsHorario)})");
+                $"Se inactivan {idsHorario.Count} horario(s) de medico el {fecha:dd/MM/yyyy} (ids {string.Join(",", idsHorario)})");
+        }
+
+        // El horario vuelve a atenderse en esa fecha.
+        public void ReactivarEnFecha(List<int> idsHorario, DateTime fecha, int idUsuario)
+        {
+            ValidarInactivacion(idsHorario, fecha);
+
+            foreach (int idHorario in idsHorario)
+                dal_medicoHorario.ReactivarEnFecha(idHorario, fecha);
+
+            bll_bitacora.RegistrarEvento(idUsuario, AccionBitacora.DISPONIBILIDAD_MODIFICADA, "DISPONIBILIDAD",
+                $"Se reactivan {idsHorario.Count} horario(s) de medico el {fecha:dd/MM/yyyy} (ids {string.Join(",", idsHorario)})");
+        }
+
+        // Solo se inactivan o reactivan horarios de hoy en adelante.
+        private static void ValidarInactivacion(List<int> idsHorario, DateTime fecha)
+        {
+            if (idsHorario == null || idsHorario.Count == 0)
+                throw new ArgumentException("Seleccione al menos un horario.");
+            if (fecha.Date < DateTime.Today)
+                throw new ArgumentException("No se pueden cambiar horarios de una fecha pasada.");
         }
 
         public List<BE_MedicoHorario> _listaParaGrid(bool incluirInactivos)
@@ -224,8 +249,13 @@ namespace BLL
             return dal_medicoHorario.ListarParaGrid(incluirInactivos);
         }
 
-        public List<BE_MedicoHorario> _listaDisponibles(int idMedico, DateTime fecha, int? idEspecialidad)
+        // CU-01.1 paso 8: horarios activos del medico para el dia de la semana de la fecha que no
+        // tienen un turno confirmado en esa fecha.
+        public List<BE_MedicoHorario> ConsultarDisponibilidad(int idMedico, DateTime fecha, int? idEspecialidad)
         {
+            if (idEspecialidad == null)
+                throw new ArgumentException("Seleccione la especialidad.");
+
             int diaSemana = (int)fecha.DayOfWeek;
             return dal_medicoHorario.ListarDisponibles(idMedico, diaSemana, fecha, idEspecialidad);
         }

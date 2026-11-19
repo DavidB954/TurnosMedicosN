@@ -49,7 +49,7 @@ namespace Vista
             //
             this.lbl_Rol.AutoSize = true;
             this.lbl_Rol.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Rol.Location = new System.Drawing.Point(327, 32);
+            this.lbl_Rol.Location = new System.Drawing.Point(30, 32);
             this.lbl_Rol.Name = "lbl_Rol";
             this.lbl_Rol.Size = new System.Drawing.Size(62, 29);
             this.lbl_Rol.TabIndex = 5;
@@ -60,7 +60,7 @@ namespace Vista
             this.cboFiltroRol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFiltroRol.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboFiltroRol.FormattingEnabled = true;
-            this.cboFiltroRol.Location = new System.Drawing.Point(400, 28);
+            this.cboFiltroRol.Location = new System.Drawing.Point(103, 28);
             this.cboFiltroRol.Name = "cboFiltroRol";
             this.cboFiltroRol.Size = new System.Drawing.Size(300, 37);
             this.cboFiltroRol.TabIndex = 6;
@@ -70,7 +70,7 @@ namespace Vista
             //
             this.lbl_Usuario.AutoSize = true;
             this.lbl_Usuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Usuario.Location = new System.Drawing.Point(745, 32);
+            this.lbl_Usuario.Location = new System.Drawing.Point(448, 32);
             this.lbl_Usuario.Name = "lbl_Usuario";
             this.lbl_Usuario.Size = new System.Drawing.Size(110, 29);
             this.lbl_Usuario.TabIndex = 0;
@@ -81,7 +81,7 @@ namespace Vista
             this.cboUsuarios.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboUsuarios.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboUsuarios.FormattingEnabled = true;
-            this.cboUsuarios.Location = new System.Drawing.Point(865, 28);
+            this.cboUsuarios.Location = new System.Drawing.Point(568, 28);
             this.cboUsuarios.Name = "cboUsuarios";
             this.cboUsuarios.Size = new System.Drawing.Size(380, 37);
             this.cboUsuarios.TabIndex = 1;
@@ -92,7 +92,7 @@ namespace Vista
             this.groupBoxRoles.Controls.Add(this.clbRoles);
             this.groupBoxRoles.Controls.Add(this.btnGuardarRoles);
             this.groupBoxRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxRoles.Location = new System.Drawing.Point(327, 85);
+            this.groupBoxRoles.Location = new System.Drawing.Point(30, 85);
             this.groupBoxRoles.Name = "groupBoxRoles";
             this.groupBoxRoles.Size = new System.Drawing.Size(400, 700);
             this.groupBoxRoles.TabIndex = 2;
@@ -125,7 +125,7 @@ namespace Vista
             this.groupBoxPermisosDirectos.Controls.Add(this.tvPermisosDirectos);
             this.groupBoxPermisosDirectos.Controls.Add(this.btnGuardarPermisos);
             this.groupBoxPermisosDirectos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxPermisosDirectos.Location = new System.Drawing.Point(745, 85);
+            this.groupBoxPermisosDirectos.Location = new System.Drawing.Point(448, 85);
             this.groupBoxPermisosDirectos.Name = "groupBoxPermisosDirectos";
             this.groupBoxPermisosDirectos.Size = new System.Drawing.Size(560, 700);
             this.groupBoxPermisosDirectos.TabIndex = 3;
@@ -156,7 +156,7 @@ namespace Vista
             //
             this.groupBoxPermisosEfectivos.Controls.Add(this.tvPermisosEfectivos);
             this.groupBoxPermisosEfectivos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxPermisosEfectivos.Location = new System.Drawing.Point(1323, 85);
+            this.groupBoxPermisosEfectivos.Location = new System.Drawing.Point(1026, 85);
             this.groupBoxPermisosEfectivos.Name = "groupBoxPermisosEfectivos";
             this.groupBoxPermisosEfectivos.Size = new System.Drawing.Size(560, 700);
             this.groupBoxPermisosEfectivos.TabIndex = 4;

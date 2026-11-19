@@ -56,7 +56,7 @@
             this.groupBoxRoles.Controls.Add(this.btnModificarRol);
             this.groupBoxRoles.Controls.Add(this.btnEliminarRol);
             this.groupBoxRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxRoles.Location = new System.Drawing.Point(327, 28);
+            this.groupBoxRoles.Location = new System.Drawing.Point(30, 28);
             this.groupBoxRoles.Name = "groupBoxRoles";
             this.groupBoxRoles.Size = new System.Drawing.Size(440, 760);
             this.groupBoxRoles.TabIndex = 0;
@@ -70,14 +70,14 @@
             this.lstRoles.ItemHeight = 25;
             this.lstRoles.Location = new System.Drawing.Point(15, 38);
             this.lstRoles.Name = "lstRoles";
-            this.lstRoles.Size = new System.Drawing.Size(410, 404);
+            this.lstRoles.Size = new System.Drawing.Size(410, 334);
             this.lstRoles.TabIndex = 0;
             this.lstRoles.SelectedIndexChanged += new System.EventHandler(this.lstRoles_SelectedIndexChanged);
             //
             // lblNombre
             //
             this.lblNombre.AutoSize = true;
-            this.lblNombre.Location = new System.Drawing.Point(15, 460);
+            this.lblNombre.Location = new System.Drawing.Point(15, 390);
             this.lblNombre.Name = "lblNombre";
             this.lblNombre.Size = new System.Drawing.Size(101, 29);
             this.lblNombre.TabIndex = 1;
@@ -86,7 +86,7 @@
             // txtNombre
             //
             this.txtNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNombre.Location = new System.Drawing.Point(15, 492);
+            this.txtNombre.Location = new System.Drawing.Point(15, 422);
             this.txtNombre.MaxLength = 50;
             this.txtNombre.Name = "txtNombre";
             this.txtNombre.Size = new System.Drawing.Size(410, 32);
@@ -95,7 +95,7 @@
             // lblDescripcion
             //
             this.lblDescripcion.AutoSize = true;
-            this.lblDescripcion.Location = new System.Drawing.Point(15, 538);
+            this.lblDescripcion.Location = new System.Drawing.Point(15, 468);
             this.lblDescripcion.Name = "lblDescripcion";
             this.lblDescripcion.Size = new System.Drawing.Size(149, 29);
             this.lblDescripcion.TabIndex = 3;
@@ -104,10 +104,11 @@
             // txtDescripcion
             //
             this.txtDescripcion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDescripcion.Location = new System.Drawing.Point(15, 570);
+            this.txtDescripcion.Location = new System.Drawing.Point(15, 500);
             this.txtDescripcion.MaxLength = 100;
             this.txtDescripcion.Name = "txtDescripcion";
-            this.txtDescripcion.Size = new System.Drawing.Size(410, 32);
+            this.txtDescripcion.Multiline = true;
+            this.txtDescripcion.Size = new System.Drawing.Size(410, 110);
             this.txtDescripcion.TabIndex = 4;
             //
             // btnNuevoRol
@@ -149,7 +150,7 @@
             this.groupBoxPermisos.Controls.Add(this.tvPermisos);
             this.groupBoxPermisos.Controls.Add(this.btnGuardarPermisos);
             this.groupBoxPermisos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxPermisos.Location = new System.Drawing.Point(790, 28);
+            this.groupBoxPermisos.Location = new System.Drawing.Point(493, 28);
             this.groupBoxPermisos.Name = "groupBoxPermisos";
             this.groupBoxPermisos.Size = new System.Drawing.Size(760, 760);
             this.groupBoxPermisos.TabIndex = 1;

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace Vista
 {
     // Gestión de Roles:
-    //   - ABM de roles (nombre y descripción)
+    //   - ABM de roles (nombre; la descripción de cada rol se muestra de solo lectura)
     //   - A cada rol se le asignan formularios completos (familia) y/o botones sueltos (patente)
     //     tildándolos en el árbol del catálogo de permisos.
     public partial class frmRolesPermisos : frmBase
@@ -33,6 +33,9 @@ namespace Vista
         {
             try
             {
+                // La descripcion es la del rol seleccionado: se muestra pero no se edita.
+                txtDescripcion.ReadOnly = true;
+                txtDescripcion.TabStop = false;
                 arbolPermisos.Cargar(bll_roles.ObtenerCatalogo());
                 CargarRoles(null);
             }
@@ -100,7 +103,7 @@ namespace Vista
         {
             try
             {
-                int idNuevo = bll_roles.CrearRol(txtNombre.Text, txtDescripcion.Text);
+                int idNuevo = bll_roles.CrearRol(txtNombre.Text, "");
 
                 CargarRoles(idNuevo);
                 MessageBox.Show("Rol creado. Ahora tilde los formularios o botones que puede usar y presione Guardar Permisos.");
@@ -123,7 +126,7 @@ namespace Vista
                     return;
                 }
 
-                bll_roles.ModificarRol(rol.Id, txtNombre.Text, txtDescripcion.Text);
+                bll_roles.ModificarRol(rol.Id, txtNombre.Text, rol.Descripcion ?? "");
 
                 CargarRoles(rol.Id);
                 MessageBox.Show("Rol modificado correctamente.");

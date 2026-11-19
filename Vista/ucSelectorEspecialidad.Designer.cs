@@ -34,6 +34,7 @@ namespace Vista
             // 
             this.cboEspecialidad.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboEspecialidad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEspecialidad.FormattingEnabled = true;
             this.cboEspecialidad.Location = new System.Drawing.Point(160, 2);
             this.cboEspecialidad.Name = "cboEspecialidad";

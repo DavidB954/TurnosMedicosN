@@ -78,28 +78,13 @@ namespace Vista
                 if (sesion.UsuarioActual != null)
                     lblUsuario.Text = $"Usuario: {sesion.UsuarioActual.Nombre}";
 
+                AplicarEstiloMenu();
                 AplicarPermisosMenu();
-
-                timerVencimientoTurnos.Start();
+                groupBox_Menu.Resize += (s, ev) => ReacomodarBotonesMenu();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-        }
-
-        // Autolimpieza mientras la app esta abierta: cada 5 minutos, cierra los turnos
-        // Confirmado que ya vencieron (RF ausentismo automatico). Se ignoran los errores
-        // para no interrumpir al usuario con un mensaje cada vez que corre el Timer;
-        // si falla, simplemente lo vuelve a intentar en la proxima vuelta.
-        private void timerVencimientoTurnos_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                new BLL_Turno().ProcesarVencimientos();
-            }
-            catch (Exception)
-            {
             }
         }
 
@@ -126,17 +111,17 @@ namespace Vista
             btn_GestionRoles.Visible = PuedeAbrir(nameof(frmRolesPermisos));
             btn_Seguridad.Visible = PuedeAbrir(nameof(frmSeguridad));
             btn_Bitacora.Visible = PuedeAbrir(nameof(frmBitacora));
-            btn_BitacoraTurno.Visible = PuedeAbrir(nameof(frm_BitacoraTurno));
+            btn_HistorialTurnos.Visible = PuedeAbrir(nameof(frmHistorialTurnos));
             btnGestionIdiomas.Visible = PuedeAbrir(nameof(frmABM));
             // Mi Agenda muestra contenido clinico exclusivo del rol Medico (ver frm_AccesoMedico
             // y BLL_Atencion): aunque el Administrador tenga, por diseno, la patente de todos los
             // formularios, el boton no se muestra si no tiene tambien ese rol, para no ofrecer un
             // acceso que siempre va a terminar en "Acceso denegado".
             btn_AccesoMedico.Visible = PuedeAbrir(nameof(frm_AccesoMedico)) && Sesion.Instancia().TieneRol("Medico");
-            btn_AccesoPaciente.Visible = PuedeAbrir(nameof(frm_AccesoPaciente));
-            btn_MisRecetas.Visible = PuedeAbrir(nameof(frmMisRecetas));
             btn_GestionMedicos.Visible = PuedeAbrir(nameof(frmGestionMedicos));
             btn_GestionTurnos.Visible = PuedeAbrir(nameof(frmGestionTurnos));
+            btn_ValorTurno.Visible = PuedeAbrir(nameof(frmValorTurno));
+            btn_Liquidaciones.Visible = PuedeAbrir(nameof(frmLiquidaciones));
 
             ActualizarSubmenuUsuarios();
         }
@@ -163,23 +148,72 @@ namespace Vista
                 btn_GestionRoles,
                 btn_Seguridad,
                 btn_Bitacora,
-                btn_BitacoraTurno,
+                btn_HistorialTurnos,
                 btnGestionIdiomas,
                 btn_AccesoMedico,
-                btn_AccesoPaciente,
-                btn_MisRecetas,
                 btn_GestionMedicos,
-                btn_GestionTurnos
+                btn_GestionTurnos,
+                btn_ValorTurno,
+                btn_Liquidaciones,
+                btn_Ayuda
             };
 
-            int y = 34;
+            // Si el contenido no entra a lo alto aparece la barra vertical: se le deja lugar para que no
+            // aparezca tambien una barra horizontal. Las posiciones se toman relativas al scroll.
+            int alto = botonesEnOrden.Where(b => b.Visible).Sum(b => b.Height)
+                       + lblUsuario.Height + CbPrincipalIdioma.Height + btn_Salir.Height + 70;
+            int ancho = groupBox_Menu.Width - (alto > groupBox_Menu.Height ? SystemInformation.VerticalScrollBarWidth : 0);
+            int y = groupBox_Menu.AutoScrollPosition.Y + 12;
             foreach (var boton in botonesEnOrden)
             {
                 if (!boton.Visible)
                     continue;
 
+                boton.Left = 0;
+                boton.Width = ancho;
                 boton.Top = y;
                 y += boton.Height;
+            }
+
+            // Usuario, idioma y Salir van debajo del ultimo boton (antes tenian posicion fija y se
+            // superponian con los botones en pantallas bajas).
+            y += 16;
+            lblUsuario.Location = new System.Drawing.Point(10, y);
+            y += lblUsuario.Height + 8;
+            CbPrincipalIdioma.Location = new System.Drawing.Point(10, y);
+            CbPrincipalIdioma.Width = ancho - 20;
+            y += CbPrincipalIdioma.Height + 10;
+            btn_Salir.Location = new System.Drawing.Point(ancho - btn_Salir.Width - 10, y);
+        }
+
+        // Menu lateral: fondo azul marino, botones planos con texto blanco y los subitems de
+        // Gestion de Usuarios un tono mas claro y con sangria.
+        private void AplicarEstiloMenu()
+        {
+            foreach (Control ctrl in groupBox_Menu.Controls)
+            {
+                if (ctrl is Button boton)
+                {
+                    bool subitem = boton.Name.StartsWith("btn_Sub");
+                    bool salir = boton == btn_Salir;
+                    boton.FlatStyle = FlatStyle.Flat;
+                    boton.FlatAppearance.BorderSize = salir ? 1 : 0;
+                    boton.FlatAppearance.BorderColor = System.Drawing.Color.White;
+                    boton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(46, 90, 136);
+                    boton.FlatAppearance.MouseDownBackColor = frmBase.ColorAccion;
+                    boton.BackColor = subitem ? System.Drawing.Color.FromArgb(42, 74, 114) : frmBase.ColorPrimario;
+                    boton.ForeColor = System.Drawing.Color.White;
+                    boton.Cursor = Cursors.Hand;
+                    if (!salir)
+                    {
+                        boton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+                        boton.Padding = new Padding(subitem ? 34 : 16, 0, 0, 0);
+                    }
+                }
+                else if (ctrl is Label)
+                {
+                    ctrl.ForeColor = System.Drawing.Color.White;
+                }
             }
         }
 
@@ -220,58 +254,148 @@ namespace Vista
 
         private void btn_GestionUsuarios_Click(object sender, EventArgs e)
         {
-            submenuUsuariosAbierto = !submenuUsuariosAbierto;
-            ActualizarSubmenuUsuarios();
+            try
+            {
+                submenuUsuariosAbierto = !submenuUsuariosAbierto;
+                ActualizarSubmenuUsuarios();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_SubUsuariosABM_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmUsuarioABM>();
+            try
+            {
+                AbrirSiTieneAcceso<frmUsuarioABM>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_SubUsuariosRoles_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmUsuarioRoles>();
+            try
+            {
+                AbrirSiTieneAcceso<frmUsuarioRoles>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_SubUsuariosHistorial_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmUsuarioHistorial>();
+            try
+            {
+                AbrirSiTieneAcceso<frmUsuarioHistorial>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_GestionRoles_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmRolesPermisos>();
+            try
+            {
+                AbrirSiTieneAcceso<frmRolesPermisos>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_Seguridad_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmSeguridad>();
+            try
+            {
+                AbrirSiTieneAcceso<frmSeguridad>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_Bitacora_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmBitacora>();
+            try
+            {
+                AbrirSiTieneAcceso<frmBitacora>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
-        private void btn_BitacoraTurno_Click(object sender, EventArgs e)
+        private void btn_HistorialTurnos_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frm_BitacoraTurno>();
+            try
+            {
+                AbrirSiTieneAcceso<frmHistorialTurnos>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_AccesoMedico_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frm_AccesoMedico>();
+            try
+            {
+                AbrirSiTieneAcceso<frm_AccesoMedico>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
-        private void btn_AccesoPaciente_Click(object sender, EventArgs e)
+        private void btn_ValorTurno_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frm_AccesoPaciente>();
+            try
+            {
+                AbrirSiTieneAcceso<frmValorTurno>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
-        private void btn_MisRecetas_Click(object sender, EventArgs e)
+        // D02: ayuda de la pantalla abierta (o el indice de la ayuda si no hay ninguna).
+        private void btn_Ayuda_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmMisRecetas>();
+            try
+            {
+                Ayuda.Mostrar(ActiveMdiChild?.Name ?? Name, this);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
+        }
+
+        private void btn_Liquidaciones_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                AbrirSiTieneAcceso<frmLiquidaciones>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_Salir_Click(object sender, EventArgs e)
@@ -302,7 +426,14 @@ namespace Vista
 
         private void btnGestionIdiomas_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmABM>();
+            try
+            {
+                AbrirSiTieneAcceso<frmABM>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void CbPrincipalIdioma_SelectedIndexChanged(object sender, EventArgs e)
@@ -321,12 +452,26 @@ namespace Vista
 
         private void btn_GestionMedicos_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmGestionMedicos>();
+            try
+            {
+                AbrirSiTieneAcceso<frmGestionMedicos>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btn_GestionTurnos_Click(object sender, EventArgs e)
         {
-            AbrirSiTieneAcceso<frmGestionTurnos>();
+            try
+            {
+                AbrirSiTieneAcceso<frmGestionTurnos>();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
     }
 }

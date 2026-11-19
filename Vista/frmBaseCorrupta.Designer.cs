@@ -121,7 +121,7 @@
             this.Controls.Add(this.groupBox_BaseCorrupta);
             this.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.Name = "frmBaseCorrupta";
-            this.Text = "frmBaseCorrupta";
+            this.Text = "Integridad de la base de datos";
             this.Load += new System.EventHandler(this.frmBaseCorrupta_Load);
             this.groupBox_BaseCorrupta.ResumeLayout(false);
             this.groupBox_BaseCorrupta.PerformLayout();

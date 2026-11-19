@@ -30,7 +30,15 @@ namespace Vista
         public string Etiqueta
         {
             get { return lblEtiqueta.Text; }
-            set { lblEtiqueta.Text = value; }
+            set
+            {
+                lblEtiqueta.Text = value;
+                // Sin etiqueta (la pone la pantalla, como en los prototipos) el combo ocupa todo el
+                // control; con etiqueta, arranca despues de ella para que no la tape.
+                lblEtiqueta.Visible = !string.IsNullOrEmpty(value);
+                int izquierda = lblEtiqueta.Visible ? lblEtiqueta.Left + lblEtiqueta.PreferredWidth + 6 : 0;
+                cboMedico.SetBounds(izquierda, 0, Math.Max(80, Width - izquierda), cboMedico.Height);
+            }
         }
 
         public int? IdMedicoSeleccionado
@@ -47,11 +55,11 @@ namespace Vista
         {
             try
             {
-                cboMedico.DataSource = bll_especialidad._listaMedicos();
+                cboMedico.DataSource = bll_especialidad.ListarMedicos();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -59,11 +67,11 @@ namespace Vista
         {
             try
             {
-                cboMedico.DataSource = bll_especialidad._listaMedicosPorEspecialidad(idEspecialidad);
+                cboMedico.DataSource = bll_especialidad.ListarMedicosPorEspecialidad(idEspecialidad);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 

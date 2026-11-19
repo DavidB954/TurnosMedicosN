@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -44,10 +45,11 @@
   <ItemGroup>
     <Compile Include="DAL_Atencion.cs" />
     <Compile Include="DAL_Bitacora.cs" />
-    <Compile Include="DAL_BitacoraEventoTurno.cs" />
+    <Compile Include="DAL_TurnoHistorial.cs" />
     <Compile Include="DAL_Conexion.cs" />
     <Compile Include="DAL_DVV.cs" />
     <Compile Include="DAL_Especialidad.cs" />
+    <Compile Include="DAL_Liquidacion.cs" />
     <Compile Include="DAL_HistorialCambios.cs" />
     <Compile Include="DAL_Medico.cs" />
     <Compile Include="DAL_MedicoHorario.cs" />

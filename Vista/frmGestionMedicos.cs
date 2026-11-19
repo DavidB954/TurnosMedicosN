@@ -16,6 +16,7 @@ namespace Vista
     {
         BLL_Especialidad bll_especialidad = new BLL_Especialidad();
         BLL_MedicoHorario bll_medicoHorario = new BLL_MedicoHorario();
+        BLL_Medico bll_medico = new BLL_Medico();
 
         bool cargandoGrid = false;
 
@@ -56,7 +57,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -101,7 +102,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -121,7 +122,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -141,7 +142,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -153,11 +154,11 @@ namespace Vista
             {
                 txtMatricula.Text = ucMedicoAsignar.IdMedicoSeleccionado == null
                     ? ""
-                    : new BLL_Medico().ObtenerMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value);
+                    : bll_medico.ObtenerMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -171,8 +172,8 @@ namespace Vista
                     return;
                 }
 
-                new BLL_Medico().GuardarMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value, txtMatricula.Text);
-                txtMatricula.Text = new BLL_Medico().ObtenerMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value);
+                bll_medico.GuardarMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value, txtMatricula.Text);
+                txtMatricula.Text = bll_medico.ObtenerMatricula(ucMedicoAsignar.IdMedicoSeleccionado.Value);
                 MessageBox.Show("Matricula guardada.", "Matricula", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ArgumentException ex)
@@ -181,33 +182,42 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
         private void ucMedicoHorario_MedicoSeleccionado(object sender, EventArgs e)
         {
-            if (ucMedicoHorario.IdMedicoSeleccionado == null)
-                ucEspecialidadHorario.Limpiar();
-            else
-                ucEspecialidadHorario.CargarEspecialidadesPorMedico(ucMedicoHorario.IdMedicoSeleccionado.Value);
-        }
-
-        private void lblFranjaHoraria_Click(object sender, EventArgs e)
-        {
-
+            try
+            {
+                if (ucMedicoHorario.IdMedicoSeleccionado == null)
+                    ucEspecialidadHorario.Limpiar();
+                else
+                    ucEspecialidadHorario.CargarEspecialidadesPorMedico(ucMedicoHorario.IdMedicoSeleccionado.Value);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         // Abre la pantalla simplificada para ver los dias/horarios de un medico e inactivar
         // o reactivar franjas puntuales. Al cerrarla se refresca la grilla de esta pantalla.
         private void btnEditarFranjas_Click(object sender, EventArgs e)
         {
-            using (frmEditarFranjasMedico frm = new frmEditarFranjasMedico(ucMedicoHorario.IdMedicoSeleccionado))
+            try
             {
-                frm.ShowDialog(this);
-            }
+                using (frmEditarFranjasMedico frm = new frmEditarFranjasMedico(ucMedicoHorario.IdMedicoSeleccionado))
+                {
+                    frm.ShowDialog(this);
+                }
 
-            CargarGridHorarios();
+                CargarGridHorarios();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btnAsignarDiaYHorario_Click(object sender, EventArgs e)
@@ -234,7 +244,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -252,7 +262,7 @@ namespace Vista
                 if (!LeerParametrosHorario(out idMedico, out dias, out desde, out hasta, out minutos, out idEspecialidad))
                     return;
 
-                List<BE_Turno> conflictos = bll_medicoHorario.ObtenerConflictosModificacion(idMedico, dias, idEspecialidad);
+                List<BE_Turno> conflictos = bll_medicoHorario.ObtenerConflictosModificacion(idMedico, dias, desde, hasta, minutos, idEspecialidad);
                 if (conflictos.Count > 0 && !ConfirmarCancelacionTurnos(conflictos))
                     return;
 
@@ -268,7 +278,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -290,16 +300,30 @@ namespace Vista
 
         private void checkBoxMostrarInactivos_CheckedChanged(object sender, EventArgs e)
         {
-            CargarGridHorarios();
+            try
+            {
+                CargarGridHorarios();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         // Doble clic en una fila: abre la pantalla de edicion de franjas de ese medico.
         private void dataGridViewMedicosDiasHorarios_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0)
-                return;
+            try
+            {
+                if (e.RowIndex < 0)
+                    return;
 
-            btnEditarFranjas_Click(sender, EventArgs.Empty);
+                btnEditarFranjas_Click(sender, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         // Al seleccionar una fila de la grilla, precarga el medico, el dia y la franja horaria
@@ -321,7 +345,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
         }
 
@@ -550,12 +574,11 @@ namespace Vista
                 AgregarColumna("colIdMedico", "", "IdMedico", 1, false);
                 AgregarColumna("colDiaSemanaValor", "", "DiaSemana", 1, false);
                 AgregarColumna("colIdEspecialidad", "", "IdEspecialidad", 1, false);
-                AgregarColumna("colMedico", "Medico", "Medico", 22);
+                AgregarColumna("colMedico", "Médico", "Medico", 22);
                 AgregarColumna("colEspecialidad", "Especialidad", "Especialidad", 18);
-                AgregarColumna("colDia", "Dia", "Dia", 11);
-                AgregarColumna("colHorario", "Horario de atencion", "Horario", 24);
-                AgregarColumna("colTurnosCada", "Turnos cada", "TurnosCada", 9);
-                AgregarColumna("colEstado", "Estado", "Estado", 16);
+                AgregarColumna("colDia", "Día", "Dia", 11);
+                AgregarColumna("colHorario", "Horario", "Horario", 33);
+                AgregarColumna("colEstado", "Activo", "Estado", 16);
 
                 dataGridViewMedicosDiasHorarios.ReadOnly = true;
                 dataGridViewMedicosDiasHorarios.AllowUserToAddRows = false;
@@ -580,7 +603,7 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Errores.Mostrar(ex);
             }
             finally
             {

@@ -99,7 +99,7 @@ namespace BLL
                 if (turno == null || turno.IdMedico != idMedico)
                     throw new ArgumentException("El turno no puede atenderse: no pertenece a su agenda.");
 
-                ValidarTurnoAtendible(turno);
+                ValidarTurnoAtendible(turno); //Valida que sea la fecha, que el turno este confirmado y que el paciente tenga los datos DNI HC ya en sistema
                 return turno;
             }
             catch (ArgumentException)
@@ -186,7 +186,7 @@ namespace BLL
             if (t.Estado != "Confirmado")
                 throw new ArgumentException($"El turno no puede atenderse: esta en estado {t.Estado}.");
             if (t.Paciente == null || t.Paciente.NroHistoriaClinica <= 0)
-                throw new ArgumentException("El turno no puede atenderse: el paciente no tiene Historia Clinica. Cargue su DNI en ABM de Usuarios.");
+                throw new ArgumentException("El turno no puede atenderse: el paciente no tiene Historia Clinica. Debe registrarlo la recepcion.");
         }
 
         // RN-3 (motivo obligatorio) y RN-1 de CU-02.5 (receta con al menos un item).
@@ -289,14 +289,15 @@ namespace BLL
 
         // ---------------------------------------------------------------- Finalizar atencion del dia
 
-        // Turnos del dia del medico que siguen Confirmados (ni Atendidos ni Ausentes).
+        // Turnos del medico que siguen Confirmados (ni Atendidos ni Ausentes): los del dia y los de
+        // dias anteriores que nadie cerro (RN1.9).
         public int ContarTurnosSinAtender(int idMedico)
         {
             try
             {
                 ValidarRolMedico();
                 ValidarMedicoLogueado(idMedico);
-                return dal.ObtenerAgenda(idMedico, DateTime.Today).Count(t => t.Estado == "Confirmado");
+                return dal.ContarPendientes(idMedico, DateTime.Today);
             }
             catch (ArgumentException)
             {
@@ -308,7 +309,27 @@ namespace BLL
             }
         }
 
-        // Pasa a Ausente todos los turnos del dia que quedaron sin atender. Devuelve cuantos marco.
+        // De los turnos sin atender, los de dias anteriores a hoy que nadie cerro (para avisarlos aparte).
+        public int ContarTurnosSinAtenderAnteriores(int idMedico)
+        {
+            try
+            {
+                ValidarRolMedico();
+                ValidarMedicoLogueado(idMedico);
+                return dal.ContarPendientes(idMedico, DateTime.Today.AddDays(-1));
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudo verificar la agenda del dia: " + ex.Message, ex);
+            }
+        }
+
+        // RN1.9: pasa a Ausente los turnos del dia y de dias anteriores que quedaron sin atender.
+        // Devuelve cuantos marco.
         public int MarcarAusentesPendientes(int idMedico)
         {
             ValidarRolMedico();
@@ -327,7 +348,7 @@ namespace BLL
             foreach (int idTurno in marcados)
             {
                 bitacora.RegistrarEvento(idMedico, AccionBitacora.TURNO_AUSENTE, "TURNOS",
-                    $"Turno {idTurno} marcado como Ausente al finalizar la atencion del dia (medico {idMedico}).");
+                    $"Turno {idTurno} marcado como Ausente al finalizar la atencion (medico {idMedico}).");
             }
 
             RegistrarAtencionFinalizada(idMedico, marcados.Count);
@@ -382,96 +403,6 @@ namespace BLL
                 $"Historia Clinica N° {nroHC} consultada ({atenciones.Count} atenciones).");
 
             return atenciones;
-        }
-
-        // ---------------------------------------------------------------- Paciente: sus recetas
-
-        // El paciente ve SOLO la receta de sus turnos Atendidos (medico, fecha, N° y medicamentos).
-        // El motivo y las indicaciones son parte de la Historia Clinica, que es exclusiva del
-        // rol Medico (RN-1 CU-02.4): no se devuelven, ni siquiera en memoria.
-        public BE_AtencionMedica ObtenerMiReceta(int idTurno)
-        {
-            BE_Usuario usuario = Sesion.Instancia().UsuarioActual;
-            if (usuario == null)
-                throw new ArgumentException("Debe iniciar sesion.");
-
-            BE_Turno turno;
-            BE_AtencionMedica atencion;
-            try
-            {
-                turno = dal.ObtenerTurnoConPaciente(idTurno);
-                if (turno == null || turno.IdPaciente != usuario.IdUsuario)
-                    throw new ArgumentException("Ese turno no pertenece al paciente logueado.");
-                if (turno.Estado != "Atendido")
-                    throw new ArgumentException($"Ese turno esta {turno.Estado}: solo los turnos Atendidos pueden tener receta.");
-
-                atencion = dal.ObtenerAtencionPorTurno(idTurno);
-            }
-            catch (ArgumentException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("No se pudo obtener la receta: " + ex.Message, ex);
-            }
-
-            if (atencion == null || atencion.Receta == null)
-                throw new ArgumentException("En ese turno el medico no emitio receta.");
-
-            // Turno con los datos del paciente (para el PDF) + especialidad de la atencion
-            turno.Especialidades = atencion.Turno.Especialidades;
-
-            bitacora.RegistrarEvento(usuario.IdUsuario, AccionBitacora.RECETA_CONSULTADA, Modulo,
-                $"El paciente {usuario.IdUsuario} consulto su receta {atencion.Receta.NroReceta} (turno {idTurno}).");
-
-            return new BE_AtencionMedica
-            {
-                IdAtencion = atencion.IdAtencion,
-                Turno = turno,
-                FechaHora = atencion.FechaHora,
-                Receta = atencion.Receta
-            };
-        }
-
-        // Menu "Mis recetas": todas las recetas del paciente logueado, de la mas reciente a la mas
-        // antigua. Igual que ObtenerMiReceta, no devuelve motivo ni indicaciones.
-        public List<BE_AtencionMedica> ObtenerMisRecetas()
-        {
-            BE_Usuario usuario = Sesion.Instancia().UsuarioActual;
-            if (usuario == null)
-                throw new ArgumentException("Debe iniciar sesion.");
-
-            List<BE_AtencionMedica> recetas;
-            try
-            {
-                recetas = dal.ObtenerRecetasPorPaciente(usuario.IdUsuario)
-                    .Select(a => new BE_AtencionMedica
-                    {
-                        IdAtencion = a.IdAtencion,
-                        Turno = a.Turno,
-                        FechaHora = a.FechaHora,
-                        Receta = a.Receta
-                    })
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("No se pudieron obtener sus recetas: " + ex.Message, ex);
-            }
-
-            bitacora.RegistrarEvento(usuario.IdUsuario, AccionBitacora.RECETA_CONSULTADA, Modulo,
-                $"El paciente {usuario.IdUsuario} consulto sus recetas ({recetas.Count}).");
-
-            return recetas;
-        }
-
-        // Auditoria de la descarga en PDF (el archivo lo arma la Vista).
-        public void RegistrarDescargaReceta(BE_AtencionMedica receta)
-        {
-            BE_Usuario usuario = Sesion.Instancia().UsuarioActual;
-            bitacora.RegistrarEvento(usuario?.IdUsuario, AccionBitacora.RECETA_DESCARGADA, Modulo,
-                $"El paciente {usuario?.IdUsuario} descargo en PDF la receta {receta.Receta.NroReceta} (turno {receta.Turno.IdTurno}).");
         }
 
         // ---------------------------------------------------------------- Integridad (DVH / DVV)

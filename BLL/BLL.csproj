@@ -44,9 +44,10 @@
   <ItemGroup>
     <Compile Include="BLL_Atencion.cs" />
     <Compile Include="BLL_Bitacora.cs" />
-    <Compile Include="BLL_BitacoraEventoTurno.cs" />
+    <Compile Include="BLL_TurnoHistorial.cs" />
     <Compile Include="BLL_DVV.cs" />
     <Compile Include="BLL_Especialidad.cs" />
+    <Compile Include="BLL_Liquidacion.cs" />
     <Compile Include="BLL_HistorialCambios.cs" />
     <Compile Include="BLL_Medico.cs" />
     <Compile Include="BLL_MedicoHorario.cs" />

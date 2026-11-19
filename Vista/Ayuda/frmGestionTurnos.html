@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Gestión de Turnos</title><link rel="stylesheet" href="estilo.css"></head>
+<body>
+<div class="cab"><h1>Gestión de Turnos</h1><p>Recepcionista · CU-01.1 Registrar turno, CU-01.2 Modificar turno y CU-01.3 Cancelar turno</p></div>
+<div class="cuerpo"><h2>Para qué sirve</h2>
+<p>Identificar o registrar al paciente y darle, modificarle o cancelarle turnos.</p>
+<h2>Registrar un turno</h2>
+<ol>
+<li>Escriba el <b>DNI</b> del paciente (con o sin puntos) y presione <b>Buscar</b> o Enter.</li>
+<li>Si el paciente no existe, complete nombre, apellido y los demás datos y presione <b>Registrar paciente</b>: el sistema le abre la historia clínica.</li>
+<li>En <b>Nuevo turno</b> elija la especialidad, el médico y la fecha. La lista <b>Horarios disponibles</b> muestra solo los horarios libres de ese día.</li>
+<li>Elija un horario y presione <b>Registrar turno</b>. El turno queda en estado Confirmado y aparece en <b>Turnos del paciente</b>.</li>
+</ol>
+<h2>Modificar o cancelar un turno</h2>
+<ol>
+<li>Busque al paciente y seleccione el turno en <b>Turnos del paciente</b>.</li>
+<li>Para <b>modificarlo</b>, elija la nueva fecha y horario y presione <b>Modificar turno</b>: el sistema registra el turno nuevo y cancela el anterior.</li>
+<li>Para <b>cancelarlo</b>, presione <b>Cancelar turno</b> y confirme. El horario queda libre para otro paciente.</li>
+</ol>
+<h2>Ver el historial de un turno</h2>
+<p>Seleccione el turno y presione <b>Ver historial</b> para ver quién lo registró, lo modificó o lo canceló y cuándo. Ver <a href="frmHistorialTurnos.html">Historial de cambios de turnos</a>.</p>
+<div class="regla">Reglas: solo se dan turnos en horarios activos, no inactivos en esa fecha, y en fecha y hora futuras (RN1.2); un horario admite un único turno confirmado por fecha (RN1.3); solo se modifican o cancelan turnos confirmados (RN1.4).</div></div>
+<p class="pie"><a href="index.html">« Índice de la ayuda</a></p>
+<p class="pie">Sistema de Gestión de Turnos y Honorarios Médicos – Sanatorio Córdoba</p>
+</body></html>

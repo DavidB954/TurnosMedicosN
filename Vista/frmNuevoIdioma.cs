@@ -39,23 +39,37 @@ namespace Vista
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtCodigo.Text) ||
-               string.IsNullOrWhiteSpace(txtNombre.Text))
+            try
             {
-                MessageBox.Show("Completá ambos campos.", "Error");
-                return;
-            }
+                if (string.IsNullOrWhiteSpace(txtCodigo.Text) ||
+                   string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("Completá ambos campos.", "Error");
+                    return;
+                }
 
-            Codigo = txtCodigo.Text.Trim().ToUpper();
-            Nombre = txtNombre.Text.Trim();
-            DialogResult = DialogResult.OK;
-            Close();
+                Codigo = txtCodigo.Text.Trim().ToUpper();
+                Nombre = txtNombre.Text.Trim();
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
-            Close();
+            try
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
     }
 }

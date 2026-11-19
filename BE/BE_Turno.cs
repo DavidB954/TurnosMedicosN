@@ -2,6 +2,9 @@ using System;
 
 namespace BE
 {
+    // Reserva de un horario de atencion de un medico, en una fecha, para un paciente.
+    // En la base el turno guarda el paciente y el horario; el medico, la especialidad y las horas
+    // salen del horario (Medico_Horario) y se completan aca para mostrarlos.
     public class BE_Turno
     {
         public int IdTurno { get; set; }
@@ -15,10 +18,10 @@ namespace BE
         // "Confirmado", "Cancelado", "Atendido" o "Ausente"
         public string Estado { get; set; }
 
+        public DateTime FechaCreacion { get; set; }
+
         public int IdMedico { get; set; }
 
-        // Especialidad con la que se reservo (la de la franja horaria); null = el horario no
-        // tenia una especialidad puntual asignada (franjas creadas antes de esa funcionalidad).
         public int? IdEspecialidad { get; set; }
 
         public TimeSpan HoraInicio { get; set; }
@@ -27,15 +30,17 @@ namespace BE
 
         public string NombreApellidoMedico { get; set; }
 
-        // Matricula profesional del medico (tabla Medico). Se muestra en la receta.
+        // Matricula profesional del medico (tabla Medico).
         public string MatriculaMedico { get; set; }
 
         public string NombreApellidoPaciente { get; set; }
 
+        public string DNIPaciente { get; set; }
+
         public string Especialidades { get; set; }
 
-        // Asociacion con el Paciente (Proceso 2): un Turno TIENE un Paciente, no hereda de el.
-        // Se completa solo en las consultas que lo necesitan (agenda del medico, atencion).
+        // Asociacion con el Paciente: un Turno TIENE un Paciente. Se completa solo en las
+        // consultas que lo necesitan (agenda del medico, atencion).
         public BE_Paciente Paciente { get; set; }
 
         public string HoraTexto { get { return HoraInicio.ToString(@"hh\:mm"); } }

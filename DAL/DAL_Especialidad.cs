@@ -26,7 +26,7 @@ namespace DAL
                 conexion.Open();
                 SqlCommand cmdEspecialidad = new SqlCommand(@"Insert into Especialidades (Nombre) VALUES (@nombre)", conexion);
 
-                cmdEspecialidad.Parameters.Add("@nombre", SqlDbType.NVarChar, 30).Value = especialidad.nombre;
+                cmdEspecialidad.Parameters.Add("@nombre", SqlDbType.NVarChar, 30).Value = especialidad.Nombre;
 
                 cmdEspecialidad.ExecuteNonQuery();  
             }
@@ -57,7 +57,38 @@ namespace DAL
             }
         }
 
-        public List<BE_Especialidad> listaEspecialidad()
+        // CU-02.1: actualiza el valor del turno y el porcentaje por ausencia de la especialidad. Las
+        // liquidaciones ya generadas no cambian porque guardan los valores aplicados (RN2.5).
+        public void ActualizarValorTurno(int idEspecialidad, decimal valorTurno, decimal porcentajeAusente)
+        {
+            try
+            {
+                using (SqlConnection conexion = conex.ObtenerConexion())
+                {
+                    conexion.Open();
+                    SqlCommand cmd = new SqlCommand(@"
+                        UPDATE Especialidades SET ValorTurno = @valorTurno, PorcentajeAusente = @porcentaje
+                        WHERE IdEspecialidad = @idEspecialidad", conexion);
+                    SqlParameter valor = cmd.Parameters.Add("@valorTurno", SqlDbType.Decimal);
+                    valor.Precision = 12;
+                    valor.Scale = 2;
+                    valor.Value = valorTurno;
+                    SqlParameter porcentaje = cmd.Parameters.Add("@porcentaje", SqlDbType.Decimal);
+                    porcentaje.Precision = 5;
+                    porcentaje.Scale = 2;
+                    porcentaje.Value = porcentajeAusente;
+                    cmd.Parameters.Add("@idEspecialidad", SqlDbType.Int).Value = idEspecialidad;
+                    if (cmd.ExecuteNonQuery() == 0)
+                        throw new InvalidOperationException("La especialidad no existe.");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<BE_Especialidad> ListarEspecialidades()
         {
             try
             {
@@ -67,15 +98,18 @@ namespace DAL
                 {
                     conexion.Open();
 
-                    SqlCommand cmdListaEspecialidad = new SqlCommand("Select * from Especialidades", conexion);
+                    SqlCommand cmdListaEspecialidad = new SqlCommand(
+                        "Select IdEspecialidad, Nombre, ValorTurno, PorcentajeAusente from Especialidades Order by Nombre", conexion);
 
                     SqlDataReader lector = cmdListaEspecialidad.ExecuteReader();
 
                     while (lector.Read())
                     {
                         BE_Especialidad especialidad = new BE_Especialidad();
-                        especialidad.idEspecialidad = Convert.ToInt32(lector[0].ToString());
-                        especialidad.nombre = lector[1].ToString();
+                        especialidad.IdEspecialidad = Convert.ToInt32(lector["IdEspecialidad"]);
+                        especialidad.Nombre = lector["Nombre"].ToString();
+                        especialidad.ValorTurno = Convert.ToDecimal(lector["ValorTurno"]);
+                        especialidad.PorcentajeAusente = Convert.ToDecimal(lector["PorcentajeAusente"]);
 
                         _listaEspecialidad.Add(especialidad);
                     }
@@ -90,7 +124,7 @@ namespace DAL
             }
         }
 
-        public List<BE_Usuario> listaMedicos()
+        public List<BE_Usuario> ListarMedicos()
         {
             try
             {
@@ -120,7 +154,7 @@ namespace DAL
             }
         }
 
-        public List<BE_Usuario> listaMedicosPorEspecialidad(int idEspecialidad)
+        public List<BE_Usuario> ListarMedicosPorEspecialidad(int idEspecialidad)
         {
             try
             {
@@ -156,7 +190,7 @@ namespace DAL
             }
         }
 
-        public List<BE_Especialidad> listaEspecialidadesPorMedico(int idMedico)
+        public List<BE_Especialidad> ListarEspecialidadesPorMedico(int idMedico)
         {
             try
             {
@@ -165,7 +199,7 @@ namespace DAL
                 {
                     conexion.Open();
                     SqlCommand cmd = new SqlCommand(@"
-                        Select e.IdEspecialidad, e.Nombre
+                        Select e.IdEspecialidad, e.Nombre, e.ValorTurno, e.PorcentajeAusente
                         From Medico_Especialidad me
                         Inner join Especialidades e on e.IdEspecialidad = me.IdEsp
                         Where me.IdMedico = @idMedico
@@ -176,8 +210,10 @@ namespace DAL
                     while (lector.Read())
                     {
                         BE_Especialidad especialidad = new BE_Especialidad();
-                        especialidad.idEspecialidad = Convert.ToInt32(lector["IdEspecialidad"]);
-                        especialidad.nombre = lector["Nombre"].ToString();
+                        especialidad.IdEspecialidad = Convert.ToInt32(lector["IdEspecialidad"]);
+                        especialidad.Nombre = lector["Nombre"].ToString();
+                        especialidad.ValorTurno = Convert.ToDecimal(lector["ValorTurno"]);
+                        especialidad.PorcentajeAusente = Convert.ToDecimal(lector["PorcentajeAusente"]);
                         lista.Add(especialidad);
                     }
                 }

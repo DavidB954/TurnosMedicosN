@@ -72,8 +72,8 @@ namespace Vista
         {
             AplicarIdiomaAutomatico();
             ActualizarTitulo();
-            rbRecetaSi.Text = T("rbRecetaSi", "SÍ");
-            rbRecetaNo.Text = T("rbRecetaNo", "NO");
+            rbRecetaSi.Text = T("rbRecetaSi", "Sí");
+            rbRecetaNo.Text = T("rbRecetaNo", "No");
         }
 
         // Paciente, N° de Historia Clinica y DNI en solo lectura.
@@ -132,29 +132,36 @@ namespace Vista
 
         private void rbReceta_CheckedChanged(object sender, EventArgs e)
         {
-            // CheckedChanged se dispara en los dos radio: se procesa solo el que quedo marcado.
-            RadioButton radio = sender as RadioButton;
-            if (cambiandoReceta || radio == null || !radio.Checked)
-                return;
-
-            if (rbRecetaNo.Checked && itemsReceta.Count > 0)
+            try
             {
-                // A2 - Cambio a Receta = NO: se descartan los items cargados
-                if (MessageBox.Show(T("Msg.DescartarReceta", "Se descartarán los medicamentos cargados. ¿Continuar?"),
-                        T("Msg.Receta", "Receta"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                {
-                    cambiandoReceta = true;
-                    rbRecetaSi.Checked = true;
-                    cambiandoReceta = false;
+                // CheckedChanged se dispara en los dos radio: se procesa solo el que quedo marcado.
+                RadioButton radio = sender as RadioButton;
+                if (cambiandoReceta || radio == null || !radio.Checked)
                     return;
-                }
-                itemsReceta.Clear();
-                LimpiarItem();
-            }
 
-            groupBoxReceta.Visible = rbRecetaSi.Checked;
-            if (rbRecetaSi.Checked)
-                txtMedicamento.Focus();
+                if (rbRecetaNo.Checked && itemsReceta.Count > 0)
+                {
+                    // A2 - Cambio a Receta = NO: se descartan los items cargados
+                    if (MessageBox.Show(T("Msg.DescartarReceta", "Se descartarán los medicamentos cargados. ¿Continuar?"),
+                            T("Msg.Receta", "Receta"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    {
+                        cambiandoReceta = true;
+                        rbRecetaSi.Checked = true;
+                        cambiandoReceta = false;
+                        return;
+                    }
+                    itemsReceta.Clear();
+                    LimpiarItem();
+                }
+
+                groupBoxReceta.Enabled = rbRecetaSi.Checked;
+                if (rbRecetaSi.Checked)
+                    txtMedicamento.Focus();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         private void btnAgregar_Click(object sender, EventArgs e)
@@ -195,10 +202,17 @@ namespace Vista
 
         private void dgvMedicamentos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= itemsReceta.Count)
-                return;
-            if (dgvMedicamentos.Columns[e.ColumnIndex].Name == "colQuitar")
-                itemsReceta.RemoveAt(e.RowIndex);
+            try
+            {
+                if (e.RowIndex < 0 || e.RowIndex >= itemsReceta.Count)
+                    return;
+                if (dgvMedicamentos.Columns[e.ColumnIndex].Name == "colQuitar")
+                    itemsReceta.RemoveAt(e.RowIndex);
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         // ---------------------------------------------------------------- Registrar (CU-02.1)
@@ -256,24 +270,38 @@ namespace Vista
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
-            Close();
+            try
+            {
+                Close();
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
 
         // A3 - Cancelacion: si hay datos cargados se pide confirmacion. No se guarda nada.
         private void frmAtencion_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (registrada)
-                return;
+            try
+            {
+                if (registrada)
+                    return;
 
-            bool hayDatos = !string.IsNullOrWhiteSpace(txtMotivo.Text)
-                         || !string.IsNullOrWhiteSpace(txtIndicaciones.Text)
-                         || itemsReceta.Count > 0;
-            if (!hayDatos)
-                return;
+                bool hayDatos = !string.IsNullOrWhiteSpace(txtMotivo.Text)
+                             || !string.IsNullOrWhiteSpace(txtIndicaciones.Text)
+                             || itemsReceta.Count > 0;
+                if (!hayDatos)
+                    return;
 
-            if (MessageBox.Show(T("Msg.ConfirmarCancelar", "¿Cerrar sin registrar la atención? No se guardará nada y el turno seguirá Confirmado."),
-                    T("Titulo", "Registrar Atención"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                e.Cancel = true;
+                if (MessageBox.Show(T("Msg.ConfirmarCancelar", "¿Cerrar sin registrar la atención? No se guardará nada y el turno seguirá Confirmado."),
+                        T("Titulo", "Registrar Atención"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    e.Cancel = true;
+            }
+            catch (Exception ex)
+            {
+                Errores.Mostrar(ex);
+            }
         }
     }
 }

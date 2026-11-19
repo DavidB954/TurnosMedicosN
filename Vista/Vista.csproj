@@ -73,21 +73,11 @@
     <Compile Include="frmBaseCorrupta.Designer.cs">
       <DependentUpon>frmBaseCorrupta.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMiReceta.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmMiReceta.Designer.cs">
-      <DependentUpon>frmMiReceta.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DescargadorReceta.cs" />
-    <Compile Include="frmMisRecetas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmMisRecetas.Designer.cs">
-      <DependentUpon>frmMisRecetas.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmEditarFranjasMedico.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEditarFranjasMedico.Designer.cs">
+      <DependentUpon>frmEditarFranjasMedico.cs</DependentUpon>
     </Compile>
     <Compile Include="frmGestionMedicos.cs">
       <SubType>Form</SubType>
@@ -119,23 +109,29 @@
     <Compile Include="frm_AccesoMedico.Designer.cs">
       <DependentUpon>frm_AccesoMedico.cs</DependentUpon>
     </Compile>
-    <Compile Include="frm_AccesoPaciente.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frm_AccesoPaciente.Designer.cs">
-      <DependentUpon>frm_AccesoPaciente.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmBitacora.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmBitacora.Designer.cs">
       <DependentUpon>frmBitacora.cs</DependentUpon>
     </Compile>
-    <Compile Include="frm_BitacoraTurno.cs">
+    <Compile Include="frmLiquidaciones.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frm_BitacoraTurno.Designer.cs">
-      <DependentUpon>frm_BitacoraTurno.cs</DependentUpon>
+    <Compile Include="frmLiquidaciones.Designer.cs">
+      <DependentUpon>frmLiquidaciones.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmValorTurno.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmValorTurno.Designer.cs">
+      <DependentUpon>frmValorTurno.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmHistorialTurnos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHistorialTurnos.Designer.cs">
+      <DependentUpon>frmHistorialTurnos.cs</DependentUpon>
     </Compile>
     <Compile Include="frmGestionTurnos.cs">
       <SubType>Form</SubType>
@@ -187,6 +183,14 @@
       <DependentUpon>ucSelectorMedico.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="Errores.cs" />
+    <Compile Include="Ayuda.cs" />
+    <Compile Include="frmAyuda.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAyuda.Designer.cs">
+      <DependentUpon>frmAyuda.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmABM.resx">
       <DependentUpon>frmABM.cs</DependentUpon>
@@ -215,14 +219,17 @@
     <EmbeddedResource Include="frm_AccesoMedico.resx">
       <DependentUpon>frm_AccesoMedico.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frm_AccesoPaciente.resx">
-      <DependentUpon>frm_AccesoPaciente.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmBitacora.resx">
       <DependentUpon>frmBitacora.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frm_BitacoraTurno.resx">
-      <DependentUpon>frm_BitacoraTurno.cs</DependentUpon>
+    <EmbeddedResource Include="frmLiquidaciones.resx">
+      <DependentUpon>frmLiquidaciones.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmValorTurno.resx">
+      <DependentUpon>frmValorTurno.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmHistorialTurnos.resx">
+      <DependentUpon>frmHistorialTurnos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmGestionTurnos.resx">
       <DependentUpon>frmGestionTurnos.cs</DependentUpon>
@@ -254,6 +261,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Ayuda\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
