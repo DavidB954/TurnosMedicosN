@@ -9,7 +9,8 @@ using System.Text;
 
 namespace BLL
 {
-    // Proceso 2 - Atencion y Agenda Medica (RF 02.1 a RF 02.6).
+    // RF1 - Atencion medica: CU-01.5 Registrar atencion medica (agenda, historia clinica y receta) y
+    // CU-01.6 Registrar ausencia del paciente.
     public class BLL_Atencion
     {
         DAL_Atencion dal = new DAL_Atencion();
@@ -22,7 +23,7 @@ namespace BLL
         public const int LargoMaximoMotivo = 500;
         public const int LargoMaximoIndicaciones = 1000;
 
-        // ---------------------------------------------------------------- Agenda (CU-02.2 / 02.3)
+        // ---------------------------------------------------------------- Agenda (CU-01.5)
 
         // Primera fecha (desde "desde" en adelante) en que el medico tiene algun turno asignado.
         // Se usa para saltar directo a una fecha con contenido si la elegida no tiene nada.
@@ -80,13 +81,13 @@ namespace BLL
             return turno != null && turno.Fecha.Date == DateTime.Today && turno.Estado == "Confirmado";
         }
 
-        // "Ausente" habilitado: turno de hoy, Confirmado y cuya hora de inicio ya paso (RN-1 CU-02.6).
+        // "Ausente" habilitado: turno de hoy, Confirmado y cuya hora de inicio ya paso (RN1.7, CU-01.6).
         public bool PuedeMarcarAusente(BE_Turno turno)
         {
             return PuedeAtender(turno) && turno.HoraInicio <= DateTime.Now.TimeOfDay;
         }
 
-        // ---------------------------------------------------------------- Atender (CU-02.1)
+        // ---------------------------------------------------------------- Atender (CU-01.5)
 
         public BE_Turno ObtenerTurnoParaAtender(int idTurno, int idMedico)
         {
@@ -112,7 +113,7 @@ namespace BLL
             }
         }
 
-        // RF 02.1 (+ RF 02.5 si trae receta). Todo se guarda en una unica transaccion.
+        // CU-01.5 (con la receta si la trae). Todo se guarda en una unica transaccion.
         public void RegistrarAtencion(BE_AtencionMedica a)
         {
             if (a == null || a.Turno == null)
@@ -189,7 +190,7 @@ namespace BLL
                 throw new ArgumentException("El turno no puede atenderse: el paciente no tiene Historia Clinica. Debe registrarlo la recepcion.");
         }
 
-        // RN-3 (motivo obligatorio) y RN-1 de CU-02.5 (receta con al menos un item).
+        // CU-01.5: motivo de consulta obligatorio y receta con al menos un item.
         private void ValidarDatos(BE_AtencionMedica a)
         {
             List<string> errores = new List<string>();
@@ -220,7 +221,7 @@ namespace BLL
                 throw new ArgumentException(string.Join(Environment.NewLine, errores.Distinct()));
         }
 
-        // CU-02.5 paso 3: valida un medicamento antes de agregarlo a la receta.
+        // CU-01.5 (receta): valida un medicamento antes de agregarlo a la receta.
         public void ValidarItemReceta(BE_RecetaItem item)
         {
             if (item == null)
@@ -244,7 +245,7 @@ namespace BLL
                 throw new ArgumentException($"La cantidad de {item.Medicamento} debe ser mayor a 0.");
         }
 
-        // ---------------------------------------------------------------- Ausente (CU-02.6)
+        // ---------------------------------------------------------------- Ausente (CU-01.6)
 
         public void MarcarAusente(int idTurno)
         {
@@ -361,7 +362,7 @@ namespace BLL
                 $"Atencion del {DateTime.Today:dd/MM/yyyy} finalizada por el medico {idMedico}. Ausentes marcados al cierre: {ausentesMarcados}.");
         }
 
-        // ---------------------------------------------------------------- Historia Clinica (CU-02.4)
+        // ---------------------------------------------------------------- Historia Clinica (CU-01.5)
 
         public List<BE_Paciente> BuscarPacientes(string texto)
         {
@@ -463,7 +464,7 @@ namespace BLL
 
         // ---------------------------------------------------------------- Seguridad
 
-        // RNF-01 / RN-1 CU-02.4: el contenido clinico es solo para el rol Medico.
+        // CU-01.5: el contenido clinico es solo para el rol Medico.
         private void ValidarRolMedico()
         {
             Sesion sesion = Sesion.Instancia();

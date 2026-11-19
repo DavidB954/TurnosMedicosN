@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // CU-02.1 Atender Consulta (+ CU-02.5 Emitir Receta, «extend» si Receta = SI).
+    // CU-01.5 Registrar atencion medica (con la receta si el medico la emite).
     // Se abre desde «Atender» en Mi Agenda (frm_AccesoMedico).
     public partial class frmAtencion : frmBase
     {
@@ -128,7 +128,7 @@ namespace Vista
             dgvMedicamentos.Columns.Add(columna);
         }
 
-        // ---------------------------------------------------------------- Receta (CU-02.5)
+        // ---------------------------------------------------------------- Receta (CU-01.5)
 
         private void rbReceta_CheckedChanged(object sender, EventArgs e)
         {
@@ -215,7 +215,7 @@ namespace Vista
             }
         }
 
-        // ---------------------------------------------------------------- Registrar (CU-02.1)
+        // ---------------------------------------------------------------- Registrar (CU-01.5)
 
         private void btnRegistrar_Click(object sender, EventArgs e)
         {

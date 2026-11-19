@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace DAL
 {
-    // Acceso a datos del Proceso 2 (Atencion y Agenda Medica).
+    // Acceso a datos de la atencion medica y la agenda del medico (RF1: CU-01.5 y CU-01.6).
     public class DAL_Atencion
     {
         DAL_Conexion conexion = new DAL_Conexion();
@@ -104,7 +104,7 @@ namespace DAL
             }
         }
 
-        // RF 02.1 + RF 02.5 en UNA transaccion: AtencionMedica, Receta + items (si hay) y el
+        // CU-01.5 en UNA transaccion: AtencionMedica, Receta + items (si hay) y el
         // cambio de estado del turno a Atendido. El trigger de Turno guarda la copia en
         // BitacoraEventosTurno dentro de esta misma transaccion. Ante cualquier error: ROLLBACK.
         public void GuardarAtencion(BE_AtencionMedica a)

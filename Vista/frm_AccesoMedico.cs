@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // "Mi Agenda" - Medico (Proceso 2). En una misma pantalla (RNF-05):
-    //  - CU-02.2 Agenda del Dia (con Atender / Ausente) y CU-02.3 Agenda General (otra fecha, solo lectura)
-    //  - CU-02.6 Marcar Ausente y "Finalizar atencion" del dia
-    //  - CU-02.4 Consultar Historia Clinica
-    // CU-02.1 Atender Consulta se abre en frmAtencion.
+    // "Mi agenda" del medico (RF1). En una misma pantalla:
+    //  - Agenda del dia (CU-01.5 Atender y CU-01.6 Ausente) y de otra fecha (solo lectura)
+    //  - Marcar ausente y finalizar la atencion del dia (CU-01.6)
+    //  - Historia clinica del paciente (CU-01.5)
+    // La atencion (CU-01.5) se registra en frmAtencion.
     public partial class frm_AccesoMedico : frmBase
     {
         BLL_Atencion bll_atencion = new BLL_Atencion();
@@ -172,10 +172,10 @@ namespace Vista
             return puedeMarcarAusente && bll_atencion.PuedeMarcarAusente(turno);
         }
 
-        // ---------------------------------------------------------------- Agenda (CU-02.2 / CU-02.3)
+        // ---------------------------------------------------------------- Agenda (CU-01.5 y CU-01.6)
 
         // Carga la agenda de la fecha elegida. Con la fecha de hoy habilita Atender / Ausente;
-        // con otra fecha la muestra en solo lectura (CU-02.3).
+        // con otra fecha la muestra en solo lectura (CU-01.5).
         public void CargarAgendaDelDia()
         {
             CargarAgendaDelDia(true);
@@ -330,7 +330,7 @@ namespace Vista
             }
         }
 
-        // Doble clic en un turno: abre su Historia Clinica en el panel de la derecha (CU-02.4).
+        // Doble clic en un turno: abre su Historia Clinica en el panel de la derecha (CU-01.5).
         private void dgvAgenda_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -450,7 +450,7 @@ namespace Vista
             }
         }
 
-        // ---------------------------------------------------------------- Atender (CU-02.1)
+        // ---------------------------------------------------------------- Atender (CU-01.5)
 
         private void btnAtender_Click(int idTurno)
         {
@@ -489,7 +489,7 @@ namespace Vista
             CargarAgendaDelDia(false);
         }
 
-        // ---------------------------------------------------------------- Ausente (CU-02.6)
+        // ---------------------------------------------------------------- Ausente (CU-01.6)
 
         private void btnAusente_Click(int idTurno)
         {
@@ -559,7 +559,7 @@ namespace Vista
             CargarAgendaDelDia(false);
         }
 
-        // ---------------------------------------------------------------- Historia Clinica (CU-02.4)
+        // ---------------------------------------------------------------- Historia Clinica (CU-01.5)
 
         private BE_Paciente pacienteHC = null;
 

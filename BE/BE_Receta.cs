@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BE
 {
-    // Prescripcion asociada a una Atencion Medica (RF 02.5). Tiene al menos un item.
+    // Prescripcion asociada a una Atencion Medica (CU-01.5). Tiene al menos un item.
     public class BE_Receta
     {
         public int IdReceta { get; set; }

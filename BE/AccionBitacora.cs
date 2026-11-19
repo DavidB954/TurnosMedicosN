@@ -40,7 +40,7 @@ namespace BE
         TURNO_AUSENTE,
         TURNO_RESTAURADO,
         DISPONIBILIDAD_MODIFICADA,
-        // Proceso 2 - Atencion y Agenda Medica
+        // RF1 - Atencion medica y agenda del medico (CU-01.5 y CU-01.6)
         AGENDA_CONSULTADA,
         ATENCION_REGISTRADA,
         TURNO_ATENDIDO,
