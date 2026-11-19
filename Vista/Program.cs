@@ -34,7 +34,24 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                MostrarError(ex);
+                // Sin conexion con la base (por ejemplo, si la instalacion no pudo crearla) no tiene sentido hablar de
+                // integridad: se avisa que falta la base y como resolverlo.
+                Exception causa = ex;
+                while (causa != null && !(causa is System.Data.SqlClient.SqlException))
+                    causa = causa.InnerException;
+                if (causa != null)
+                {
+                    Servicios.RegistroErrores.Registrar(ex, "Conexion con la base de datos");
+                    MessageBox.Show("No se pudo conectar con la base de datos del sistema.\n\n" +
+                        "Verifique que la instalacion haya creado la base: el detalle esta en el archivo " +
+                        "GestionTurnos_instalacion.log de la carpeta del programa. Para crearla a mano, siga el " +
+                        "Manual de instalacion (seccion Creacion manual de la base de datos).\n\nDetalle: " + causa.Message,
+                        "Base de datos no disponible", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MostrarError(ex);
+                }
             }
         }
 
