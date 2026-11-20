@@ -8,7 +8,6 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace BLL
 {
     public class BLL_DVV
@@ -39,14 +38,10 @@ namespace BLL
 
                 string dvvRecalculado = CalcularDVV();
 
-            //    MessageBox.Show(
-            //$"DVV almacenado:\n{dvvAlmacenado}\n\nDVV recalculado:\n{dvvRecalculado}");
-
                 bool integro = dvvAlmacenado == dvvRecalculado;
 
                 if (!integro)
                 {
-                    // Se corre antes del login (arranque de la app), por eso IdUsuario es null.
                     bll_bitacora.RegistrarEvento(
                         null,
                         AccionBitacora.INTEGRIDAD_ERROR,
@@ -62,7 +57,6 @@ namespace BLL
                 throw new Exception($"Error al verificar integridad: {ex.Message}", ex);
             }
            
-
         }
 
         public string CalcularDVV()

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace BE
 {
-    //Utilizamos un enum para poder definir las acciones que se van a registrar en la bitacora. Enum es la mejor opcion para esto porque nos permite tener un conjunto de valores predefinidos y evitar errores de tipeo al registrar las acciones.
     public enum AccionBitacora
     {
         LOGIN_INTENTO,
@@ -40,7 +39,6 @@ namespace BE
         TURNO_AUSENTE,
         TURNO_RESTAURADO,
         DISPONIBILIDAD_MODIFICADA,
-        // RF1 - Atencion medica y agenda del medico (CU-01.5 y CU-01.6)
         AGENDA_CONSULTADA,
         ATENCION_REGISTRADA,
         TURNO_ATENDIDO,
@@ -53,7 +51,6 @@ namespace BE
         RECETA_DESCARGADA,
         MEDICO_MATRICULA_MODIFICADA,
 
-        // RF2 - Liquidacion de honorarios
         VALOR_TURNO_ACTUALIZADO,
         LIQUIDACION_GENERADA,
         RECIBO_EMITIDO,

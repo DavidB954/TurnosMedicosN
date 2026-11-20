@@ -2,8 +2,6 @@ using System;
 
 namespace BE
 {
-    // Persona que recibe atencion en el sanatorio. NO es usuario del sistema: lo registra el
-    // recepcionista (CU-01.1) y se identifica por su DNI. Tabla Paciente.
     public class BE_Paciente
     {
         public int IdPaciente { get; set; }
@@ -20,7 +18,6 @@ namespace BE
 
         public string Email { get; set; }
 
-        // N° de Historia Clinica: lo genera la base (SEQ_NroHistoriaClinica) al registrar al paciente.
         public int NroHistoriaClinica { get; set; }
 
         public DateTime FechaAperturaHC { get; set; }

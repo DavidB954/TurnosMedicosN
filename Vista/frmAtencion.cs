@@ -7,8 +7,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // CU-01.5 Registrar atencion medica (con la receta si el medico la emite).
-    // Se abre desde «Atender» en Mi Agenda (frm_AccesoMedico).
     public partial class frmAtencion : frmBase
     {
         BLL_Atencion bll_atencion = new BLL_Atencion();
@@ -18,7 +16,6 @@ namespace Vista
         private bool registrada = false;
         private bool cambiandoReceta = false;
 
-        // Constructor sin parametros solo para el diseñador de Visual Studio.
         public frmAtencion()
         {
             InitializeComponent();
@@ -49,9 +46,6 @@ namespace Vista
             }
         }
 
-        // Con escalado de Windows alto (125 % / 150 %) el formulario puede quedar mas alto que la
-        // pantalla: se limita al area de trabajo (sin la barra de tareas), el contenido se desplaza
-        // y los botones quedan siempre visibles abajo. Se centra sobre la ventana que lo abrio.
         private void AjustarAPantalla()
         {
             Screen pantalla = Owner != null ? Screen.FromControl(Owner) : Screen.FromPoint(Cursor.Position);
@@ -76,7 +70,6 @@ namespace Vista
             rbRecetaNo.Text = T("rbRecetaNo", "No");
         }
 
-        // Paciente, N° de Historia Clinica y DNI en solo lectura.
         private void MostrarDatosPaciente()
         {
             if (turno == null)
@@ -128,20 +121,16 @@ namespace Vista
             dgvMedicamentos.Columns.Add(columna);
         }
 
-        // ---------------------------------------------------------------- Receta (CU-01.5)
-
         private void rbReceta_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
-                // CheckedChanged se dispara en los dos radio: se procesa solo el que quedo marcado.
                 RadioButton radio = sender as RadioButton;
                 if (cambiandoReceta || radio == null || !radio.Checked)
                     return;
 
                 if (rbRecetaNo.Checked && itemsReceta.Count > 0)
                 {
-                    // A2 - Cambio a Receta = NO: se descartan los items cargados
                     if (MessageBox.Show(T("Msg.DescartarReceta", "Se descartarán los medicamentos cargados. ¿Continuar?"),
                             T("Msg.Receta", "Receta"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     {
@@ -183,7 +172,6 @@ namespace Vista
             }
             catch (ArgumentException ex)
             {
-                // A1 - Item incompleto: se informa y no se agrega
                 MessageBox.Show(ex.Message, T("Msg.Receta", "Receta"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
@@ -214,8 +202,6 @@ namespace Vista
                 Errores.Mostrar(ex);
             }
         }
-
-        // ---------------------------------------------------------------- Registrar (CU-01.5)
 
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
@@ -251,13 +237,11 @@ namespace Vista
             }
             catch (ArgumentException ex)
             {
-                // A2 - Datos incompletos / turno no atendible: se conserva lo cargado
                 Cursor = Cursors.Default;
                 MessageBox.Show(ex.Message, T("Msg.DatosIncompletos", "Revise los datos"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                // A4 - Error al guardar: la transaccion se revirtio, el turno sigue Confirmado
                 Cursor = Cursors.Default;
                 MessageBox.Show(ex.Message, T("Msg.Error", "Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -280,7 +264,6 @@ namespace Vista
             }
         }
 
-        // A3 - Cancelacion: si hay datos cargados se pide confirmacion. No se guarda nada.
         private void frmAtencion_FormClosing(object sender, FormClosingEventArgs e)
         {
             try

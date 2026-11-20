@@ -37,9 +37,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvTurnosTrabajados)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLiquidaciones)).BeginInit();
             this.SuspendLayout();
-            // 
-            // groupBox_Periodo
-            // 
             this.groupBox_Periodo.Controls.Add(this.lblMes);
             this.groupBox_Periodo.Controls.Add(this.cboMes);
             this.groupBox_Periodo.Controls.Add(this.lblAnio);
@@ -51,17 +48,11 @@
             this.groupBox_Periodo.TabIndex = 0;
             this.groupBox_Periodo.TabStop = false;
             this.groupBox_Periodo.Text = "Período";
-            // 
-            // lblMes
-            // 
             this.lblMes.AutoSize = true;
             this.lblMes.Location = new System.Drawing.Point(15, 36);
             this.lblMes.Name = "lblMes";
             this.lblMes.TabIndex = 1;
             this.lblMes.Text = "Mes:";
-            // 
-            // cboMes
-            // 
             this.cboMes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMes.FormattingEnabled = true;
             this.cboMes.Location = new System.Drawing.Point(60, 31);
@@ -69,17 +60,11 @@
             this.cboMes.Size = new System.Drawing.Size(140, 22);
             this.cboMes.TabIndex = 2;
             this.cboMes.SelectedIndexChanged += new System.EventHandler(this.Periodo_Changed);
-            // 
-            // lblAnio
-            // 
             this.lblAnio.AutoSize = true;
             this.lblAnio.Location = new System.Drawing.Point(220, 36);
             this.lblAnio.Name = "lblAnio";
             this.lblAnio.TabIndex = 3;
             this.lblAnio.Text = "Año:";
-            // 
-            // cboAnio
-            // 
             this.cboAnio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAnio.FormattingEnabled = true;
             this.cboAnio.Location = new System.Drawing.Point(260, 31);
@@ -87,9 +72,6 @@
             this.cboAnio.Size = new System.Drawing.Size(100, 22);
             this.cboAnio.TabIndex = 4;
             this.cboAnio.SelectedIndexChanged += new System.EventHandler(this.Periodo_Changed);
-            // 
-            // btnConsultarTurnos
-            // 
             this.btnConsultarTurnos.Location = new System.Drawing.Point(385, 29);
             this.btnConsultarTurnos.Name = "btnConsultarTurnos";
             this.btnConsultarTurnos.Size = new System.Drawing.Size(140, 26);
@@ -97,17 +79,11 @@
             this.btnConsultarTurnos.Text = "Consultar turnos";
             this.btnConsultarTurnos.UseVisualStyleBackColor = true;
             this.btnConsultarTurnos.Click += new System.EventHandler(this.btnConsultarTurnos_Click);
-            // 
-            // lblMedicos
-            // 
             this.lblMedicos.AutoSize = true;
             this.lblMedicos.Location = new System.Drawing.Point(20, 97);
             this.lblMedicos.Name = "lblMedicos";
             this.lblMedicos.TabIndex = 6;
             this.lblMedicos.Text = "Médicos del período";
-            // 
-            // dgvMedicos
-            // 
             this.dgvMedicos.AllowUserToAddRows = false;
             this.dgvMedicos.AllowUserToDeleteRows = false;
             this.dgvMedicos.AllowUserToResizeRows = false;
@@ -122,17 +98,11 @@
             this.dgvMedicos.Size = new System.Drawing.Size(720, 125);
             this.dgvMedicos.TabIndex = 7;
             this.dgvMedicos.SelectionChanged += new System.EventHandler(this.dgvMedicos_SelectionChanged);
-            // 
-            // lblTurnosTrabajados
-            // 
             this.lblTurnosTrabajados.AutoSize = true;
             this.lblTurnosTrabajados.Location = new System.Drawing.Point(20, 257);
             this.lblTurnosTrabajados.Name = "lblTurnosTrabajados";
             this.lblTurnosTrabajados.TabIndex = 8;
             this.lblTurnosTrabajados.Text = "Turnos trabajados del médico seleccionado";
-            // 
-            // dgvTurnosTrabajados
-            // 
             this.dgvTurnosTrabajados.AllowUserToAddRows = false;
             this.dgvTurnosTrabajados.AllowUserToDeleteRows = false;
             this.dgvTurnosTrabajados.AllowUserToResizeRows = false;
@@ -146,9 +116,6 @@
             this.dgvTurnosTrabajados.Name = "dgvTurnosTrabajados";
             this.dgvTurnosTrabajados.Size = new System.Drawing.Size(720, 100);
             this.dgvTurnosTrabajados.TabIndex = 9;
-            // 
-            // lblTotales
-            // 
             this.lblTotales.AutoSize = true;
             this.lblTotales.Location = new System.Drawing.Point(20, 392);
             this.lblTotales.Name = "lblTotales";
@@ -157,9 +124,6 @@
             this.lblTotales.Text = "";
             this.lblTotales.AutoSize = false;
             this.lblTotales.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            // 
-            // btnGenerarLiquidacion
-            // 
             this.btnGenerarLiquidacion.Location = new System.Drawing.Point(560, 387);
             this.btnGenerarLiquidacion.Name = "btnGenerarLiquidacion";
             this.btnGenerarLiquidacion.Size = new System.Drawing.Size(180, 26);
@@ -167,17 +131,11 @@
             this.btnGenerarLiquidacion.Text = "Generar liquidación del médico";
             this.btnGenerarLiquidacion.UseVisualStyleBackColor = true;
             this.btnGenerarLiquidacion.Click += new System.EventHandler(this.btnGenerarLiquidacion_Click);
-            // 
-            // lblLiquidaciones
-            // 
             this.lblLiquidaciones.AutoSize = true;
             this.lblLiquidaciones.Location = new System.Drawing.Point(20, 430);
             this.lblLiquidaciones.Name = "lblLiquidaciones";
             this.lblLiquidaciones.TabIndex = 12;
             this.lblLiquidaciones.Text = "Liquidaciones del período";
-            // 
-            // dgvLiquidaciones
-            // 
             this.dgvLiquidaciones.AllowUserToAddRows = false;
             this.dgvLiquidaciones.AllowUserToDeleteRows = false;
             this.dgvLiquidaciones.AllowUserToResizeRows = false;
@@ -192,9 +150,6 @@
             this.dgvLiquidaciones.Size = new System.Drawing.Size(720, 140);
             this.dgvLiquidaciones.TabIndex = 13;
             this.dgvLiquidaciones.SelectionChanged += new System.EventHandler(this.dgvLiquidaciones_SelectionChanged);
-            // 
-            // btnEmitirRecibo
-            // 
             this.btnEmitirRecibo.Location = new System.Drawing.Point(580, 600);
             this.btnEmitirRecibo.Name = "btnEmitirRecibo";
             this.btnEmitirRecibo.Size = new System.Drawing.Size(160, 26);
@@ -202,9 +157,6 @@
             this.btnEmitirRecibo.Text = "Emitir recibo";
             this.btnEmitirRecibo.UseVisualStyleBackColor = true;
             this.btnEmitirRecibo.Click += new System.EventHandler(this.btnEmitirRecibo_Click);
-            // 
-            // frmLiquidaciones
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(760, 642);

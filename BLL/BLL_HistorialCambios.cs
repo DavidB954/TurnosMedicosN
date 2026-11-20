@@ -18,9 +18,6 @@ namespace BLL
         {
             try
             {
-                // Se juntan todos los campos modificados y se registran en una sola
-                // transacción: si la edición tocó Nombre y Apellido, quedan agrupados
-                // bajo el mismo IdTransaccion y la misma FechaCambio.
                 List<BE_CambioCampo> cambios = new List<BE_CambioCampo>();
 
                 AgregarSiCambio(cambios, "Nombre", anterior.Nombre, nuevo.Nombre);
@@ -80,8 +77,6 @@ namespace BLL
             {
                 DataTable crudo = dal_historialCambios.ObtenerHistorial(tabla, idRegistro);
 
-                // Una fila por transacción: los campos modificados en una misma edición
-                // (mismo IdTransaccion) se muestran juntos en una sola fila de la grilla.
                 DataTable agrupado = new DataTable();
                 agrupado.Columns.Add("FechaCambio", typeof(DateTime));
                 agrupado.Columns.Add("Usuario", typeof(string));
@@ -90,8 +85,6 @@ namespace BLL
                 agrupado.Columns.Add("ValorAnterior", typeof(string));
                 agrupado.Columns.Add("ValorNuevo", typeof(string));
 
-                // Las filas viejas (anteriores a IdTransaccion) no tienen grupo: cada una
-                // queda como transacción propia.
                 var grupos = crudo.Rows.Cast<DataRow>()
                     .GroupBy(r => r["IdTransaccion"] is DBNull ? Guid.NewGuid() : (Guid)r["IdTransaccion"])
                     .OrderByDescending(g => (DateTime)g.First()["FechaCambio"]);
@@ -135,8 +128,6 @@ namespace BLL
             {
                 DataTable historial = dal_historialCambios.ObtenerHistorialHastaFecha("Usuario", idUsuario, fechaHasta);
 
-                //Estado Actual
-
                 BE_Usuario usuario = dal_usuario.ObtenerUsuarioPorId(idUsuario);
 
                 foreach (DataRow row in historial.Rows)
@@ -169,7 +160,6 @@ namespace BLL
                 throw new Exception(ex.Message);
             }
            
-
         }
     }
 }

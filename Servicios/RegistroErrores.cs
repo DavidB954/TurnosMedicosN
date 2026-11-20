@@ -7,9 +7,6 @@ using System.Xml.Serialization;
 
 namespace Servicios
 {
-    // A03 Serializacion: registro de errores del sistema. Cada error inesperado se convierte en un BE_ErrorRegistrado y
-    // se serializa en XML (XmlSerializer) en el archivo RegistroErrores.xml de la carpeta de datos del usuario. El
-    // archivo se deserializa para agregar el error nuevo y para consultarlo (guia de mantenimiento, D03).
     public class RegistroErrores
     {
         private static readonly object bloqueo = new object();
@@ -25,8 +22,6 @@ namespace Servicios
             }
         }
 
-        // Registra el error. Nunca lanza otra excepcion: si no se puede escribir el archivo, el error se pierde pero
-        // el sistema sigue funcionando.
         public static void Registrar(Exception ex, string origen)
         {
             if (ex == null)
@@ -44,11 +39,9 @@ namespace Servicios
             }
             catch (Exception)
             {
-                // El registro de errores no debe provocar otro error.
             }
         }
 
-        // Deserializa el registro de errores (lista vacia si todavia no hay errores o el archivo no se puede leer).
         public static List<BE_ErrorRegistrado> ObtenerErrores()
         {
             try

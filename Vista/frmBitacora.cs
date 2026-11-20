@@ -68,8 +68,6 @@ namespace Vista
 
         }
 
-        // Oculta los IDs crudos y muestra el nombre del usuario en su lugar
-
         private void FormatearGridBitacora()
         {
             if (dgvBitacora.Columns["IdBitacora"] != null)
@@ -107,7 +105,6 @@ namespace Vista
                 if (e.RowIndex < 0) 
                     return;
 
-
                 var Fila = dgvBitacora.Rows[e.RowIndex];
 
                 if (Fila == null)
@@ -131,7 +128,6 @@ namespace Vista
                 MessageBox.Show(ex.Message);
             }
         }
-
 
         public void CboModulos()
         {

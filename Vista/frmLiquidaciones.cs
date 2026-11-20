@@ -11,8 +11,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // RF2 - Liquidacion de honorarios (contador): CU-02.2 Generar liquidacion de honorarios
-    // (incluye la consulta de turnos trabajados) y CU-02.3 Emitir recibo de liquidacion.
     public partial class frmLiquidaciones : frmBase
     {
         BLL_Liquidacion bll_liquidacion = new BLL_Liquidacion();
@@ -35,7 +33,6 @@ namespace Vista
 
         private int Anio { get { return Convert.ToInt32(cboAnio.SelectedItem); } }
 
-        // CU-02.2 paso 2: la pantalla abre con el mes anterior seleccionado.
         private void frmLiquidaciones_Load(object sender, EventArgs e)
         {
             cargando = true;
@@ -101,7 +98,6 @@ namespace Vista
             AgregarColumna(dgvLiquidaciones, "colFechaEmision", "Fecha de emisión", "FechaEmisionTexto", false, 110);
         }
 
-        // El peso reparte el ancho de la grilla entre las columnas (proporcional).
         private void AgregarColumna(DataGridView grilla, string nombre, string encabezado, string propiedad, bool derecha, float peso)
         {
             DataGridViewTextBoxColumn columna = new DataGridViewTextBoxColumn();
@@ -116,7 +112,6 @@ namespace Vista
             grilla.Columns.Add(columna);
         }
 
-        // Al cambiar el periodo, los medicos mostrados dejan de corresponder.
         private void Periodo_Changed(object sender, EventArgs e)
         {
             try
@@ -132,8 +127,6 @@ namespace Vista
             }
         }
 
-        // ---------------------------------------------------------------- CU-02.2 pasos 3 a 5: turnos trabajados
-
         private void btnConsultarTurnos_Click(object sender, EventArgs e)
         {
             try
@@ -142,13 +135,11 @@ namespace Vista
                 CargarMedicos(medicos, null);
                 if (!medicos.Any(m => m.TurnosAtendidos + m.TurnosAusentes > 0))
                 {
-                    // Flujo alternativo A1.
                     MessageBox.Show("No hay turnos atendidos ni ausentes en el período.", "Turnos trabajados",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                // Flujo alternativo A2: especialidad con turnos a liquidar sin valor del turno.
                 List<string> sinValor = medicos.SelectMany(m => m.TurnosTrabajados)
                     .Where(t => t.TurnosAtendidos + t.TurnosAusentes > 0 && t.ValorTurno <= 0)
                     .Select(t => t.NombreEspecialidad).Distinct().ToList();
@@ -167,7 +158,6 @@ namespace Vista
             }
         }
 
-        // Muestra los medicos del periodo y deja seleccionado el indicado (o ninguno).
         private void CargarMedicos(List<BE_MedicoPeriodo> medicos, int? idMedico)
         {
             cargando = true;
@@ -196,7 +186,6 @@ namespace Vista
             MostrarTurnosDelMedico();
         }
 
-        // CU-02.2 paso 5: al elegir un medico se ven sus turnos por especialidad y el importe estimado.
         private void dgvMedicos_SelectionChanged(object sender, EventArgs e)
         {
             try
@@ -226,8 +215,6 @@ namespace Vista
                               medicoSeleccionado.ImporteEstimadoTexto;
         }
 
-        // ---------------------------------------------------------------- CU-02.2 pasos 6 a 11: generar
-
         private void btnGenerarLiquidacion_Click(object sender, EventArgs e)
         {
             try
@@ -239,7 +226,6 @@ namespace Vista
                 }
                 if (medicoSeleccionado.Liquidado)
                 {
-                    // Flujo alternativo A6.
                     MessageBox.Show("El médico ya tiene liquidación de ese período.", "Liquidación de honorarios",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -252,7 +238,7 @@ namespace Vista
                     $"Importe total: {medicoSeleccionado.ImporteEstimadoTexto}",
                     "Confirmar liquidación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirmacion != DialogResult.Yes)
-                    return;   // Flujo alternativo A3
+                    return;
 
                 int idMedico = medicoSeleccionado.IdMedico;
                 BE_Liquidacion liquidacion = bll_liquidacion.GenerarLiquidacion(idMedico, Mes, Anio);
@@ -297,8 +283,6 @@ namespace Vista
             }
         }
 
-        // ---------------------------------------------------------------- CU-02.3: emitir el recibo
-
         private void dgvLiquidaciones_SelectionChanged(object sender, EventArgs e)
         {
             try
@@ -330,7 +314,7 @@ namespace Vista
                     dialogo.Filter = "Documento PDF (*.pdf)|*.pdf";
                     dialogo.FileName = NombreDeArchivo(liquidacionSeleccionada);
                     if (dialogo.ShowDialog(this) != DialogResult.OK)
-                        return;   // Flujo alternativo A1: el contador cancela
+                        return;
                     ruta = dialogo.FileName;
                 }
 

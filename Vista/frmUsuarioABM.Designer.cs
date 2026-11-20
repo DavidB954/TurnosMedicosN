@@ -2,15 +2,8 @@
 {
     partial class frmUsuarioABM
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.groupBox_DatosUsuario = new System.Windows.Forms.GroupBox();
@@ -50,9 +39,6 @@
             this.groupBoxUsuarios.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
             this.SuspendLayout();
-            //
-            // groupBox_DatosUsuario
-            //
             this.groupBox_DatosUsuario.Controls.Add(this.cboActivo);
             this.groupBox_DatosUsuario.Controls.Add(this.lbl_Estado);
             this.groupBox_DatosUsuario.Controls.Add(this.btnModificar);
@@ -75,9 +61,6 @@
             this.groupBox_DatosUsuario.TabIndex = 0;
             this.groupBox_DatosUsuario.TabStop = false;
             this.groupBox_DatosUsuario.Text = "Datos del Usuario";
-            //
-            // cboActivo
-            //
             this.cboActivo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboActivo.FormattingEnabled = true;
             this.cboActivo.Location = new System.Drawing.Point(110, 214);
@@ -85,9 +68,6 @@
             this.cboActivo.Name = "cboActivo";
             this.cboActivo.Size = new System.Drawing.Size(186, 37);
             this.cboActivo.TabIndex = 5;
-            //
-            // lbl_Estado
-            //
             this.lbl_Estado.AutoSize = true;
             this.lbl_Estado.Location = new System.Drawing.Point(8, 214);
             this.lbl_Estado.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -95,9 +75,6 @@
             this.lbl_Estado.Size = new System.Drawing.Size(94, 29);
             this.lbl_Estado.TabIndex = 11;
             this.lbl_Estado.Text = "Estado";
-            //
-            // btnModificar
-            //
             this.btnModificar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnModificar.Location = new System.Drawing.Point(138, 272);
             this.btnModificar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -107,9 +84,6 @@
             this.btnModificar.Text = "Modificar";
             this.btnModificar.UseVisualStyleBackColor = true;
             this.btnModificar.Click += new System.EventHandler(this.btnModificar_Click);
-            //
-            // lbl_Nombre
-            //
             this.lbl_Nombre.AutoSize = true;
             this.lbl_Nombre.Location = new System.Drawing.Point(8, 46);
             this.lbl_Nombre.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -117,9 +91,6 @@
             this.lbl_Nombre.Size = new System.Drawing.Size(107, 29);
             this.lbl_Nombre.TabIndex = 0;
             this.lbl_Nombre.Text = "Nombre";
-            //
-            // lbl_Contrasena
-            //
             this.lbl_Contrasena.AutoSize = true;
             this.lbl_Contrasena.Location = new System.Drawing.Point(218, 129);
             this.lbl_Contrasena.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -127,17 +98,11 @@
             this.lbl_Contrasena.Size = new System.Drawing.Size(135, 29);
             this.lbl_Contrasena.TabIndex = 1;
             this.lbl_Contrasena.Text = "Password ";
-            //
-            // txtEmail
-            //
             this.txtEmail.Location = new System.Drawing.Point(12, 163);
             this.txtEmail.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(187, 35);
             this.txtEmail.TabIndex = 3;
-            //
-            // btnAgregar
-            //
             this.btnAgregar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAgregar.Location = new System.Drawing.Point(8, 272);
             this.btnAgregar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -147,17 +112,11 @@
             this.btnAgregar.Text = "Agregar";
             this.btnAgregar.UseVisualStyleBackColor = true;
             this.btnAgregar.Click += new System.EventHandler(this.btnAgregar_Click);
-            //
-            // txtApellido
-            //
             this.txtApellido.Location = new System.Drawing.Point(222, 80);
             this.txtApellido.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtApellido.Name = "txtApellido";
             this.txtApellido.Size = new System.Drawing.Size(194, 35);
             this.txtApellido.TabIndex = 2;
-            //
-            // btnEliminar
-            //
             this.btnEliminar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminar.Location = new System.Drawing.Point(268, 272);
             this.btnEliminar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -167,9 +126,6 @@
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = true;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
-            //
-            // lbl_Email
-            //
             this.lbl_Email.AutoSize = true;
             this.lbl_Email.Location = new System.Drawing.Point(8, 129);
             this.lbl_Email.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -177,17 +133,11 @@
             this.lbl_Email.Size = new System.Drawing.Size(79, 29);
             this.lbl_Email.TabIndex = 9;
             this.lbl_Email.Text = "Email";
-            //
-            // txtNombreUsuario
-            //
             this.txtNombreUsuario.Location = new System.Drawing.Point(8, 80);
             this.txtNombreUsuario.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtNombreUsuario.Name = "txtNombreUsuario";
             this.txtNombreUsuario.Size = new System.Drawing.Size(192, 35);
             this.txtNombreUsuario.TabIndex = 1;
-            //
-            // lbl_Apellido
-            //
             this.lbl_Apellido.AutoSize = true;
             this.lbl_Apellido.Location = new System.Drawing.Point(218, 49);
             this.lbl_Apellido.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -195,18 +145,12 @@
             this.lbl_Apellido.Size = new System.Drawing.Size(110, 29);
             this.lbl_Apellido.TabIndex = 8;
             this.lbl_Apellido.Text = "Apellido";
-            //
-            // txtPassword
-            //
             this.txtPassword.Location = new System.Drawing.Point(222, 163);
             this.txtPassword.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(194, 35);
             this.txtPassword.TabIndex = 4;
-            //
-            // groupBoxUsuarios
-            //
             this.groupBoxUsuarios.Controls.Add(this.dgvUsuarios);
             this.groupBoxUsuarios.Controls.Add(this.cboFiltroRol);
             this.groupBoxUsuarios.Controls.Add(this.lblFiltroRol);
@@ -217,9 +161,6 @@
             this.groupBoxUsuarios.TabIndex = 1;
             this.groupBoxUsuarios.TabStop = false;
             this.groupBoxUsuarios.Text = "Usuarios";
-            //
-            // dgvUsuarios
-            //
             this.dgvUsuarios.AllowUserToAddRows = false;
             this.dgvUsuarios.AllowUserToDeleteRows = false;
             this.dgvUsuarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -232,26 +173,17 @@
             this.dgvUsuarios.Size = new System.Drawing.Size(1050, 655);
             this.dgvUsuarios.TabIndex = 0;
             this.dgvUsuarios.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUsuarios_CellClick);
-            //
-            // lblFiltroRol
-            //
             this.lblFiltroRol.AutoSize = true;
             this.lblFiltroRol.Location = new System.Drawing.Point(15, 42);
             this.lblFiltroRol.Name = "lblFiltroRol";
             this.lblFiltroRol.TabIndex = 1;
             this.lblFiltroRol.Text = "Ver usuarios con el rol:";
-            //
-            // cboFiltroRol
-            //
             this.cboFiltroRol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFiltroRol.FormattingEnabled = true;
             this.cboFiltroRol.Location = new System.Drawing.Point(260, 37);
             this.cboFiltroRol.Name = "cboFiltroRol";
             this.cboFiltroRol.Size = new System.Drawing.Size(320, 37);
             this.cboFiltroRol.TabIndex = 2;
-            //
-            // frmUsuarioABM
-            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 832);

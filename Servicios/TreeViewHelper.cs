@@ -19,7 +19,6 @@ namespace Servicios
 
                 nodoPadre.Nodes.Add(nodoHijo);
 
-                // Si es un rol, seguir bajando
                 if (hijo is RolComposite subRol)
                     AgregarNodosRecursivo(subRol, nodoHijo);
             }

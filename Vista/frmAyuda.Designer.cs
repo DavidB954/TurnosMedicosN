@@ -19,9 +19,6 @@
         {
             this.wbAyuda = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
-            // 
-            // wbAyuda
-            // 
             this.wbAyuda.Location = new System.Drawing.Point(0, 0);
             this.wbAyuda.Name = "wbAyuda";
             this.wbAyuda.Size = new System.Drawing.Size(760, 600);
@@ -31,9 +28,6 @@
             this.wbAyuda.IsWebBrowserContextMenuEnabled = false;
             this.wbAyuda.ScriptErrorsSuppressed = true;
             this.wbAyuda.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbAyuda_DocumentCompleted);
-            // 
-            // frmAyuda
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(760, 600);

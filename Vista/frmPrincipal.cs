@@ -69,7 +69,6 @@ namespace Vista
             }
         }
 
-
         private void frmPrincipal_Load(object sender, EventArgs e)
         {
             try
@@ -88,11 +87,8 @@ namespace Vista
             }
         }
 
-        // Submenú desplegable de "Gestión de Usuarios"
         private bool submenuUsuariosAbierto = false;
 
-        // Cada botón del menú abre un formulario; se muestra si el usuario tiene al menos
-        // una patente de ese formulario (página completa, "Ver" o un solo botón).
         private bool PuedeAbrir(string formulario)
         {
             return Sesion.Instancia().TieneAccesoFormulario(formulario);
@@ -113,10 +109,6 @@ namespace Vista
             btn_Bitacora.Visible = PuedeAbrir(nameof(frmBitacora));
             btn_HistorialTurnos.Visible = PuedeAbrir(nameof(frmHistorialTurnos));
             btnGestionIdiomas.Visible = PuedeAbrir(nameof(frmABM));
-            // Mi Agenda muestra contenido clinico exclusivo del rol Medico (ver frm_AccesoMedico
-            // y BLL_Atencion): aunque el Administrador tenga, por diseno, la patente de todos los
-            // formularios, el boton no se muestra si no tiene tambien ese rol, para no ofrecer un
-            // acceso que siempre va a terminar en "Acceso denegado".
             btn_AccesoMedico.Visible = PuedeAbrir(nameof(frm_AccesoMedico)) && Sesion.Instancia().TieneRol("Medico");
             btn_GestionMedicos.Visible = PuedeAbrir(nameof(frmGestionMedicos));
             btn_GestionTurnos.Visible = PuedeAbrir(nameof(frmGestionTurnos));
@@ -126,7 +118,6 @@ namespace Vista
             ActualizarSubmenuUsuarios();
         }
 
-        // Los subítems se ven solo con el submenú abierto y si el usuario tiene acceso a ese formulario.
         private void ActualizarSubmenuUsuarios()
         {
             foreach (var sub in new[] { btn_SubUsuariosABM, btn_SubUsuariosRoles, btn_SubUsuariosHistorial })
@@ -135,8 +126,6 @@ namespace Vista
             ReacomodarBotonesMenu();
         }
 
-        // Apila verticalmente los botones visibles del menú, en el mismo orden original,
-        // para que no queden huecos cuando alguno se oculta por falta de permiso.
         private void ReacomodarBotonesMenu()
         {
             var botonesEnOrden = new[]
@@ -158,8 +147,6 @@ namespace Vista
                 btn_Ayuda
             };
 
-            // Si el contenido no entra a lo alto aparece la barra vertical: se le deja lugar para que no
-            // aparezca tambien una barra horizontal. Las posiciones se toman relativas al scroll.
             int alto = botonesEnOrden.Where(b => b.Visible).Sum(b => b.Height)
                        + lblUsuario.Height + CbPrincipalIdioma.Height + btn_Salir.Height + 70;
             int ancho = groupBox_Menu.Width - (alto > groupBox_Menu.Height ? SystemInformation.VerticalScrollBarWidth : 0);
@@ -175,8 +162,6 @@ namespace Vista
                 y += boton.Height;
             }
 
-            // Usuario, idioma y Salir van debajo del ultimo boton (antes tenian posicion fija y se
-            // superponian con los botones en pantallas bajas).
             y += 16;
             lblUsuario.Location = new System.Drawing.Point(10, y);
             y += lblUsuario.Height + 8;
@@ -186,8 +171,6 @@ namespace Vista
             btn_Salir.Location = new System.Drawing.Point(ancho - btn_Salir.Width - 10, y);
         }
 
-        // Menu lateral: fondo azul marino, botones planos con texto blanco y los subitems de
-        // Gestion de Usuarios un tono mas claro y con sangria.
         private void AplicarEstiloMenu()
         {
             foreach (Control ctrl in groupBox_Menu.Controls)
@@ -216,7 +199,6 @@ namespace Vista
                 }
             }
         }
-
 
         public void AbrirFormulario<T>() where T : Form, new()
         {
@@ -373,7 +355,6 @@ namespace Vista
             }
         }
 
-        // D02: ayuda de la pantalla abierta (o el indice de la ayuda si no hay ninguna).
         private void btn_Ayuda_Click(object sender, EventArgs e)
         {
             try
@@ -412,16 +393,12 @@ namespace Vista
                 else
                     new frmLogin().Show();
                 this.Close();
-                //this.Hide();
-                //frmLogin frm = new frmLogin();
-                //frm.Show();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
            
-            
         }
 
         private void btnGestionIdiomas_Click(object sender, EventArgs e)

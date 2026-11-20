@@ -6,9 +6,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // T06b Control de cambios de los turnos. El recepcionista y el administrador ven el historial; solo el
-    // administrador restaura (CU-T06.1 Restaurar version de un turno; el boton se oculta por permiso). Las versiones las guarda el trigger
-    // TR_Turno_Historial en la tabla copia Turno_Historial.
     public partial class frmHistorialTurnos : frmBase
     {
         BLL_Turno bll_turno = new BLL_Turno();
@@ -113,7 +110,6 @@ namespace Vista
             }
         }
 
-        // CU-T06.1 pasos 3 y 4: al elegir un turno se muestran todas sus versiones.
         private void dgvTurnos_SelectionChanged(object sender, EventArgs e)
         {
             try
@@ -148,7 +144,6 @@ namespace Vista
             }
         }
 
-        // CU-T06.1 pasos 5 a 7: vuelve el turno a los datos de la version elegida.
         private void btnRestaurar_Click(object sender, EventArgs e)
         {
             try
@@ -184,7 +179,6 @@ namespace Vista
             }
         }
 
-        // Desde Gestion de turnos (boton Ver historial): muestra solo ese turno y sus versiones.
         public void MostrarTurno(int idTurno)
         {
             cargandoGrilla = true;

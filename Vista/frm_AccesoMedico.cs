@@ -9,11 +9,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // "Mi agenda" del medico (RF1). En una misma pantalla:
-    //  - Agenda del dia (CU-01.5 Atender y CU-01.6 Ausente) y de otra fecha (solo lectura)
-    //  - Marcar ausente y finalizar la atencion del dia (CU-01.6)
-    //  - Historia clinica del paciente (CU-01.5)
-    // La atencion (CU-01.5) se registra en frmAtencion.
     public partial class frm_AccesoMedico : frmBase
     {
         BLL_Atencion bll_atencion = new BLL_Atencion();
@@ -44,7 +39,6 @@ namespace Vista
             return TraduccionServicio.Instancia.TraducirODefecto($"{Name}.{clave}", porDefecto);
         }
 
-        // Una patente de grilla se respeta igual que un boton: si esta en el catalogo, hay que tenerla.
         private bool TienePatente(string control)
         {
             string clave = $"{Name}.{control}";
@@ -56,7 +50,6 @@ namespace Vista
         {
             try
             {
-                // El contenido clinico es exclusivo del rol Medico.
                 if (Sesion.Instancia().UsuarioActual == null || !Sesion.Instancia().TieneRol("Medico"))
                 {
                     MessageBox.Show(T("Msg.AccesoDenegado", "Acceso denegado: Mi Agenda es exclusiva del rol Médico."),
@@ -72,7 +65,6 @@ namespace Vista
                 ConfigurarGrillaAgenda();
                 ConfigurarGrillaPacientes();
 
-                // La leyenda "sin turnos" se muestra encima de la grilla.
                 lblSinTurnos.BringToFront();
 
                 dtpFecha.Value = DateTime.Today;
@@ -103,8 +95,6 @@ namespace Vista
                 lblSinTurnos.Text = TextoSinTurnos();
         }
 
-        // ---------------------------------------------------------------- Grillas
-
         private void ConfigurarGrillaAgenda()
         {
             dgvAgenda.AutoGenerateColumns = false;
@@ -114,7 +104,6 @@ namespace Vista
             dgvAgenda.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
             dgvAgenda.DefaultCellStyle.SelectionForeColor = Color.Black;
 
-            // Columnas del prototipo de CU-01.5: Hora | Paciente | H.C. | Estado | Atender | Ausente.
             AgregarColumnaTexto(dgvAgenda, "colHora", "Hora", "HoraTexto", 55);
             AgregarColumnaTexto(dgvAgenda, "colPaciente", "Paciente", "NombreApellidoPaciente", 170);
             AgregarColumnaTexto(dgvAgenda, "colHistoriaClinica", "H.C.", "HistoriaClinicaTexto", 80);
@@ -172,10 +161,6 @@ namespace Vista
             return puedeMarcarAusente && bll_atencion.PuedeMarcarAusente(turno);
         }
 
-        // ---------------------------------------------------------------- Agenda (CU-01.5 y CU-01.6)
-
-        // Carga la agenda de la fecha elegida. Con la fecha de hoy habilita Atender / Ausente;
-        // con otra fecha la muestra en solo lectura (CU-01.5).
         public void CargarAgendaDelDia()
         {
             CargarAgendaDelDia(true);
@@ -190,8 +175,6 @@ namespace Vista
             {
                 DateTime fecha = dtpFecha.Value.Date;
 
-                // Si la fecha elegida no tiene ningun turno, se salta directo a la proxima que si
-                // tenga (si existe), en vez de obligar al medico a ir probando fecha por fecha.
                 if (!ajustandoFecha)
                 {
                     DateTime? proximaConTurnos = bll_atencion.ObtenerProximaFechaConTurnos(IdMedico, fecha);
@@ -265,7 +248,6 @@ namespace Vista
         {
             try
             {
-                // Mientras el calendario esta abierto no se consulta en cada clic: se espera al CloseUp.
                 if (!calendarioAbierto)
                     CargarSiCambioLaFecha();
             }
@@ -294,8 +276,6 @@ namespace Vista
             }
         }
 
-        // Cada minuto se repinta la grilla para habilitar «Ausente» cuando llega la hora del turno.
-        // Si cambio el dia (la pantalla quedo abierta pasada la medianoche) se vuelve a hoy.
         private void timerAgenda_Tick(object sender, EventArgs e)
         {
             try
@@ -330,7 +310,6 @@ namespace Vista
             }
         }
 
-        // Doble clic en un turno: abre su Historia Clinica en el panel de la derecha (CU-01.5).
         private void dgvAgenda_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -368,11 +347,9 @@ namespace Vista
             }
             catch (Exception)
             {
-                // Sin mensaje: un error al dibujar se repetiria en cada repintado.
             }
         }
 
-        // Dibuja los botones Atender / Ausente (habilitados o deshabilitados) y el estado como etiqueta de color.
         private void dgvAgenda_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             try
@@ -401,8 +378,6 @@ namespace Vista
                 }
                 else if (turno.Estado != "Confirmado")
                 {
-                    // Atendidos y Ausentes no tienen acciones: se marca con un tilde la columna que corresponde a su estado
-                    // (Atender para el Atendido, Ausente para el Ausente); la otra queda vacia.
                     bool marca = (columna == "colAtender" && turno.Estado == "Atendido")
                               || (columna == "colAusente" && turno.Estado == "Ausente");
                     if (marca)
@@ -431,7 +406,6 @@ namespace Vista
             }
             catch (Exception)
             {
-                // Sin mensaje: un error al dibujar se repetiria en cada repintado.
             }
         }
 
@@ -450,8 +424,6 @@ namespace Vista
             }
         }
 
-        // ---------------------------------------------------------------- Atender (CU-01.5)
-
         private void btnAtender_Click(int idTurno)
         {
             BE_Turno turno;
@@ -461,7 +433,6 @@ namespace Vista
             }
             catch (ArgumentException ex)
             {
-                // A1 - Turno no atendible: no se abre el formulario
                 MessageBox.Show(ex.Message, T("Msg.TurnoNoAtendible", "El turno no puede atenderse"),
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 CargarAgendaDelDia(false);
@@ -485,11 +456,8 @@ namespace Vista
                 MessageBox.Show(ex.Message, T("Msg.Error", "Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            // Se refresca siempre: si se registro, el turno pasa a Atendido.
             CargarAgendaDelDia(false);
         }
-
-        // ---------------------------------------------------------------- Ausente (CU-01.6)
 
         private void btnAusente_Click(int idTurno)
         {
@@ -506,7 +474,6 @@ namespace Vista
             }
             catch (ArgumentException ex)
             {
-                // A2 - el turno ya no esta Confirmado
                 MessageBox.Show(ex.Message, T("Msg.MarcarAusente", "Marcar ausente"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
@@ -517,8 +484,6 @@ namespace Vista
             CargarAgendaDelDia(false);
         }
 
-        // Valida que todos los turnos del dia esten Atendidos o Ausentes; si quedan sin atender,
-        // ofrece marcarlos como Ausentes.
         private void btnFinalizarAtencion_Click(object sender, EventArgs e)
         {
             try
@@ -533,7 +498,6 @@ namespace Vista
                 }
                 else
                 {
-                    // RN1.9: tambien se cierran los turnos de dias anteriores que quedaron sin atender; se informan aparte.
                     int anteriores = bll_atencion.ContarTurnosSinAtenderAnteriores(IdMedico);
                     string pregunta = string.Format(
                         T("Msg.PreguntaAusentesDetalle", "Hay {0} turno(s) sin atender: {1} de hoy y {2} de días anteriores que quedaron sin cerrar.\n¿Desea marcarlos como ausentes?"),
@@ -558,8 +522,6 @@ namespace Vista
 
             CargarAgendaDelDia(false);
         }
-
-        // ---------------------------------------------------------------- Historia Clinica (CU-01.5)
 
         private BE_Paciente pacienteHC = null;
 
@@ -607,7 +569,6 @@ namespace Vista
             }
             catch (ArgumentException ex)
             {
-                // A3 - criterio invalido
                 MessageBox.Show(ex.Message, T("Msg.BuscarHC", "Consultar Historia Clínica"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
@@ -650,7 +611,6 @@ namespace Vista
 
         private List<BE_AtencionMedica> atencionesHC = new List<BE_AtencionMedica>();
 
-        // consultar = false solo redibuja (cambio de idioma) sin volver a consultar ni auditar.
         private void MostrarHistoriaClinica(BE_Paciente paciente, bool consultar)
         {
             try
@@ -772,7 +732,6 @@ namespace Vista
             }
             catch (Exception)
             {
-                // Sin mensaje: un error al dibujar se repetiria en cada repintado.
             }
         }
 

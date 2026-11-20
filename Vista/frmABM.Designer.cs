@@ -2,15 +2,8 @@
 {
     partial class frmABM
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.cmbIdioma = new System.Windows.Forms.ComboBox();
@@ -37,9 +26,6 @@
             this.btnEliminar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTraducciones)).BeginInit();
             this.SuspendLayout();
-            // 
-            // cmbIdioma
-            // 
             this.cmbIdioma.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbIdioma.FormattingEnabled = true;
             this.cmbIdioma.Location = new System.Drawing.Point(458, 60);
@@ -47,17 +33,11 @@
             this.cmbIdioma.Size = new System.Drawing.Size(121, 21);
             this.cmbIdioma.TabIndex = 17;
             this.cmbIdioma.SelectedIndexChanged += new System.EventHandler(this.cmbIdioma_SelectedIndexChanged);
-            // 
-            // dgvTraducciones
-            // 
             this.dgvTraducciones.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvTraducciones.Location = new System.Drawing.Point(20, 102);
             this.dgvTraducciones.Name = "dgvTraducciones";
             this.dgvTraducciones.Size = new System.Drawing.Size(559, 265);
             this.dgvTraducciones.TabIndex = 16;
-            // 
-            // btnAgregarIdioma
-            // 
             this.btnAgregarIdioma.Location = new System.Drawing.Point(606, 186);
             this.btnAgregarIdioma.Name = "btnAgregarIdioma";
             this.btnAgregarIdioma.Size = new System.Drawing.Size(110, 23);
@@ -65,18 +45,12 @@
             this.btnAgregarIdioma.Text = "Agregar Idioma";
             this.btnAgregarIdioma.UseVisualStyleBackColor = true;
             this.btnAgregarIdioma.Click += new System.EventHandler(this.btnAgregarIdioma_Click);
-            // 
-            // btnVolver
-            // 
             this.btnVolver.Location = new System.Drawing.Point(705, 430);
             this.btnVolver.Name = "btnVolver";
             this.btnVolver.Size = new System.Drawing.Size(75, 23);
             this.btnVolver.TabIndex = 8;
             this.btnVolver.Text = "Volver";
             this.btnVolver.UseVisualStyleBackColor = true;
-            // 
-            // btnGuardar
-            // 
             this.btnGuardar.Location = new System.Drawing.Point(606, 265);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(110, 23);
@@ -84,9 +58,6 @@
             this.btnGuardar.Text = "Guardar";
             this.btnGuardar.UseVisualStyleBackColor = true;
             this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
-            // 
-            // btnCargarControles
-            // 
             this.btnCargarControles.Location = new System.Drawing.Point(20, 44);
             this.btnCargarControles.Name = "btnCargarControles";
             this.btnCargarControles.Size = new System.Drawing.Size(136, 23);
@@ -94,9 +65,6 @@
             this.btnCargarControles.Text = "Cargar Controles";
             this.btnCargarControles.UseVisualStyleBackColor = true;
             this.btnCargarControles.Click += new System.EventHandler(this.btnCargarControles_Click);
-            // 
-            // btnEliminar
-            // 
             this.btnEliminar.Location = new System.Drawing.Point(606, 226);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(110, 23);
@@ -104,9 +72,6 @@
             this.btnEliminar.Text = "Eliminar Idioma";
             this.btnEliminar.UseVisualStyleBackColor = true;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
-            // 
-            // frmABM
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1283, 541);

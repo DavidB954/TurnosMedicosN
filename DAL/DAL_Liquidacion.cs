@@ -7,14 +7,10 @@ using System.Linq;
 
 namespace DAL
 {
-    // RF2 - Liquidacion de honorarios: turnos trabajados y tablas Liquidacion y
-    // LiquidacionDetalle (CU-02.2 y CU-02.3).
     public class DAL_Liquidacion
     {
         DAL_Conexion conex = new DAL_Conexion();
 
-        // CU-02.2: actividad de cada medico y especialidad con turnos Atendidos, Ausentes o Cancelados
-        // entre "desde" y "hasta" inclusive. Los dias trabajados son los dias con algun turno Atendido o Ausente.
         public List<BE_TurnosTrabajados> ObtenerTurnosTrabajados(DateTime desde, DateTime hasta)
         {
             try
@@ -94,8 +90,6 @@ namespace DAL
             }
         }
 
-        // Registra la liquidacion y su detalle en una unica transaccion. Completa en el objeto el Id,
-        // el numero y la fecha de emision que asigna la base.
         public void Insertar(BE_Liquidacion liquidacion)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -168,7 +162,6 @@ namespace DAL
                 cmd.Parameters.Add("@idLiquidacion", SqlDbType.Int).Value = idLiquidacion).FirstOrDefault();
         }
 
-        // Liquidaciones con su medico y su detalle (una fila por especialidad liquidada).
         private List<BE_Liquidacion> Listar(string filtro, Action<SqlCommand> parametros)
         {
             try

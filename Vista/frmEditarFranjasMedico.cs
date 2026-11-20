@@ -11,9 +11,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // CU-01.4 Administrar agenda medica, subflujo Inactivar o reactivar horarios: el recepcionista elige el
-    // medico y una fecha (por ejemplo, el lunes 20) y deja de ofrecer algunos horarios solo en esa fecha
-    // (por ejemplo, de 10 a 12). Los demas lunes esos horarios siguen activos.
     public partial class frmEditarFranjasMedico : frmBase
     {
         BLL_MedicoHorario bll_medicoHorario = new BLL_MedicoHorario();
@@ -89,7 +86,6 @@ namespace Vista
             }
         }
 
-        // Horarios del medico para el dia de la semana de la fecha elegida, con su estado en esa fecha.
         private void CargarHorarios()
         {
             try
@@ -175,7 +171,6 @@ namespace Vista
                 }
                 else
                 {
-                    // Punto de extension Turnos afectados (flujo alternativo A4 si no confirma).
                     List<BE_Turno> turnos = bll_medicoHorario.ObtenerTurnosAfectados(ids, fecha);
                     if (turnos.Count > 0 && !ConfirmarCancelacionTurnos(turnos))
                         return;

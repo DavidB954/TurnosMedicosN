@@ -10,7 +10,6 @@ namespace BE
 
         public int IdMedico { get; set; }
 
-        // 1=Lunes, 2=Martes, 3=Miercoles, 4=Jueves, 5=Viernes, 6=Sabado
         public int DiaSemana { get; set; }
 
         public TimeSpan HoraInicio { get; set; }
@@ -19,19 +18,14 @@ namespace BE
 
         public bool Activo { get; set; }
 
-        // CU-01.4: el horario no se atiende en la fecha consultada (tabla Medico_HorarioInactivo).
         public bool InactivoEnFecha { get; set; }
 
-        // CU-01.4: paciente con turno confirmado en el horario en la fecha consultada (vacio si no hay).
         public string PacienteEnFecha { get; set; }
 
-        // Especialidad con la que el medico atiende en esta franja. null = cualquiera de
-        // las especialidades del medico (franjas anteriores a que se pudiera elegir).
         public int? IdEspecialidad { get; set; }
 
         public string NombreEspecialidad { get; set; }
 
-        // Datos resueltos por JOIN para el dataGridViewMedicosDiasHorarios, no se persisten aca
         public string NombreApellido { get; set; }
 
         public string Especialidades { get; set; }
@@ -44,7 +38,6 @@ namespace BE
 
         public string DiaYRango { get { return DiaSemanaTexto + " " + RangoHorario; } }
 
-        // Une las franjas contiguas en bloques legibles: "08:00 a 12:00 y 13:00 a 17:00".
         public static string ResumirBloques(IEnumerable<BE_MedicoHorario> franjas)
         {
             List<BE_MedicoHorario> ordenadas = franjas.OrderBy(f => f.HoraInicio).ToList();

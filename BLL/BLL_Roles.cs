@@ -11,8 +11,6 @@ namespace BLL
 {
     public class BLL_Roles
     {
-        // El rol Administrador no se puede borrar, renombrar ni recortar desde la UI,
-        // y siempre tiene que quedar al menos un usuario con ese rol (evita quedar afuera del sistema).
         public const string NombreRolAdministrador = "Administrador";
 
         DAL_Roles dal_roles = new DAL_Roles();
@@ -47,8 +45,6 @@ namespace BLL
             return rol != null && string.Equals(rol.Nombre, NombreRolAdministrador, StringComparison.OrdinalIgnoreCase);
         }
 
-        //// ARBOL COMPLETO (Composite)
-
         public RolComposite CargarArbol()
         {
             try
@@ -58,7 +54,6 @@ namespace BLL
                 var roles = new Dictionary<int, RolComposite>();
                 var permisos = new Dictionary<int, Permiso>();
 
-                // Crear todos los roles (comunes y familias de formulario)
                 foreach (DataRow row in dtRoles.Rows)
                 {
                     int id = Convert.ToInt32(row["IdRol"]);
@@ -71,7 +66,6 @@ namespace BLL
                     };
                 }
 
-                // Crear todas las patentes
                 foreach (DataRow row in dtPermisos.Rows)
                 {
                     int id = Convert.ToInt32(row["IdPermisos"]);
@@ -85,7 +79,6 @@ namespace BLL
                     };
                 }
 
-                // Asignar patentes a sus roles / familias
                 foreach (DataRow row in dtRolPermiso.Rows)
                 {
                     int idRol = Convert.ToInt32(row["IdRol"]);
@@ -94,7 +87,6 @@ namespace BLL
                         roles[idRol].Agregar(permisos[idPerm]);
                 }
 
-                // Construir jerarquía rol-rol (un rol contiene familias de formulario u otros roles)
                 foreach (DataRow row in dtRolRol.Rows)
                 {
                     int idPadre = Convert.ToInt32(row["IdRolPadre"]);
@@ -103,7 +95,6 @@ namespace BLL
                         roles[idPadre].Agregar(ClonarRol(roles[idHijo]));
                 }
 
-                // Raíz virtual con todos los roles
                 var raiz = new RolComposite { Id = 0, Nombre = "Roles" };
                 foreach (var rol in roles.Values)
                     raiz.Agregar(rol);
@@ -138,7 +129,6 @@ namespace BLL
             return clon;
         }
 
-        // Catálogo: una familia por formulario, con sus patentes (botones) como hijos.
         public List<RolComposite> ObtenerCatalogo()
         {
             try
@@ -155,7 +145,6 @@ namespace BLL
             }
         }
 
-        // Solo roles comunes (sin las familias de formulario)
         public List<RolComposite> ObtenerRoles()
         {
             try
@@ -197,8 +186,6 @@ namespace BLL
                 throw new Exception(ex.Message);
             }
         }
-
-        //// ABM DE ROLES
 
         private void ValidarNombreRol(string nombre, int? idExcluir)
         {
@@ -282,8 +269,6 @@ namespace BLL
             }
         }
 
-        // Deja al rol con exactamente esas familias de formulario (página completa)
-        // y esas patentes sueltas (botones). Calcula la diferencia contra lo que ya tiene.
         public void GuardarPermisosRol(int idRol, List<int> idsFormularios, List<int> idsPermisos)
         {
             try
@@ -315,9 +300,6 @@ namespace BLL
             }
         }
 
-        //// USUARIOS
-
-        // Roles y familias de formulario asignados al usuario (Usuario_Rol), ya armados con sus hijos.
         public List<RolComposite> ObtenerRolesDeUsuario(int idUsuario)
         {
             try
@@ -377,8 +359,6 @@ namespace BLL
             }
         }
 
-        // Todo lo que puede hacer el usuario, como un único Composite:
-        // sus roles + familias de formulario directas + patentes directas.
         public RolComposite ObtenerPermisosUsuario(int idUsuario)
         {
             try
@@ -399,7 +379,6 @@ namespace BLL
             }
         }
 
-        // Se llama una vez al iniciar sesión.
         public void CargarSeguridadEnSesion(int idUsuario)
         {
             try
@@ -454,7 +433,6 @@ namespace BLL
             }
         }
 
-        // Deja al usuario con exactamente esos roles comunes (no toca las familias de formulario directas).
         public void GuardarRolesUsuario(int idUsuario, List<int> idsRoles)
         {
             try
@@ -472,8 +450,6 @@ namespace BLL
             }
         }
 
-        // Permisos directos del usuario: familias de formulario (página completa, van a Usuario_Rol)
-        // y patentes sueltas (un botón, van a Usuario_Permiso).
         public void GuardarPermisosDirectosUsuario(int idUsuario, List<int> idsFormularios, List<int> idsPermisos)
         {
             try

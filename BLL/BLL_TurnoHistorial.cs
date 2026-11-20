@@ -7,8 +7,6 @@ using System.Data.SqlClient;
 
 namespace BLL
 {
-    // T06b Control de cambios de los turnos: CU-T06.1 Restaurar version de un turno: consulta de
-    // las versiones y restauracion de una version anterior. Las versiones las registra el trigger TR_Turno_Historial.
     public class BLL_TurnoHistorial
     {
         DAL_TurnoHistorial dal_turnoHistorial = new DAL_TurnoHistorial();
@@ -28,7 +26,6 @@ namespace BLL
             }
         }
 
-        // Vuelve a escribir en el turno el horario, la fecha y el estado de la version elegida.
         public void RestaurarVersion(int idHistorial)
         {
             BE_TurnoHistorial version = dal_turnoHistorial.ObtenerPorId(idHistorial);
@@ -53,8 +50,6 @@ namespace BLL
                 $"(estado {version.Estado}, {version.FechaTexto} {version.RangoHorario}).");
         }
 
-        // Reglas de la restauracion (T06b): RN1.8 (atendido o ausente no se modifica), solo versiones
-        // Confirmado o Cancelado y, si es Confirmado, RN1.2 y RN1.3.
         private void ValidarRestauracion(BE_TurnoHistorial version, BE_Turno actual)
         {
             if (actual == null)

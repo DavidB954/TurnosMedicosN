@@ -5,7 +5,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // Gestión de Usuarios > ABM de Usuarios: alta, modificación y baja.
     public partial class frmUsuarioABM : frmBase
     {
         public frmUsuarioABM()
@@ -39,7 +38,6 @@ namespace Vista
             }
         }
 
-        // Índice 0 = Activo, 1 = Inactivo (el texto depende del idioma)
         private void CargarComboEstado()
         {
             var t = Servicios.TraduccionServicio.Instancia;
@@ -57,7 +55,6 @@ namespace Vista
             dgvUsuarios.MultiSelect = false;
         }
 
-        // Filtro por rol de la grilla de usuarios: "Todos", cada rol (perfil) o "(sin rol)".
         private const string FiltroTodos = "Todos";
         private const string FiltroSinRol = "(sin rol)";
         private readonly BLL_Roles bll_roles = new BLL_Roles();
@@ -108,7 +105,6 @@ namespace Vista
             dgvUsuarios.CurrentCell = null;
             idSeleccionado = null;
 
-            // Al recargar la grilla se regeneran las columnas: se vuelven a traducir los encabezados
             AplicarIdiomaAutomatico();
         }
 

@@ -6,8 +6,6 @@ using System.Data.SqlClient;
 
 namespace DAL
 {
-    // T06b Control de cambios: lectura de la tabla copia Turno_Historial. Las filas las escribe el
-    // trigger TR_Turno_Historial; esta clase solo las consulta.
     public class DAL_TurnoHistorial
     {
         DAL_Conexion conex = new DAL_Conexion();
@@ -23,7 +21,6 @@ namespace DAL
             LEFT JOIN Medico_Horario mh ON mh.IdHorario = h.IdHorario
             LEFT JOIN Usuario u ON u.IdUsuario = h.IdUsuarioCambio";
 
-        // Versiones de un turno, de la mas reciente a la mas antigua.
         public List<BE_TurnoHistorial> ListarPorTurno(int idTurno)
         {
             try

@@ -23,7 +23,6 @@ namespace Vista
 
         BE_LoginResultado Obj_Usuario = new BE_LoginResultado();
 
-       
         public override void AplicarIdioma()   
         {
             AplicarIdiomaAutomatico();
@@ -32,24 +31,15 @@ namespace Vista
         {
             try
             {
-                //MAil de prueba: JB@GMAIL.COM -Paciente, DB@GMAIL.COM -Medico , GS@GMAIL.COM - Administrador, 
-                //Todas las contraseñas = 123;
                 
-                //string pass = HashHelper.GenerarHash(pas);
-
-                //Clipboard.SetText(pass);
-                //MessageBox.Show(pass);
-
                 Obj_Usuario = bll_Usu.ObtenerUsuarioPorEmail(txtEmail.Text, txtPassword.Text);
 
                 if (Obj_Usuario.Usuario != null)
                 {
-                    //Para agarrar la sesion del singleton y guardar el usuario logueado
                     Sesion Sesion = Sesion.Instancia();
 
                     Sesion.UsuarioActual = Obj_Usuario.Usuario;
 
-                    // Cargamos roles y permisos del usuario para filtrar el menú y los botones
                     new BLL_Roles().CargarSeguridadEnSesion(Obj_Usuario.Usuario.IdUsuario);
 
                     var idioma = new BLL_Traduccion().ObtenerIdiomaPorUsuario(Obj_Usuario.Usuario.IdUsuario);

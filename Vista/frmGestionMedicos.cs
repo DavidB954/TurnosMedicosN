@@ -20,8 +20,6 @@ namespace Vista
 
         bool cargandoGrid = false;
 
-        // Ultima lista cargada en la grilla, para poder calcular Desde/Hasta/Turnos cada
-        // de un medico+dia sin volver a consultar la base al seleccionar una fila.
         List<BE_MedicoHorario> ultimaListaHorarios = new List<BE_MedicoHorario>();
 
         public frmGestionMedicos()
@@ -146,8 +144,6 @@ namespace Vista
             }
         }
 
-        // Solo se ofrecen las especialidades que el medico tiene asignadas.
-        // Al elegir el medico se muestra su matricula (se imprime en las recetas).
         private void ucMedicoAsignar_MedicoSeleccionado(object sender, EventArgs e)
         {
             try
@@ -201,8 +197,6 @@ namespace Vista
             }
         }
 
-        // Abre la pantalla simplificada para ver los dias/horarios de un medico e inactivar
-        // o reactivar franjas puntuales. Al cerrarla se refresca la grilla de esta pantalla.
         private void btnEditarFranjas_Click(object sender, EventArgs e)
         {
             try
@@ -248,8 +242,6 @@ namespace Vista
             }
         }
 
-        // Reemplaza el horario del medico en los dias tildados por el que resulta de los
-        // valores actuales de Desde/Hasta/Turnos cada.
         private void btnModificarDiasYHorarios_Click(object sender, EventArgs e)
         {
             try
@@ -282,7 +274,6 @@ namespace Vista
             }
         }
 
-       
         private bool ConfirmarCancelacionTurnos(List<BE_Turno> turnos)
         {
             System.Text.StringBuilder mensaje = new System.Text.StringBuilder();
@@ -310,7 +301,6 @@ namespace Vista
             }
         }
 
-        // Doble clic en una fila: abre la pantalla de edicion de franjas de ese medico.
         private void dataGridViewMedicosDiasHorarios_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -326,9 +316,6 @@ namespace Vista
             }
         }
 
-        // Al seleccionar una fila de la grilla, precarga el medico, el dia y la franja horaria
-        // (Desde/Hasta/Turnos cada) que ese medico ya tiene ese dia, para que "Modificar" actue
-        // sobre lo que se esta mirando y no sobre lo que haya quedado elegido en el combo antes.
         private void dataGridViewMedicosDiasHorarios_SelectionChanged(object sender, EventArgs e)
         {
             try
@@ -457,7 +444,6 @@ namespace Vista
             checkBoxSabado.Checked = false;
         }
 
-        
         private bool TryParseHora(string texto, out TimeSpan resultado)
         {
             resultado = TimeSpan.Zero;
@@ -501,8 +487,6 @@ namespace Vista
             return dias;
         }
 
-        // Una fila por medico y dia (en vez de una por franja de 20 min), con el horario
-        // resumido en bloques y el estado del dia.
         class ResumenDiaMedico
         {
             public int IdMedico { get; set; }

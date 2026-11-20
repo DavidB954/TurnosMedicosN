@@ -4,9 +4,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // D02 Ayuda en linea: cada pantalla tiene su pagina de ayuda en la carpeta Ayuda del programa
-    // (Ayuda\<NombreDeLaPantalla>.html). F1 en cualquier pantalla, o el boton Ayuda del menu, la muestra en la
-    // ventana de ayuda. Si la pantalla no tiene pagina propia se muestra el indice (Ayuda\index.html).
     public static class Ayuda
     {
         private static frmAyuda ventana;
@@ -16,7 +13,6 @@ namespace Vista
             get { return Path.Combine(Path.GetDirectoryName(typeof(Ayuda).Assembly.Location), "Ayuda"); }
         }
 
-        // Pagina de ayuda de la pantalla, o el indice si no tiene una propia (null si no hay ayuda instalada).
         public static string RutaPagina(string pantalla)
         {
             string propia = Path.Combine(Carpeta, (pantalla ?? string.Empty) + ".html");

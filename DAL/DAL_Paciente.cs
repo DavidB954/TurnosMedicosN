@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 
 namespace DAL
 {
-    // Pacientes (tabla Paciente). El paciente no es usuario del sistema: lo registra el recepcionista.
     public class DAL_Paciente
     {
         DAL_Conexion conex = new DAL_Conexion();
@@ -37,7 +36,6 @@ namespace DAL
             }
         }
 
-        // true si el DNI ya lo tiene OTRO paciente (se excluye al propio paciente al modificar).
         public bool ExisteDNI(string dni, int idPacienteExcluido)
         {
             try
@@ -58,8 +56,6 @@ namespace DAL
             }
         }
 
-        // Registra al paciente y abre su Historia Clinica: el N° de HC y la fecha de apertura los
-        // genera la base (SEQ_NroHistoriaClinica y GETDATE) y se devuelven en el mismo objeto.
         public void Insertar(BE_Paciente paciente)
         {
             try

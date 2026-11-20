@@ -120,19 +120,15 @@ namespace Vista
                     BE_Usuario usuario = bll_usuario.ObtenerUsuarioPorId(idUsuario);
 
                     if (usuario == null)
-                        continue; // si no existe, lo salteamos
+                        continue;
 
-                    // Bloquear usuario
                     usuario.Activo = false;
 
-                    // Recalcular DVH
                     bll_usuario.CalcularDVH(usuario);
 
-                    // Guardar cambios en BD
                     bll_usuario.ModificarUsuario(usuario);
                 }
 
-                // Al final, recalculamos DVV de la tabla completa
                 bll_dvv.ActualizarDVV("Usuario");
 
                 MessageBox.Show("Usuarios bloqueados y DVH/DVV recalculados." + " " + "La aplicación se cerrará para actualizar la información.", "Restauración exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -4,12 +4,10 @@ using System.Linq;
 
 namespace BE
 {
-    // Liquidacion de honorarios de un medico para un periodo (mes y anio). Una por medico y periodo (RN2.3).
     public class BE_Liquidacion
     {
         public int IdLiquidacion { get; set; }
 
-        // Numero correlativo que genera la base (secuencia SEQ_NroLiquidacion).
         public int NroLiquidacion { get; set; }
 
         public int IdMedico { get; set; }
@@ -26,7 +24,6 @@ namespace BE
 
         public List<BE_LiquidacionDetalle> Detalles { get; set; } = new List<BE_LiquidacionDetalle>();
 
-        // Atributos calculados a partir del detalle: no se guardan en la base (3FN).
         public int TotalAtendidos { get { return Detalles.Sum(d => d.TurnosAtendidos); } }
 
         public int TotalAusentes { get { return Detalles.Sum(d => d.TurnosAusentes); } }

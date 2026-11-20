@@ -8,14 +8,11 @@ using System.Text.RegularExpressions;
 
 namespace BLL
 {
-    // Pacientes (CU-01.1). El recepcionista busca al paciente por DNI y, si concurre por primera vez,
-    // lo registra: al registrarlo se abre su Historia Clinica (N° de HC generado por la base).
     public class BLL_Paciente
     {
         DAL_Paciente dal_paciente = new DAL_Paciente();
         BLL_Bitacora bll_bitacora = new BLL_Bitacora();
 
-        // Devuelve el paciente con ese DNI o null si no esta registrado (flujo alternativo A1 de CU-01.1).
         public BE_Paciente BuscarPorDni(string dni)
         {
             string normalizado = NormalizarDni(dni);
@@ -32,8 +29,6 @@ namespace BLL
             }
         }
 
-        // Valida los datos antes de registrar (flujo alternativo A2 de CU-01.1). Deja los datos
-        // normalizados: DNI sin puntos y textos sin espacios sobrantes.
         public void ValidarDatosPaciente(BE_Paciente paciente)
         {
             if (paciente == null)
@@ -89,7 +84,6 @@ namespace BLL
             }
         }
 
-        // Registra al paciente y abre su Historia Clinica (RN1.1).
         public void RegistrarPaciente(BE_Paciente paciente)
         {
             ValidarDatosPaciente(paciente);

@@ -7,12 +7,10 @@ using System.Linq;
 
 namespace DAL
 {
-    // Acceso a datos de la atencion medica y la agenda del medico (RF1: CU-01.5 y CU-01.6).
     public class DAL_Atencion
     {
         DAL_Conexion conexion = new DAL_Conexion();
 
-        // Columnas comunes de "turno + horario + paciente" usadas por la agenda y por la atencion.
         private const string SelectTurnoConPaciente = @"
             SELECT t.IdTurno, t.IdPaciente, t.IdHorario, t.Fecha, t.Estado,
                    mh.IdMedico, mh.HoraInicio, mh.HoraFin,
@@ -26,8 +24,6 @@ namespace DAL
             INNER JOIN Usuario um ON um.IdUsuario = mh.IdMedico
             LEFT JOIN Medico md ON md.IdUsuario = mh.IdMedico";
 
-        // Primera fecha (desde "desde" en adelante, inclusive) en que el medico tiene al menos
-        // un turno no Cancelado. Null si no tiene ninguno de ahi en adelante.
         public DateTime? ObtenerProximaFechaConTurnos(int idMedico, DateTime desde)
         {
             try
@@ -53,7 +49,6 @@ namespace DAL
             }
         }
 
-        // Turnos del medico para una fecha, sin los Cancelados (liberaron el horario), por hora.
         public List<BE_Turno> ObtenerAgenda(int idMedico, DateTime fecha)
         {
             try
@@ -104,9 +99,6 @@ namespace DAL
             }
         }
 
-        // CU-01.5 en UNA transaccion: AtencionMedica, Receta + items (si hay) y el
-        // cambio de estado del turno a Atendido. El trigger de Turno guarda la copia en
-        // BitacoraEventosTurno dentro de esta misma transaccion. Ante cualquier error: ROLLBACK.
         public void GuardarAtencion(BE_AtencionMedica a)
         {
             using (SqlConnection cn = conexion.ObtenerConexion())
@@ -116,7 +108,6 @@ namespace DAL
                 {
                     try
                     {
-                        // El que registra es el medico del turno (la BLL ya valido que es el logueado).
                         DAL_Conexion.EstablecerUsuarioAuditoria(cn, transaccion, a.Turno.IdMedico);
 
                         SqlCommand cmdAtencion = new SqlCommand(@"
@@ -152,7 +143,6 @@ namespace DAL
             }
         }
 
-        // El N° de receta lo genera la base con SEQ_NroReceta: R-AAAA-NNNNNN
         private void GuardarReceta(int idAtencion, BE_Receta receta, SqlConnection cn, SqlTransaction transaccion)
         {
             SqlCommand cmdReceta = new SqlCommand(@"
@@ -187,8 +177,6 @@ namespace DAL
             }
         }
 
-        // Cambia el estado de un turno que sigue Confirmado. Si otro proceso ya lo cambio
-        // (lo atendieron, vencio, etc.) no se pisa: se informa con una excepcion.
         public void ActualizarEstadoTurno(int idTurno, string estado, int idUsuarioCambio)
         {
             try
@@ -205,7 +193,6 @@ namespace DAL
             }
         }
 
-        // Misma operacion, dentro de una conexion/transaccion abierta por quien llama.
         public void ActualizarEstadoTurno(int idTurno, string estado, int idUsuarioCambio, SqlConnection cn, SqlTransaction transaccion)
         {
             DAL_Conexion.EstablecerUsuarioAuditoria(cn, transaccion, idUsuarioCambio);
@@ -219,8 +206,6 @@ namespace DAL
                 throw new InvalidOperationException("Ese turno ya no esta activo.");
         }
 
-        // Cantidad de turnos del medico que siguen Confirmados con fecha hasta "hasta" inclusive
-        // (los del dia y los de dias anteriores que nadie cerro).
         public int ContarPendientes(int idMedico, DateTime hasta)
         {
             try
@@ -244,8 +229,6 @@ namespace DAL
             }
         }
 
-        // "Finalizar atencion" (RN1.9): pasa a Ausente, en una sola transaccion, todos los turnos del
-        // medico con fecha hasta "hasta" inclusive que siguen Confirmados. Devuelve los ids marcados.
         public List<int> MarcarAusentesPendientes(int idMedico, DateTime hasta)
         {
             using (SqlConnection cn = conexion.ObtenerConexion())
@@ -257,7 +240,6 @@ namespace DAL
                     {
                         DAL_Conexion.EstablecerUsuarioAuditoria(cn, transaccion, idMedico);
 
-                        // Turno tiene un trigger (TR_Turno_Historial): SQL Server exige OUTPUT ... INTO.
                         SqlCommand cmd = new SqlCommand(@"
                             DECLARE @marcados TABLE (IdTurno INT);
                             UPDATE t SET t.Estado = 'Ausente'
@@ -288,7 +270,6 @@ namespace DAL
             }
         }
 
-        // Busqueda por nombre y apellido, N° de Historia Clinica o DNI.
         public List<BE_Paciente> BuscarPacientes(string texto)
         {
             try
@@ -330,14 +311,11 @@ namespace DAL
             }
         }
 
-        // Atenciones del paciente, de la mas reciente a la mas antigua, con medico,
-        // especialidad y receta (si tiene).
         public List<BE_AtencionMedica> ObtenerHistoriaClinica(int nroHC)
         {
             return ObtenerAtenciones("p.NroHistoriaClinica = @valor", nroHC);
         }
 
-        // Consulta comun: la condicion es fija (la arma esta clase), el valor va siempre por parametro.
         private List<BE_AtencionMedica> ObtenerAtenciones(string condicion, int valor)
         {
             try
@@ -436,7 +414,6 @@ namespace DAL
 
             Dictionary<int, BE_Receta> porId = recetas.ToDictionary(r => r.IdReceta);
 
-            // Los ids son enteros generados por la base: se arma la lista IN sin riesgo de inyeccion.
             SqlCommand cmd = new SqlCommand(
                 "SELECT IdRecetaItem, IdReceta, Medicamento, Presentacion, Posologia, Cantidad FROM RecetaItem " +
                 "WHERE IdReceta IN (" + string.Join(",", porId.Keys) + ") ORDER BY IdRecetaItem", cn);
@@ -457,7 +434,6 @@ namespace DAL
             }
         }
 
-        // Todas las atenciones con los campos del DVH, para verificar integridad y calcular el DVV.
         public List<BE_AtencionMedica> ListarParaIntegridad()
         {
             try
@@ -516,8 +492,6 @@ namespace DAL
             return turno;
         }
 
-        // Datos de la tabla Paciente (columnas NombrePaciente, ApellidoPaciente, DNI, NroHistoriaClinica,
-        // FechaNacimiento, Telefono, Email y FechaAperturaHC).
         private BE_Paciente MapearPaciente(SqlDataReader lector)
         {
             return new BE_Paciente

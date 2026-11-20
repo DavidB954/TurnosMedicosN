@@ -57,8 +57,6 @@ namespace DAL
             }
         }
 
-        // CU-02.1: actualiza el valor del turno y el porcentaje por ausencia de la especialidad. Las
-        // liquidaciones ya generadas no cambian porque guardan los valores aplicados (RN2.5).
         public void ActualizarValorTurno(int idEspecialidad, decimal valorTurno, decimal porcentajeAusente)
         {
             try

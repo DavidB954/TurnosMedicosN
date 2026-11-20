@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 
 namespace DAL
 {
-    // Datos propios del medico (tabla Medico, 1:1 con Usuario): matricula profesional.
     public class DAL_Medico
     {
         DAL_Conexion conexion = new DAL_Conexion();
@@ -27,7 +26,6 @@ namespace DAL
             }
         }
 
-        // Alta o modificacion de la matricula.
         public void GuardarMatricula(int idMedico, string matricula)
         {
             try

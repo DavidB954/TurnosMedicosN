@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace BLL
 {
-    // Matricula profesional del medico: se carga en Gestion de Medicos y se imprime en la receta.
     public class BLL_Medico
     {
         DAL_Medico dal_medico = new DAL_Medico();

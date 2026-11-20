@@ -9,11 +9,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // Gestión de Usuarios > Asignación de Roles:
-    //   - Filtro de usuarios por rol
-    //   - Roles comunes del usuario (Usuario_Rol)
-    //   - Permisos directos: una página completa (familia de formulario) o botones sueltos (Usuario_Permiso)
-    //   - Vista de solo lectura con todo lo que el usuario puede hacer (Composite resultante)
     public partial class frmUsuarioRoles : frmBase
     {
         public frmUsuarioRoles()
@@ -34,7 +29,6 @@ namespace Vista
             AplicarIdiomaAutomatico();
             arbolPermisos.RefrescarTextos();
 
-            // Texto de la opción "(Todos)" del filtro
             if (cboFiltroRol.Items.Count > 0 && cboFiltroRol.Items[0] is RolComposite todos && todos.Id == 0)
             {
                 todos.Nombre = TextoTodos();
@@ -63,7 +57,6 @@ namespace Vista
                 foreach (var rol in roles)
                     clbRoles.Items.Add(rol);
 
-                // Filtro por rol: "(Todos)" + los roles comunes
                 _cargandoCombo = true;
                 cboFiltroRol.Items.Clear();
                 cboFiltroRol.Items.Add(new RolComposite { Id = 0, Nombre = TextoTodos() });
@@ -85,7 +78,6 @@ namespace Vista
             }
         }
 
-        // Muestra en el combo de usuarios solo los que tienen el rol elegido en el filtro
         private void FiltrarUsuarios()
         {
             int? idAnterior = UsuarioSeleccionado()?.IdUsuario;
@@ -118,7 +110,6 @@ namespace Vista
                 CargarUsuarioSeleccionado();
         }
 
-        // Sin usuarios para el filtro: se vacían las marcas para no mostrar datos de otro usuario
         private void LimpiarUsuario()
         {
             for (int i = 0; i < clbRoles.Items.Count; i++)
@@ -221,7 +212,6 @@ namespace Vista
 
                 bll_roles.GuardarRolesUsuario(usuario.IdUsuario, idsRoles);
 
-                // El usuario puede haber dejado de tener el rol del filtro
                 FiltrarUsuarios();
                 AvisarGuardado();
             }
@@ -259,7 +249,6 @@ namespace Vista
             }
         }
 
-        // Si un guardado falla a mitad de camino, se vuelve a mostrar lo que realmente quedó en la base.
         private void CargarUsuarioSeleccionadoSinError()
         {
             try

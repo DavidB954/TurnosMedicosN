@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace BE.Composite
 {
-    // Patente: un botón (o el acceso "Ver") de un formulario.
-    // Nombre es la clave que verifica el código: "<ClaseFormulario>.<NombreControl>".
     public class Permiso : Componente
     {
         public int IdPermiso { get; set; }

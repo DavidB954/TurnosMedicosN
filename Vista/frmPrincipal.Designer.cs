@@ -2,15 +2,8 @@
 {
     partial class frmPrincipal
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -50,9 +39,6 @@
             this.btn_Ayuda = new System.Windows.Forms.Button();
             this.groupBox_Menu.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // groupBox_Menu
-            // 
             this.groupBox_Menu.AutoScroll = true;
             this.groupBox_Menu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
             this.groupBox_Menu.Dock = System.Windows.Forms.DockStyle.Left;
@@ -79,9 +65,6 @@
             this.groupBox_Menu.Name = "groupBox_Menu";
             this.groupBox_Menu.Size = new System.Drawing.Size(370, 828);
             this.groupBox_Menu.TabIndex = 1;
-            // 
-            // CbPrincipalIdioma
-            // 
             this.CbPrincipalIdioma.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CbPrincipalIdioma.FormattingEnabled = true;
             this.CbPrincipalIdioma.Location = new System.Drawing.Point(120, 690);
@@ -90,18 +73,12 @@
             this.CbPrincipalIdioma.Size = new System.Drawing.Size(180, 37);
             this.CbPrincipalIdioma.TabIndex = 9;
             this.CbPrincipalIdioma.SelectedIndexChanged += new System.EventHandler(this.CbPrincipalIdioma_SelectedIndexChanged);
-            // 
-            // lblUsuario
-            // 
             this.lblUsuario.AutoSize = true;
             this.lblUsuario.Location = new System.Drawing.Point(48, 738);
             this.lblUsuario.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblUsuario.Name = "lblUsuario";
             this.lblUsuario.Size = new System.Drawing.Size(0, 29);
             this.lblUsuario.TabIndex = 8;
-            // 
-            // btnGestionIdiomas
-            // 
             this.btnGestionIdiomas.Location = new System.Drawing.Point(0, 342);
             this.btnGestionIdiomas.Name = "btnGestionIdiomas";
             this.btnGestionIdiomas.Size = new System.Drawing.Size(300, 52);
@@ -109,9 +86,6 @@
             this.btnGestionIdiomas.Text = "Gestion Idiomas";
             this.btnGestionIdiomas.UseVisualStyleBackColor = true;
             this.btnGestionIdiomas.Click += new System.EventHandler(this.btnGestionIdiomas_Click);
-            // 
-            // btn_AccesoMedico
-            // 
             this.btn_AccesoMedico.Location = new System.Drawing.Point(0, 414);
             this.btn_AccesoMedico.Name = "btn_AccesoMedico";
             this.btn_AccesoMedico.Size = new System.Drawing.Size(300, 52);
@@ -119,9 +93,6 @@
             this.btn_AccesoMedico.Text = "Mi agenda";
             this.btn_AccesoMedico.UseVisualStyleBackColor = true;
             this.btn_AccesoMedico.Click += new System.EventHandler(this.btn_AccesoMedico_Click);
-            // 
-            // btn_Salir
-            // 
             this.btn_Salir.Location = new System.Drawing.Point(178, 777);
             this.btn_Salir.Name = "btn_Salir";
             this.btn_Salir.Size = new System.Drawing.Size(122, 51);
@@ -129,9 +100,6 @@
             this.btn_Salir.Text = "Salir";
             this.btn_Salir.UseVisualStyleBackColor = true;
             this.btn_Salir.Click += new System.EventHandler(this.btn_Salir_Click);
-            // 
-            // btn_Bitacora
-            // 
             this.btn_Bitacora.Location = new System.Drawing.Point(0, 266);
             this.btn_Bitacora.Name = "btn_Bitacora";
             this.btn_Bitacora.Size = new System.Drawing.Size(300, 52);
@@ -139,9 +107,6 @@
             this.btn_Bitacora.Text = "Bitacora";
             this.btn_Bitacora.UseVisualStyleBackColor = true;
             this.btn_Bitacora.Click += new System.EventHandler(this.btn_Bitacora_Click);
-            //
-            // btn_HistorialTurnos
-            //
             this.btn_HistorialTurnos.Location = new System.Drawing.Point(0, 300);
             this.btn_HistorialTurnos.Name = "btn_HistorialTurnos";
             this.btn_HistorialTurnos.Size = new System.Drawing.Size(300, 52);
@@ -149,9 +114,6 @@
             this.btn_HistorialTurnos.Text = "Historial de Turnos";
             this.btn_HistorialTurnos.UseVisualStyleBackColor = true;
             this.btn_HistorialTurnos.Click += new System.EventHandler(this.btn_HistorialTurnos_Click);
-            //
-            // btn_Seguridad
-            // 
             this.btn_Seguridad.Location = new System.Drawing.Point(0, 188);
             this.btn_Seguridad.Name = "btn_Seguridad";
             this.btn_Seguridad.Size = new System.Drawing.Size(300, 52);
@@ -159,9 +121,6 @@
             this.btn_Seguridad.Text = "Seguridad";
             this.btn_Seguridad.UseVisualStyleBackColor = true;
             this.btn_Seguridad.Click += new System.EventHandler(this.btn_Seguridad_Click);
-            // 
-            // btn_GestionRoles
-            // 
             this.btn_GestionRoles.Location = new System.Drawing.Point(0, 111);
             this.btn_GestionRoles.Name = "btn_GestionRoles";
             this.btn_GestionRoles.Size = new System.Drawing.Size(300, 52);
@@ -169,9 +128,6 @@
             this.btn_GestionRoles.Text = "Gestion de Roles";
             this.btn_GestionRoles.UseVisualStyleBackColor = true;
             this.btn_GestionRoles.Click += new System.EventHandler(this.btn_GestionRoles_Click);
-            // 
-            // btn_GestionUsuarios
-            // 
             this.btn_GestionUsuarios.Location = new System.Drawing.Point(0, 34);
             this.btn_GestionUsuarios.Name = "btn_GestionUsuarios";
             this.btn_GestionUsuarios.Size = new System.Drawing.Size(300, 52);
@@ -179,9 +135,6 @@
             this.btn_GestionUsuarios.Text = "Gestion de Usuarios";
             this.btn_GestionUsuarios.UseVisualStyleBackColor = true;
             this.btn_GestionUsuarios.Click += new System.EventHandler(this.btn_GestionUsuarios_Click);
-            //
-            // btn_SubUsuariosABM
-            //
             this.btn_SubUsuariosABM.BackColor = System.Drawing.Color.Gainsboro;
             this.btn_SubUsuariosABM.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_SubUsuariosABM.Location = new System.Drawing.Point(0, 86);
@@ -194,9 +147,6 @@
             this.btn_SubUsuariosABM.UseVisualStyleBackColor = false;
             this.btn_SubUsuariosABM.Visible = false;
             this.btn_SubUsuariosABM.Click += new System.EventHandler(this.btn_SubUsuariosABM_Click);
-            //
-            // btn_SubUsuariosRoles
-            //
             this.btn_SubUsuariosRoles.BackColor = System.Drawing.Color.Gainsboro;
             this.btn_SubUsuariosRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_SubUsuariosRoles.Location = new System.Drawing.Point(0, 124);
@@ -209,9 +159,6 @@
             this.btn_SubUsuariosRoles.UseVisualStyleBackColor = false;
             this.btn_SubUsuariosRoles.Visible = false;
             this.btn_SubUsuariosRoles.Click += new System.EventHandler(this.btn_SubUsuariosRoles_Click);
-            //
-            // btn_SubUsuariosHistorial
-            //
             this.btn_SubUsuariosHistorial.BackColor = System.Drawing.Color.Gainsboro;
             this.btn_SubUsuariosHistorial.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_SubUsuariosHistorial.Location = new System.Drawing.Point(0, 162);
@@ -224,9 +171,6 @@
             this.btn_SubUsuariosHistorial.UseVisualStyleBackColor = false;
             this.btn_SubUsuariosHistorial.Visible = false;
             this.btn_SubUsuariosHistorial.Click += new System.EventHandler(this.btn_SubUsuariosHistorial_Click);
-            // 
-            // btn_GestionMedicos
-            // 
             this.btn_GestionMedicos.Location = new System.Drawing.Point(0, 563);
             this.btn_GestionMedicos.Name = "btn_GestionMedicos";
             this.btn_GestionMedicos.Size = new System.Drawing.Size(300, 54);
@@ -234,9 +178,6 @@
             this.btn_GestionMedicos.Text = "Gestion Medicos";
             this.btn_GestionMedicos.UseVisualStyleBackColor = true;
             this.btn_GestionMedicos.Click += new System.EventHandler(this.btn_GestionMedicos_Click);
-            //
-            // btn_GestionTurnos
-            //
             this.btn_GestionTurnos.Location = new System.Drawing.Point(0, 617);
             this.btn_GestionTurnos.Name = "btn_GestionTurnos";
             this.btn_GestionTurnos.Size = new System.Drawing.Size(300, 54);
@@ -244,9 +185,6 @@
             this.btn_GestionTurnos.Text = "Gestion de Turnos";
             this.btn_GestionTurnos.UseVisualStyleBackColor = true;
             this.btn_GestionTurnos.Click += new System.EventHandler(this.btn_GestionTurnos_Click);
-            //
-            // btn_ValorTurno
-            //
             this.btn_ValorTurno.Location = new System.Drawing.Point(0, 671);
             this.btn_ValorTurno.Name = "btn_ValorTurno";
             this.btn_ValorTurno.Size = new System.Drawing.Size(300, 54);
@@ -254,9 +192,6 @@
             this.btn_ValorTurno.Text = "Valor del turno";
             this.btn_ValorTurno.UseVisualStyleBackColor = true;
             this.btn_ValorTurno.Click += new System.EventHandler(this.btn_ValorTurno_Click);
-            //
-            // btn_Liquidaciones
-            //
             this.btn_Liquidaciones.Location = new System.Drawing.Point(0, 725);
             this.btn_Liquidaciones.Name = "btn_Liquidaciones";
             this.btn_Liquidaciones.Size = new System.Drawing.Size(300, 54);
@@ -264,9 +199,6 @@
             this.btn_Liquidaciones.Text = "Liquidación de honorarios";
             this.btn_Liquidaciones.UseVisualStyleBackColor = true;
             this.btn_Liquidaciones.Click += new System.EventHandler(this.btn_Liquidaciones_Click);
-            //
-            // btn_Ayuda
-            //
             this.btn_Ayuda.Location = new System.Drawing.Point(0, 779);
             this.btn_Ayuda.Name = "btn_Ayuda";
             this.btn_Ayuda.Size = new System.Drawing.Size(300, 54);
@@ -274,9 +206,6 @@
             this.btn_Ayuda.Text = "Ayuda (F1)";
             this.btn_Ayuda.UseVisualStyleBackColor = true;
             this.btn_Ayuda.Click += new System.EventHandler(this.btn_Ayuda_Click);
-            //
-            // frmPrincipal
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 832);
@@ -315,4 +244,3 @@
         private System.Windows.Forms.Button btn_Ayuda;
     }
 }
-

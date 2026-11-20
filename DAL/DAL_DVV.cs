@@ -94,18 +94,14 @@ namespace DAL
                 {
                     conexion.Open();
 
-                    //Cerramos las conexiones existentes
                     SqlCommand cmdSingleUser = new SqlCommand("ALTER DATABASE GestionTurnosMedicos SET SINGLE_USER WITH ROLLBACK IMMEDIATE", conexion);
 
                     cmdSingleUser.ExecuteNonQuery();
-
-                    //Restauramos con REPLACE
 
                     SqlCommand cmdRestauracion = new SqlCommand($"RESTORE DATABASE GestionTurnosMedicos FROM DISK = '{rutaBackup}' WITH REPLACE", conexion);
 
                     cmdRestauracion.ExecuteNonQuery();
 
-                    //Volvemos a multiuser
                     SqlCommand cmdMultiUser = new SqlCommand("ALTER DATABASE GestionTurnosMedicos SET MULTI_USER", conexion);
 
                     cmdMultiUser.ExecuteNonQuery();

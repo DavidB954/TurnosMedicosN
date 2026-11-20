@@ -2,8 +2,6 @@ using System;
 
 namespace BE
 {
-    // T06b Control de cambios: una version de un turno (fila de la tabla copia Turno_Historial).
-    // La registra el trigger TR_Turno_Historial despues de cada alta o modificacion del turno.
     public class BE_TurnoHistorial
     {
         public int IdHistorial { get; set; }
@@ -24,12 +22,10 @@ namespace BE
 
         public DateTime FechaCreacion { get; set; }
 
-        // "Alta" o "Modificacion"
         public string Operacion { get; set; }
 
         public DateTime FechaHoraCambio { get; set; }
 
-        // null: el cambio no lo hizo un usuario identificado (por ejemplo, la migracion inicial)
         public int? IdUsuarioCambio { get; set; }
 
         public string NombreUsuarioCambio { get; set; }

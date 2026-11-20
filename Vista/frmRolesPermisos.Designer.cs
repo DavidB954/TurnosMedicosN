@@ -2,15 +2,8 @@
 {
     partial class frmRolesPermisos
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.groupBoxRoles = new System.Windows.Forms.GroupBox();
@@ -44,9 +33,6 @@
             this.groupBoxRoles.SuspendLayout();
             this.groupBoxPermisos.SuspendLayout();
             this.SuspendLayout();
-            //
-            // groupBoxRoles
-            //
             this.groupBoxRoles.Controls.Add(this.lstRoles);
             this.groupBoxRoles.Controls.Add(this.lblNombre);
             this.groupBoxRoles.Controls.Add(this.txtNombre);
@@ -62,9 +48,6 @@
             this.groupBoxRoles.TabIndex = 0;
             this.groupBoxRoles.TabStop = false;
             this.groupBoxRoles.Text = "Roles";
-            //
-            // lstRoles
-            //
             this.lstRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstRoles.FormattingEnabled = true;
             this.lstRoles.ItemHeight = 25;
@@ -73,36 +56,24 @@
             this.lstRoles.Size = new System.Drawing.Size(410, 334);
             this.lstRoles.TabIndex = 0;
             this.lstRoles.SelectedIndexChanged += new System.EventHandler(this.lstRoles_SelectedIndexChanged);
-            //
-            // lblNombre
-            //
             this.lblNombre.AutoSize = true;
             this.lblNombre.Location = new System.Drawing.Point(15, 390);
             this.lblNombre.Name = "lblNombre";
             this.lblNombre.Size = new System.Drawing.Size(101, 29);
             this.lblNombre.TabIndex = 1;
             this.lblNombre.Text = "Nombre";
-            //
-            // txtNombre
-            //
             this.txtNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNombre.Location = new System.Drawing.Point(15, 422);
             this.txtNombre.MaxLength = 50;
             this.txtNombre.Name = "txtNombre";
             this.txtNombre.Size = new System.Drawing.Size(410, 32);
             this.txtNombre.TabIndex = 2;
-            //
-            // lblDescripcion
-            //
             this.lblDescripcion.AutoSize = true;
             this.lblDescripcion.Location = new System.Drawing.Point(15, 468);
             this.lblDescripcion.Name = "lblDescripcion";
             this.lblDescripcion.Size = new System.Drawing.Size(149, 29);
             this.lblDescripcion.TabIndex = 3;
             this.lblDescripcion.Text = "Descripción";
-            //
-            // txtDescripcion
-            //
             this.txtDescripcion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDescripcion.Location = new System.Drawing.Point(15, 500);
             this.txtDescripcion.MaxLength = 100;
@@ -110,9 +81,6 @@
             this.txtDescripcion.Multiline = true;
             this.txtDescripcion.Size = new System.Drawing.Size(410, 110);
             this.txtDescripcion.TabIndex = 4;
-            //
-            // btnNuevoRol
-            //
             this.btnNuevoRol.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNuevoRol.Location = new System.Drawing.Point(15, 630);
             this.btnNuevoRol.Name = "btnNuevoRol";
@@ -121,9 +89,6 @@
             this.btnNuevoRol.Text = "Nuevo";
             this.btnNuevoRol.UseVisualStyleBackColor = true;
             this.btnNuevoRol.Click += new System.EventHandler(this.btnNuevoRol_Click);
-            //
-            // btnModificarRol
-            //
             this.btnModificarRol.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnModificarRol.Location = new System.Drawing.Point(155, 630);
             this.btnModificarRol.Name = "btnModificarRol";
@@ -132,9 +97,6 @@
             this.btnModificarRol.Text = "Modificar";
             this.btnModificarRol.UseVisualStyleBackColor = true;
             this.btnModificarRol.Click += new System.EventHandler(this.btnModificarRol_Click);
-            //
-            // btnEliminarRol
-            //
             this.btnEliminarRol.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminarRol.Location = new System.Drawing.Point(295, 630);
             this.btnEliminarRol.Name = "btnEliminarRol";
@@ -143,9 +105,6 @@
             this.btnEliminarRol.Text = "Eliminar";
             this.btnEliminarRol.UseVisualStyleBackColor = true;
             this.btnEliminarRol.Click += new System.EventHandler(this.btnEliminarRol_Click);
-            //
-            // groupBoxPermisos
-            //
             this.groupBoxPermisos.Controls.Add(this.lblAyuda);
             this.groupBoxPermisos.Controls.Add(this.tvPermisos);
             this.groupBoxPermisos.Controls.Add(this.btnGuardarPermisos);
@@ -156,27 +115,18 @@
             this.groupBoxPermisos.TabIndex = 1;
             this.groupBoxPermisos.TabStop = false;
             this.groupBoxPermisos.Text = "Formularios y permisos del rol";
-            //
-            // lblAyuda
-            //
             this.lblAyuda.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAyuda.Location = new System.Drawing.Point(15, 34);
             this.lblAyuda.Name = "lblAyuda";
             this.lblAyuda.Size = new System.Drawing.Size(730, 50);
             this.lblAyuda.TabIndex = 0;
             this.lblAyuda.Text = "Tildar un formulario = toda la página. Tildar solo botones = únicamente esos botones.";
-            //
-            // tvPermisos
-            //
             this.tvPermisos.CheckBoxes = true;
             this.tvPermisos.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tvPermisos.Location = new System.Drawing.Point(15, 90);
             this.tvPermisos.Name = "tvPermisos";
             this.tvPermisos.Size = new System.Drawing.Size(730, 590);
             this.tvPermisos.TabIndex = 1;
-            //
-            // btnGuardarPermisos
-            //
             this.btnGuardarPermisos.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnGuardarPermisos.Location = new System.Drawing.Point(15, 692);
             this.btnGuardarPermisos.Name = "btnGuardarPermisos";
@@ -185,9 +135,6 @@
             this.btnGuardarPermisos.Text = "Guardar Permisos";
             this.btnGuardarPermisos.UseVisualStyleBackColor = true;
             this.btnGuardarPermisos.Click += new System.EventHandler(this.btnGuardarPermisos_Click);
-            //
-            // frmRolesPermisos
-            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 832);

@@ -17,6 +17,9 @@
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBox_Paciente = new System.Windows.Forms.GroupBox();
             this.lblDNI = new System.Windows.Forms.Label();
             this.txtDNI = new System.Windows.Forms.TextBox();
@@ -54,9 +57,6 @@
             this.groupBox_TurnosPaciente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTurnosPaciente)).BeginInit();
             this.SuspendLayout();
-            // 
-            // groupBox_Paciente
-            // 
             this.groupBox_Paciente.Controls.Add(this.lblDNI);
             this.groupBox_Paciente.Controls.Add(this.txtDNI);
             this.groupBox_Paciente.Controls.Add(this.btnBuscarPaciente);
@@ -73,152 +73,133 @@
             this.groupBox_Paciente.Controls.Add(this.lblEmail);
             this.groupBox_Paciente.Controls.Add(this.txtEmail);
             this.groupBox_Paciente.Controls.Add(this.btnRegistrarPaciente);
+            this.groupBox_Paciente.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
             this.groupBox_Paciente.Location = new System.Drawing.Point(15, 17);
             this.groupBox_Paciente.Name = "groupBox_Paciente";
             this.groupBox_Paciente.Size = new System.Drawing.Size(730, 150);
             this.groupBox_Paciente.TabIndex = 0;
             this.groupBox_Paciente.TabStop = false;
             this.groupBox_Paciente.Text = "Paciente";
-            // 
-            // lblDNI
-            // 
             this.lblDNI.AutoSize = true;
+            this.lblDNI.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblDNI.Location = new System.Drawing.Point(15, 33);
             this.lblDNI.Name = "lblDNI";
+            this.lblDNI.Size = new System.Drawing.Size(29, 13);
             this.lblDNI.TabIndex = 1;
             this.lblDNI.Text = "DNI:";
-            // 
-            // txtDNI
-            // 
+            this.txtDNI.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtDNI.Location = new System.Drawing.Point(60, 28);
-            this.txtDNI.Name = "txtDNI";
-            this.txtDNI.Size = new System.Drawing.Size(120, 22);
-            this.txtDNI.TabIndex = 2;
             this.txtDNI.MaxLength = 10;
-            this.txtDNI.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDNI_KeyDown);
+            this.txtDNI.Name = "txtDNI";
+            this.txtDNI.Size = new System.Drawing.Size(120, 20);
+            this.txtDNI.TabIndex = 2;
             this.txtDNI.TextChanged += new System.EventHandler(this.txtDNI_TextChanged);
-            // 
-            // btnBuscarPaciente
-            // 
+            this.txtDNI.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDNI_KeyDown);
+            this.btnBuscarPaciente.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnBuscarPaciente.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnBuscarPaciente.FlatAppearance.BorderSize = 0;
+            this.btnBuscarPaciente.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBuscarPaciente.ForeColor = System.Drawing.Color.White;
             this.btnBuscarPaciente.Location = new System.Drawing.Point(190, 26);
             this.btnBuscarPaciente.Name = "btnBuscarPaciente";
             this.btnBuscarPaciente.Size = new System.Drawing.Size(80, 26);
             this.btnBuscarPaciente.TabIndex = 3;
             this.btnBuscarPaciente.Text = "Buscar";
-            this.btnBuscarPaciente.UseVisualStyleBackColor = true;
+            this.btnBuscarPaciente.UseVisualStyleBackColor = false;
             this.btnBuscarPaciente.Click += new System.EventHandler(this.btnBuscarPaciente_Click);
-            // 
-            // lblHC
-            // 
             this.lblHC.AutoSize = true;
+            this.lblHC.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblHC.Location = new System.Drawing.Point(295, 33);
             this.lblHC.Name = "lblHC";
+            this.lblHC.Size = new System.Drawing.Size(103, 13);
             this.lblHC.TabIndex = 4;
             this.lblHC.Text = "Historia clínica Nro.:";
-            // 
-            // txtHC
-            // 
+            this.txtHC.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtHC.Location = new System.Drawing.Point(440, 28);
             this.txtHC.Name = "txtHC";
-            this.txtHC.Size = new System.Drawing.Size(90, 22);
-            this.txtHC.TabIndex = 5;
             this.txtHC.ReadOnly = true;
+            this.txtHC.Size = new System.Drawing.Size(90, 20);
+            this.txtHC.TabIndex = 5;
             this.txtHC.TabStop = false;
-            // 
-            // lblNombre
-            // 
             this.lblNombre.AutoSize = true;
+            this.lblNombre.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblNombre.Location = new System.Drawing.Point(15, 70);
             this.lblNombre.Name = "lblNombre";
+            this.lblNombre.Size = new System.Drawing.Size(47, 13);
             this.lblNombre.TabIndex = 6;
             this.lblNombre.Text = "Nombre:";
-            // 
-            // txtNombre
-            // 
+            this.txtNombre.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtNombre.Location = new System.Drawing.Point(80, 65);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(150, 22);
-            this.txtNombre.TabIndex = 7;
             this.txtNombre.MaxLength = 50;
-            // 
-            // lblApellido
-            // 
+            this.txtNombre.Name = "txtNombre";
+            this.txtNombre.Size = new System.Drawing.Size(150, 20);
+            this.txtNombre.TabIndex = 7;
             this.lblApellido.AutoSize = true;
+            this.lblApellido.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblApellido.Location = new System.Drawing.Point(245, 70);
             this.lblApellido.Name = "lblApellido";
+            this.lblApellido.Size = new System.Drawing.Size(47, 13);
             this.lblApellido.TabIndex = 8;
             this.lblApellido.Text = "Apellido:";
-            // 
-            // txtApellido
-            // 
+            this.txtApellido.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtApellido.Location = new System.Drawing.Point(310, 65);
-            this.txtApellido.Name = "txtApellido";
-            this.txtApellido.Size = new System.Drawing.Size(150, 22);
-            this.txtApellido.TabIndex = 9;
             this.txtApellido.MaxLength = 50;
-            // 
-            // lblFechaNacimiento
-            // 
+            this.txtApellido.Name = "txtApellido";
+            this.txtApellido.Size = new System.Drawing.Size(150, 20);
+            this.txtApellido.TabIndex = 9;
             this.lblFechaNacimiento.AutoSize = true;
+            this.lblFechaNacimiento.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblFechaNacimiento.Location = new System.Drawing.Point(475, 70);
             this.lblFechaNacimiento.Name = "lblFechaNacimiento";
+            this.lblFechaNacimiento.Size = new System.Drawing.Size(109, 13);
             this.lblFechaNacimiento.TabIndex = 10;
             this.lblFechaNacimiento.Text = "Fecha de nacimiento:";
-            // 
-            // dtpFechaNacimiento
-            // 
             this.dtpFechaNacimiento.CustomFormat = "dd/MM/yyyy";
+            this.dtpFechaNacimiento.ForeColor = System.Drawing.SystemColors.ControlText;
             this.dtpFechaNacimiento.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpFechaNacimiento.Location = new System.Drawing.Point(610, 65);
             this.dtpFechaNacimiento.Name = "dtpFechaNacimiento";
-            this.dtpFechaNacimiento.Size = new System.Drawing.Size(105, 22);
-            this.dtpFechaNacimiento.TabIndex = 11;
             this.dtpFechaNacimiento.ShowCheckBox = true;
-            // 
-            // lblTelefono
-            // 
+            this.dtpFechaNacimiento.Size = new System.Drawing.Size(105, 20);
+            this.dtpFechaNacimiento.TabIndex = 11;
             this.lblTelefono.AutoSize = true;
+            this.lblTelefono.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblTelefono.Location = new System.Drawing.Point(15, 107);
             this.lblTelefono.Name = "lblTelefono";
+            this.lblTelefono.Size = new System.Drawing.Size(52, 13);
             this.lblTelefono.TabIndex = 12;
             this.lblTelefono.Text = "Teléfono:";
-            // 
-            // txtTelefono
-            // 
+            this.txtTelefono.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtTelefono.Location = new System.Drawing.Point(80, 102);
-            this.txtTelefono.Name = "txtTelefono";
-            this.txtTelefono.Size = new System.Drawing.Size(150, 22);
-            this.txtTelefono.TabIndex = 13;
             this.txtTelefono.MaxLength = 30;
-            // 
-            // lblEmail
-            // 
+            this.txtTelefono.Name = "txtTelefono";
+            this.txtTelefono.Size = new System.Drawing.Size(150, 20);
+            this.txtTelefono.TabIndex = 13;
             this.lblEmail.AutoSize = true;
+            this.lblEmail.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblEmail.Location = new System.Drawing.Point(245, 107);
             this.lblEmail.Name = "lblEmail";
+            this.lblEmail.Size = new System.Drawing.Size(35, 13);
             this.lblEmail.TabIndex = 14;
             this.lblEmail.Text = "Email:";
-            // 
-            // txtEmail
-            // 
+            this.txtEmail.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtEmail.Location = new System.Drawing.Point(310, 102);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(150, 22);
-            this.txtEmail.TabIndex = 15;
             this.txtEmail.MaxLength = 100;
-            // 
-            // btnRegistrarPaciente
-            // 
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(150, 20);
+            this.txtEmail.TabIndex = 15;
+            this.btnRegistrarPaciente.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnRegistrarPaciente.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRegistrarPaciente.FlatAppearance.BorderSize = 0;
+            this.btnRegistrarPaciente.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRegistrarPaciente.ForeColor = System.Drawing.Color.White;
             this.btnRegistrarPaciente.Location = new System.Drawing.Point(575, 100);
             this.btnRegistrarPaciente.Name = "btnRegistrarPaciente";
             this.btnRegistrarPaciente.Size = new System.Drawing.Size(140, 26);
             this.btnRegistrarPaciente.TabIndex = 16;
             this.btnRegistrarPaciente.Text = "Registrar paciente";
-            this.btnRegistrarPaciente.UseVisualStyleBackColor = true;
+            this.btnRegistrarPaciente.UseVisualStyleBackColor = false;
             this.btnRegistrarPaciente.Click += new System.EventHandler(this.btnRegistrarPaciente_Click);
-            // 
-            // groupBox_NuevoTurno
-            // 
             this.groupBox_NuevoTurno.Controls.Add(this.lblEspecialidad);
             this.groupBox_NuevoTurno.Controls.Add(this.ucEspecialidad);
             this.groupBox_NuevoTurno.Controls.Add(this.lblMedico);
@@ -228,154 +209,165 @@
             this.groupBox_NuevoTurno.Controls.Add(this.lblHorarios);
             this.groupBox_NuevoTurno.Controls.Add(this.lstHorarios);
             this.groupBox_NuevoTurno.Controls.Add(this.btnRegistrarTurno);
+            this.groupBox_NuevoTurno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
             this.groupBox_NuevoTurno.Location = new System.Drawing.Point(15, 177);
             this.groupBox_NuevoTurno.Name = "groupBox_NuevoTurno";
             this.groupBox_NuevoTurno.Size = new System.Drawing.Size(730, 170);
             this.groupBox_NuevoTurno.TabIndex = 17;
             this.groupBox_NuevoTurno.TabStop = false;
             this.groupBox_NuevoTurno.Text = "Nuevo turno";
-            // 
-            // lblEspecialidad
-            // 
             this.lblEspecialidad.AutoSize = true;
+            this.lblEspecialidad.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblEspecialidad.Location = new System.Drawing.Point(15, 33);
             this.lblEspecialidad.Name = "lblEspecialidad";
+            this.lblEspecialidad.Size = new System.Drawing.Size(70, 13);
             this.lblEspecialidad.TabIndex = 18;
             this.lblEspecialidad.Text = "Especialidad:";
-            // 
-            // ucEspecialidad
-            // 
+            this.ucEspecialidad.Etiqueta = "";
+            this.ucEspecialidad.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ucEspecialidad.Location = new System.Drawing.Point(110, 28);
             this.ucEspecialidad.Name = "ucEspecialidad";
             this.ucEspecialidad.Size = new System.Drawing.Size(190, 22);
             this.ucEspecialidad.TabIndex = 19;
-            this.ucEspecialidad.Etiqueta = "";
-            // 
-            // lblMedico
-            // 
             this.lblMedico.AutoSize = true;
+            this.lblMedico.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblMedico.Location = new System.Drawing.Point(15, 70);
             this.lblMedico.Name = "lblMedico";
+            this.lblMedico.Size = new System.Drawing.Size(45, 13);
             this.lblMedico.TabIndex = 20;
             this.lblMedico.Text = "Médico:";
-            // 
-            // ucMedico
-            // 
+            this.ucMedico.Etiqueta = "";
+            this.ucMedico.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ucMedico.Location = new System.Drawing.Point(110, 65);
             this.ucMedico.Name = "ucMedico";
             this.ucMedico.Size = new System.Drawing.Size(190, 22);
             this.ucMedico.TabIndex = 21;
-            this.ucMedico.Etiqueta = "";
-            // 
-            // lblFecha
-            // 
             this.lblFecha.AutoSize = true;
+            this.lblFecha.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblFecha.Location = new System.Drawing.Point(15, 107);
             this.lblFecha.Name = "lblFecha";
+            this.lblFecha.Size = new System.Drawing.Size(40, 13);
             this.lblFecha.TabIndex = 22;
             this.lblFecha.Text = "Fecha:";
-            // 
-            // dtpFecha
-            // 
             this.dtpFecha.CustomFormat = "dd/MM/yyyy";
+            this.dtpFecha.ForeColor = System.Drawing.SystemColors.ControlText;
             this.dtpFecha.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpFecha.Location = new System.Drawing.Point(110, 102);
             this.dtpFecha.Name = "dtpFecha";
-            this.dtpFecha.Size = new System.Drawing.Size(190, 22);
+            this.dtpFecha.Size = new System.Drawing.Size(190, 20);
             this.dtpFecha.TabIndex = 23;
             this.dtpFecha.ValueChanged += new System.EventHandler(this.dtpFecha_ValueChanged);
-            // 
-            // lblHorarios
-            // 
             this.lblHorarios.AutoSize = true;
+            this.lblHorarios.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblHorarios.Location = new System.Drawing.Point(335, 33);
             this.lblHorarios.Name = "lblHorarios";
+            this.lblHorarios.Size = new System.Drawing.Size(104, 13);
             this.lblHorarios.TabIndex = 24;
             this.lblHorarios.Text = "Horarios disponibles:";
-            // 
-            // lstHorarios
-            // 
+            this.lstHorarios.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lstHorarios.FormattingEnabled = true;
             this.lstHorarios.IntegralHeight = false;
             this.lstHorarios.Location = new System.Drawing.Point(335, 53);
             this.lstHorarios.Name = "lstHorarios";
             this.lstHorarios.Size = new System.Drawing.Size(220, 105);
             this.lstHorarios.TabIndex = 25;
-            // 
-            // btnRegistrarTurno
-            // 
+            this.btnRegistrarTurno.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnRegistrarTurno.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRegistrarTurno.FlatAppearance.BorderSize = 0;
+            this.btnRegistrarTurno.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRegistrarTurno.ForeColor = System.Drawing.Color.White;
             this.btnRegistrarTurno.Location = new System.Drawing.Point(575, 132);
             this.btnRegistrarTurno.Name = "btnRegistrarTurno";
             this.btnRegistrarTurno.Size = new System.Drawing.Size(140, 26);
             this.btnRegistrarTurno.TabIndex = 26;
             this.btnRegistrarTurno.Text = "Registrar turno";
-            this.btnRegistrarTurno.UseVisualStyleBackColor = true;
+            this.btnRegistrarTurno.UseVisualStyleBackColor = false;
             this.btnRegistrarTurno.Click += new System.EventHandler(this.btnRegistrarTurno_Click);
-            // 
-            // groupBox_TurnosPaciente
-            // 
             this.groupBox_TurnosPaciente.Controls.Add(this.dgvTurnosPaciente);
             this.groupBox_TurnosPaciente.Controls.Add(this.btnModificarTurno);
             this.groupBox_TurnosPaciente.Controls.Add(this.btnCancelarTurno);
             this.groupBox_TurnosPaciente.Controls.Add(this.btnVerHistorial);
+            this.groupBox_TurnosPaciente.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
             this.groupBox_TurnosPaciente.Location = new System.Drawing.Point(15, 357);
             this.groupBox_TurnosPaciente.Name = "groupBox_TurnosPaciente";
             this.groupBox_TurnosPaciente.Size = new System.Drawing.Size(730, 170);
             this.groupBox_TurnosPaciente.TabIndex = 27;
             this.groupBox_TurnosPaciente.TabStop = false;
             this.groupBox_TurnosPaciente.Text = "Turnos del paciente";
-            // 
-            // dgvTurnosPaciente
-            // 
             this.dgvTurnosPaciente.AllowUserToAddRows = false;
             this.dgvTurnosPaciente.AllowUserToDeleteRows = false;
             this.dgvTurnosPaciente.AllowUserToResizeRows = false;
-            this.dgvTurnosPaciente.BackgroundColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(241)))), ((int)(((byte)(246)))));
+            this.dgvTurnosPaciente.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvTurnosPaciente.BackgroundColor = System.Drawing.Color.White;
+            this.dgvTurnosPaciente.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvTurnosPaciente.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvTurnosPaciente.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvTurnosPaciente.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvTurnosPaciente.EnableHeadersVisualStyles = false;
+            this.dgvTurnosPaciente.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(206)))), ((int)(((byte)(217)))), ((int)(((byte)(228)))));
+            this.dgvTurnosPaciente.Location = new System.Drawing.Point(15, 30);
             this.dgvTurnosPaciente.MultiSelect = false;
+            this.dgvTurnosPaciente.Name = "dgvTurnosPaciente";
             this.dgvTurnosPaciente.ReadOnly = true;
             this.dgvTurnosPaciente.RowHeadersVisible = false;
             this.dgvTurnosPaciente.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTurnosPaciente.Location = new System.Drawing.Point(15, 30);
-            this.dgvTurnosPaciente.Name = "dgvTurnosPaciente";
             this.dgvTurnosPaciente.Size = new System.Drawing.Size(540, 125);
             this.dgvTurnosPaciente.TabIndex = 28;
             this.dgvTurnosPaciente.SelectionChanged += new System.EventHandler(this.dgvTurnosPaciente_SelectionChanged);
-            // 
-            // btnModificarTurno
-            // 
+            this.btnModificarTurno.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnModificarTurno.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnModificarTurno.FlatAppearance.BorderSize = 0;
+            this.btnModificarTurno.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnModificarTurno.ForeColor = System.Drawing.Color.White;
             this.btnModificarTurno.Location = new System.Drawing.Point(575, 30);
             this.btnModificarTurno.Name = "btnModificarTurno";
             this.btnModificarTurno.Size = new System.Drawing.Size(140, 26);
             this.btnModificarTurno.TabIndex = 29;
             this.btnModificarTurno.Text = "Modificar turno";
-            this.btnModificarTurno.UseVisualStyleBackColor = true;
+            this.btnModificarTurno.UseVisualStyleBackColor = false;
             this.btnModificarTurno.Click += new System.EventHandler(this.btnModificarTurno_Click);
-            // 
-            // btnCancelarTurno
-            // 
+            this.btnCancelarTurno.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
+            this.btnCancelarTurno.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCancelarTurno.FlatAppearance.BorderSize = 0;
+            this.btnCancelarTurno.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelarTurno.ForeColor = System.Drawing.Color.White;
             this.btnCancelarTurno.Location = new System.Drawing.Point(575, 66);
             this.btnCancelarTurno.Name = "btnCancelarTurno";
             this.btnCancelarTurno.Size = new System.Drawing.Size(140, 26);
             this.btnCancelarTurno.TabIndex = 30;
             this.btnCancelarTurno.Text = "Cancelar turno";
-            this.btnCancelarTurno.UseVisualStyleBackColor = true;
+            this.btnCancelarTurno.UseVisualStyleBackColor = false;
             this.btnCancelarTurno.Click += new System.EventHandler(this.btnCancelarTurno_Click);
-            // 
-            // btnVerHistorial
-            // 
+            this.btnVerHistorial.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnVerHistorial.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnVerHistorial.FlatAppearance.BorderSize = 0;
+            this.btnVerHistorial.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVerHistorial.ForeColor = System.Drawing.Color.White;
             this.btnVerHistorial.Location = new System.Drawing.Point(575, 102);
             this.btnVerHistorial.Name = "btnVerHistorial";
             this.btnVerHistorial.Size = new System.Drawing.Size(140, 26);
             this.btnVerHistorial.TabIndex = 31;
             this.btnVerHistorial.Text = "Ver historial";
-            this.btnVerHistorial.UseVisualStyleBackColor = true;
+            this.btnVerHistorial.UseVisualStyleBackColor = false;
             this.btnVerHistorial.Click += new System.EventHandler(this.btnVerHistorial_Click);
-            // 
-            // frmGestionTurnos
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(760, 542);
             this.Controls.Add(this.groupBox_TurnosPaciente);
             this.Controls.Add(this.groupBox_NuevoTurno);
@@ -388,10 +380,9 @@
             this.groupBox_NuevoTurno.ResumeLayout(false);
             this.groupBox_NuevoTurno.PerformLayout();
             this.groupBox_TurnosPaciente.ResumeLayout(false);
-            this.groupBox_TurnosPaciente.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTurnosPaciente)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
+
         }
 
         #endregion

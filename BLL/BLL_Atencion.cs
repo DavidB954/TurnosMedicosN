@@ -9,8 +9,6 @@ using System.Text;
 
 namespace BLL
 {
-    // RF1 - Atencion medica: CU-01.5 Registrar atencion medica (agenda, historia clinica y receta) y
-    // CU-01.6 Registrar ausencia del paciente.
     public class BLL_Atencion
     {
         DAL_Atencion dal = new DAL_Atencion();
@@ -23,10 +21,6 @@ namespace BLL
         public const int LargoMaximoMotivo = 500;
         public const int LargoMaximoIndicaciones = 1000;
 
-        // ---------------------------------------------------------------- Agenda (CU-01.5)
-
-        // Primera fecha (desde "desde" en adelante) en que el medico tiene algun turno asignado.
-        // Se usa para saltar directo a una fecha con contenido si la elegida no tiene nada.
         public DateTime? ObtenerProximaFechaConTurnos(int idMedico, DateTime desde)
         {
             try
@@ -46,8 +40,6 @@ namespace BLL
             }
         }
 
-        // Turnos del medico para la fecha (sin Cancelados), ordenados por hora. Con la fecha
-        // actual es la agenda del dia (CU-01.5); con otra fecha, se muestra en solo lectura.
         public List<BE_Turno> ObtenerAgenda(int idMedico, DateTime fecha, bool registrarConsulta = true)
         {
             try
@@ -75,19 +67,15 @@ namespace BLL
             }
         }
 
-        // "Atender" habilitado: turno de hoy y Confirmado.
         public bool PuedeAtender(BE_Turno turno)
         {
             return turno != null && turno.Fecha.Date == DateTime.Today && turno.Estado == "Confirmado";
         }
 
-        // "Ausente" habilitado: turno de hoy, Confirmado y cuya hora de inicio ya paso (RN1.7, CU-01.6).
         public bool PuedeMarcarAusente(BE_Turno turno)
         {
             return PuedeAtender(turno) && turno.HoraInicio <= DateTime.Now.TimeOfDay;
         }
-
-        // ---------------------------------------------------------------- Atender (CU-01.5)
 
         public BE_Turno ObtenerTurnoParaAtender(int idTurno, int idMedico)
         {
@@ -100,7 +88,7 @@ namespace BLL
                 if (turno == null || turno.IdMedico != idMedico)
                     throw new ArgumentException("El turno no puede atenderse: no pertenece a su agenda.");
 
-                ValidarTurnoAtendible(turno); //Valida que sea la fecha, que el turno este confirmado y que el paciente tenga los datos DNI HC ya en sistema
+                ValidarTurnoAtendible(turno);
                 return turno;
             }
             catch (ArgumentException)
@@ -113,7 +101,6 @@ namespace BLL
             }
         }
 
-        // CU-01.5 (con la receta si la trae). Todo se guarda en una unica transaccion.
         public void RegistrarAtencion(BE_AtencionMedica a)
         {
             if (a == null || a.Turno == null)
@@ -122,7 +109,6 @@ namespace BLL
             ValidarRolMedico();
             int idMedico = Sesion.Instancia().UsuarioActual.IdUsuario;
 
-            // Se relee el turno: pudo cambiar (vencimiento, otra sesion) mientras se completaba el formulario.
             BE_Turno turno;
             try
             {
@@ -139,7 +125,6 @@ namespace BLL
 
             ValidarDatos(a);
 
-            // datetime de SQL no guarda bien los milisegundos: se trunca al segundo para que el DVH recalculado coincida.
             DateTime ahora = DateTime.Now;
             a.FechaHora = new DateTime(ahora.Year, ahora.Month, ahora.Day, ahora.Hour, ahora.Minute, ahora.Second);
             a.MotivoConsulta = a.MotivoConsulta.Trim();
@@ -165,7 +150,6 @@ namespace BLL
                 throw new Exception("No se pudo registrar la atencion. No se guardo ningun dato y el turno sigue Confirmado. Detalle: " + ex.Message, ex);
             }
 
-            // Ya confirmada la transaccion: DVV y auditoria.
             ActualizarDVV();
 
             bitacora.RegistrarEvento(idMedico, AccionBitacora.ATENCION_REGISTRADA, Modulo,
@@ -179,7 +163,6 @@ namespace BLL
                 $"Turno {turno.IdTurno} (paciente {turno.IdPaciente}) marcado como Atendido por el medico {idMedico}.");
         }
 
-        // RN1.7: solo turnos Confirmados de la fecha actual. La pertenencia al medico se valida antes.
         private void ValidarTurnoAtendible(BE_Turno t)
         {
             if (t.Fecha.Date != DateTime.Today)
@@ -190,7 +173,6 @@ namespace BLL
                 throw new ArgumentException("El turno no puede atenderse: el paciente no tiene Historia Clinica. Debe registrarlo la recepcion.");
         }
 
-        // CU-01.5: motivo de consulta obligatorio y receta con al menos un item.
         private void ValidarDatos(BE_AtencionMedica a)
         {
             List<string> errores = new List<string>();
@@ -221,7 +203,6 @@ namespace BLL
                 throw new ArgumentException(string.Join(Environment.NewLine, errores.Distinct()));
         }
 
-        // CU-01.5 (receta): valida un medicamento antes de agregarlo a la receta.
         public void ValidarItemReceta(BE_RecetaItem item)
         {
             if (item == null)
@@ -244,8 +225,6 @@ namespace BLL
             if (item.Cantidad <= 0)
                 throw new ArgumentException($"La cantidad de {item.Medicamento} debe ser mayor a 0.");
         }
-
-        // ---------------------------------------------------------------- Ausente (CU-01.6)
 
         public void MarcarAusente(int idTurno)
         {
@@ -288,10 +267,6 @@ namespace BLL
                 $"Turno {idTurno} (paciente {turno.IdPaciente}) marcado como Ausente por el medico {idMedico}.");
         }
 
-        // ---------------------------------------------------------------- Finalizar atencion del dia
-
-        // Turnos del medico que siguen Confirmados (ni Atendidos ni Ausentes): los del dia y los de
-        // dias anteriores que nadie cerro (RN1.9).
         public int ContarTurnosSinAtender(int idMedico)
         {
             try
@@ -310,7 +285,6 @@ namespace BLL
             }
         }
 
-        // De los turnos sin atender, los de dias anteriores a hoy que nadie cerro (para avisarlos aparte).
         public int ContarTurnosSinAtenderAnteriores(int idMedico)
         {
             try
@@ -329,8 +303,6 @@ namespace BLL
             }
         }
 
-        // RN1.9: pasa a Ausente los turnos del dia y de dias anteriores que quedaron sin atender.
-        // Devuelve cuantos marco.
         public int MarcarAusentesPendientes(int idMedico)
         {
             ValidarRolMedico();
@@ -362,8 +334,6 @@ namespace BLL
                 $"Atencion del {DateTime.Today:dd/MM/yyyy} finalizada por el medico {idMedico}. Ausentes marcados al cierre: {ausentesMarcados}.");
         }
 
-        // ---------------------------------------------------------------- Historia Clinica (CU-01.5)
-
         public List<BE_Paciente> BuscarPacientes(string texto)
         {
             ValidarRolMedico();
@@ -385,7 +355,6 @@ namespace BLL
             }
         }
 
-        // Solo lectura. Toda consulta queda auditada (datos de salud sensibles).
         public List<BE_AtencionMedica> ObtenerHistoriaClinica(int nroHC)
         {
             ValidarRolMedico();
@@ -406,15 +375,12 @@ namespace BLL
             return atenciones;
         }
 
-        // ---------------------------------------------------------------- Integridad (DVH / DVV)
-
         public string CalcularDVH(BE_AtencionMedica a)
         {
             return HashHelper.GenerarHash(
                 $"{a.Turno.IdTurno}|{a.FechaHora:yyyyMMddHHmmss}|{a.MotivoConsulta}|{a.Indicaciones}");
         }
 
-        // Ids de atenciones cuyo DVH no coincide, o -1 si solo fallo el DVV (se borro o agrego una fila).
         public List<int> VerificarIntegridadAtenciones()
         {
             try
@@ -462,9 +428,6 @@ namespace BLL
             return HashHelper.GenerarHash(concatenacion.ToString());
         }
 
-        // ---------------------------------------------------------------- Seguridad
-
-        // CU-01.5: el contenido clinico es solo para el rol Medico.
         private void ValidarRolMedico()
         {
             Sesion sesion = Sesion.Instancia();
@@ -472,7 +435,6 @@ namespace BLL
                 throw new ArgumentException("Acceso denegado: esta funcion es exclusiva del rol Medico.");
         }
 
-        // RN1.7: el Medico solo ve y opera su propia agenda.
         private void ValidarMedicoLogueado(int idMedico)
         {
             if (Sesion.Instancia().UsuarioActual.IdUsuario != idMedico)

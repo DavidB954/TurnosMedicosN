@@ -23,9 +23,6 @@ namespace DAL
             RegistrarCambios(tabla, idRegistro, cambios, idUsuario, accion);
         }
 
-        // Inserta todos los campos modificados de una misma edición como UNA sola
-        // transacción: comparten IdTransaccion y FechaCambio, y si falla un insert
-        // se revierte todo (no quedan cambios registrados a medias).
         public void RegistrarCambios(string tabla, int idRegistro, List<BE_CambioCampo> cambios, int idUsuario, string accion)
         {
             if (cambios == null || cambios.Count == 0)
@@ -41,8 +38,6 @@ namespace DAL
                     {
                         Guid idTransaccion = Guid.NewGuid();
 
-                        // Fecha única para todo el grupo, tomada del reloj del servidor
-                        // (misma fuente que usaba el DEFAULT GETDATE() de la tabla).
                         SqlCommand cmdFecha = new SqlCommand("SELECT GETDATE()", conexion, transaccion);
                         DateTime fechaCambio = (DateTime)cmdFecha.ExecuteScalar();
 
@@ -117,7 +112,6 @@ namespace DAL
                 cmd.Parameters.Add("@tabla", SqlDbType.VarChar, 50).Value = tabla;
                 cmd.Parameters.Add("@id", SqlDbType.Int).Value = idRegistro;
                 cmd.Parameters.AddWithValue("@fecha", fechaHasta);
-
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();

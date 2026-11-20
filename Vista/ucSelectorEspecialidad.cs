@@ -14,11 +14,6 @@ namespace Vista
         {
             InitializeComponent();
 
-            // DisplayMember/ValueMember deben quedar seteados ANTES de asignar DataSource:
-            // al asignar DataSource el combo dispara SelectedIndexChanged en el acto, y si en
-            // ese momento ValueMember todavia esta vacio, SelectedValue devuelve el objeto
-            // BE_Especialidad completo en vez del IdEspecialidad (revienta cualquier cascada
-            // que escuche este evento y haga Convert.ToInt32).
             cboEspecialidad.DisplayMember = "Nombre";
             cboEspecialidad.ValueMember = "IdEspecialidad";
 
@@ -35,8 +30,6 @@ namespace Vista
             set
             {
                 lblEtiqueta.Text = value;
-                // Sin etiqueta (la pone la pantalla, como en los prototipos) el combo ocupa todo el
-                // control; con etiqueta, arranca despues de ella para que no la tape.
                 lblEtiqueta.Visible = !string.IsNullOrEmpty(value);
                 int izquierda = lblEtiqueta.Visible ? lblEtiqueta.Left + lblEtiqueta.PreferredWidth + 6 : 0;
                 cboEspecialidad.SetBounds(izquierda, 0, Math.Max(80, Width - izquierda), cboEspecialidad.Height);

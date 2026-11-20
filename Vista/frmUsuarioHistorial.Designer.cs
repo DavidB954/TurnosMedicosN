@@ -2,15 +2,8 @@ namespace Vista
 {
     partial class frmUsuarioHistorial
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@ namespace Vista
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.GroupBoxUsuarioHistorial = new System.Windows.Forms.GroupBox();
@@ -36,9 +25,6 @@ namespace Vista
             this.GroupBoxUsuarioHistorial.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistorial)).BeginInit();
             this.SuspendLayout();
-            //
-            // GroupBoxUsuarioHistorial
-            //
             this.GroupBoxUsuarioHistorial.Controls.Add(this.lbl_Usuario);
             this.GroupBoxUsuarioHistorial.Controls.Add(this.cboUsuario_Historial);
             this.GroupBoxUsuarioHistorial.Controls.Add(this.btnRestaurar);
@@ -52,18 +38,12 @@ namespace Vista
             this.GroupBoxUsuarioHistorial.TabIndex = 0;
             this.GroupBoxUsuarioHistorial.TabStop = false;
             this.GroupBoxUsuarioHistorial.Text = "Historial";
-            //
-            // lbl_Usuario
-            //
             this.lbl_Usuario.AutoSize = true;
             this.lbl_Usuario.Location = new System.Drawing.Point(15, 40);
             this.lbl_Usuario.Name = "lbl_Usuario";
             this.lbl_Usuario.Size = new System.Drawing.Size(73, 25);
             this.lbl_Usuario.TabIndex = 3;
             this.lbl_Usuario.Text = "Usuario:";
-            //
-            // cboUsuario_Historial
-            //
             this.cboUsuario_Historial.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboUsuario_Historial.FormattingEnabled = true;
             this.cboUsuario_Historial.Location = new System.Drawing.Point(120, 36);
@@ -72,9 +52,6 @@ namespace Vista
             this.cboUsuario_Historial.Size = new System.Drawing.Size(360, 33);
             this.cboUsuario_Historial.TabIndex = 0;
             this.cboUsuario_Historial.SelectedIndexChanged += new System.EventHandler(this.cboUsuario_Historial_SelectedIndexChanged);
-            //
-            // btnRestaurar
-            //
             this.btnRestaurar.Location = new System.Drawing.Point(500, 28);
             this.btnRestaurar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnRestaurar.Name = "btnRestaurar";
@@ -83,9 +60,6 @@ namespace Vista
             this.btnRestaurar.Text = "Restaurar";
             this.btnRestaurar.UseVisualStyleBackColor = true;
             this.btnRestaurar.Click += new System.EventHandler(this.btnRestaurar_Click);
-            //
-            // dgvHistorial
-            //
             this.dgvHistorial.AllowUserToAddRows = false;
             this.dgvHistorial.AllowUserToDeleteRows = false;
             this.dgvHistorial.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -97,9 +71,6 @@ namespace Vista
             this.dgvHistorial.RowHeadersWidth = 62;
             this.dgvHistorial.Size = new System.Drawing.Size(1515, 645);
             this.dgvHistorial.TabIndex = 2;
-            //
-            // frmUsuarioHistorial
-            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 832);

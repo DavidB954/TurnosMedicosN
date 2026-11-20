@@ -6,7 +6,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // Gestión de Usuarios > Historial: cambios de un usuario y restauración a un estado anterior.
     public partial class frmUsuarioHistorial : frmBase
     {
         public frmUsuarioHistorial()
@@ -107,7 +106,6 @@ namespace Vista
                     return;
                 }
 
-                // Fecha del registro seleccionado en la grilla
                 DateTime fechaSeleccionada = Convert.ToDateTime(
                     dgvHistorial.SelectedRows[0].Cells["FechaCambio"].Value);
 
@@ -122,10 +120,8 @@ namespace Vista
                 if (confirmacion != DialogResult.Yes)
                     return;
 
-                // Recomponer el estado anterior
                 BE_Usuario usuarioRestaurado = bll_historial.RecomponerEstado(idUsuario, fechaSeleccionada);
 
-                // Confirmar al usuario qué se va a restaurar
                 string detalle = $"Se restaurará:\n" +
                                  $"Nombre: {usuarioRestaurado.Nombre}\n" +
                                  $"Apellido: {usuarioRestaurado.Apellido}\n" +
@@ -136,7 +132,6 @@ namespace Vista
                     MessageBoxButtons.YesNo) != DialogResult.Yes)
                     return;
 
-                // Guardar el estado restaurado — esto también registra el cambio en el historial y en la bitácora
                 bll_usuario.RestaurarUsuario(usuarioRestaurado, fechaSeleccionada);
 
                 MessageBox.Show("Estado restaurado correctamente.");

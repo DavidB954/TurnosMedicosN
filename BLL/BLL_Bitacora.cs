@@ -41,7 +41,6 @@ namespace BLL
         {
             try
             {
-                //Obtener el nombre del equipo local
                 string nombreHost = Dns.GetHostName();
 
                 IPAddress[] direccionesIP = Dns.GetHostAddresses(nombreHost);

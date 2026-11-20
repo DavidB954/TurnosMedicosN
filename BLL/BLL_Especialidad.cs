@@ -14,7 +14,6 @@ namespace BLL
         DAL_Especialidad dal_especialidad = new DAL_Especialidad();
         BLL_Bitacora bll_bitacora = new BLL_Bitacora();
 
-        // Tope razonable para detectar errores de tipeo (decimal(12,2) en la base).
         private const decimal ValorTurnoMaximo = 9999999999.99m;
 
         public void AgregarEspecialidad(string nombre)
@@ -57,7 +56,6 @@ namespace BLL
             dal_especialidad.DesasignarEspecialidadMedico(idMedico, idEspecialidad);
         }
 
-        // CU-02.1 Administrar valor del turno por especialidad.
         public void ActualizarValorTurno(int idEspecialidad, decimal valorTurno, decimal porcentajeAusente)
         {
             ValidarValorTurno(valorTurno, porcentajeAusente);
@@ -82,8 +80,6 @@ namespace BLL
                               $"({Formato.Porcentaje(porcentajeAusente)} por ausencia).");
         }
 
-        // RN2.4: el valor del turno tiene que ser mayor que cero y el porcentaje por ausencia estar entre
-        // 0 y 100 (flujo alternativo A2 de CU-02.1).
         private void ValidarValorTurno(decimal valorTurno, decimal porcentajeAusente)
         {
             if (valorTurno <= 0)

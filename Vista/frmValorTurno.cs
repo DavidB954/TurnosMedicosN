@@ -9,7 +9,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // RF2 - CU-02.1 Administrar valor del turno por especialidad (contador).
     public partial class frmValorTurno : frmBase
     {
         BLL_Especialidad bll_especialidad = new BLL_Especialidad();
@@ -61,7 +60,6 @@ namespace Vista
             dgvEspecialidades.Columns.Add(columna);
         }
 
-        // CU-02.1 paso 2: especialidades con su valor del turno y su porcentaje por ausencia vigentes.
         private void CargarEspecialidades()
         {
             int? idAnterior = especialidadSeleccionada?.IdEspecialidad;
@@ -77,13 +75,11 @@ namespace Vista
 
                 if (especialidades.Count == 0)
                 {
-                    // Flujo alternativo A1.
                     MessageBox.Show("No hay especialidades registradas.", "Valor del turno",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                // Despues de guardar, se vuelve a seleccionar la especialidad que se estaba editando.
                 foreach (DataGridViewRow fila in dgvEspecialidades.Rows)
                 {
                     if (idAnterior.HasValue && ((BE_Especialidad)fila.DataBoundItem).IdEspecialidad == idAnterior.Value)
@@ -100,7 +96,6 @@ namespace Vista
             }
         }
 
-        // CU-02.1 pasos 3 y 4.
         private void dgvEspecialidades_SelectionChanged(object sender, EventArgs e)
         {
             try
@@ -123,7 +118,6 @@ namespace Vista
             txtPorcentajeAusente.Text = especialidad == null ? "" : especialidad.PorcentajeAusente.ToString("0.##", Formato.Cultura);
         }
 
-        // CU-02.1 pasos 5 a 7.
         private void btnGuardarValorTurno_Click(object sender, EventArgs e)
         {
             try
@@ -137,7 +131,6 @@ namespace Vista
                 decimal valorTurno, porcentajeAusente;
                 if (!LeerNumero(txtValorTurno.Text, out valorTurno))
                 {
-                    // Flujo alternativo A2: vacio o no numerico.
                     MessageBox.Show("Ingrese el valor del turno como un número (por ejemplo 18000,50).");
                     txtValorTurno.Focus();
                     return;
@@ -165,7 +158,6 @@ namespace Vista
             }
         }
 
-        // Acepta la coma o el punto como separador decimal (sin separador de miles).
         private static bool LeerNumero(string texto, out decimal numero)
         {
             texto = (texto ?? "").Trim().Replace("$", "").Replace("%", "").Replace(" ", "");

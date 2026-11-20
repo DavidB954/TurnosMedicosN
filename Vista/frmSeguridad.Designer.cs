@@ -2,15 +2,8 @@
 {
     partial class frmSeguridad
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.groupBox_FilasCorruptas = new System.Windows.Forms.GroupBox();
@@ -38,9 +27,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvSeguridad)).BeginInit();
             this.groupBox_Opciones.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // groupBox_FilasCorruptas
-            // 
             this.groupBox_FilasCorruptas.Controls.Add(this.dgvSeguridad);
             this.groupBox_FilasCorruptas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_FilasCorruptas.Location = new System.Drawing.Point(30, 28);
@@ -51,9 +37,6 @@
             this.groupBox_FilasCorruptas.TabIndex = 2;
             this.groupBox_FilasCorruptas.TabStop = false;
             this.groupBox_FilasCorruptas.Text = "Filas Corrompidas";
-            // 
-            // dgvSeguridad
-            // 
             this.dgvSeguridad.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSeguridad.Location = new System.Drawing.Point(9, 58);
             this.dgvSeguridad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -61,9 +44,6 @@
             this.dgvSeguridad.RowHeadersWidth = 62;
             this.dgvSeguridad.Size = new System.Drawing.Size(786, 280);
             this.dgvSeguridad.TabIndex = 0;
-            // 
-            // btnBloquearUsuYRecalcular
-            // 
             this.btnBloquearUsuYRecalcular.Location = new System.Drawing.Point(560, 71);
             this.btnBloquearUsuYRecalcular.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnBloquearUsuYRecalcular.Name = "btnBloquearUsuYRecalcular";
@@ -72,9 +52,6 @@
             this.btnBloquearUsuYRecalcular.Text = "Bloquear Usuario y Recalcular DV";
             this.btnBloquearUsuYRecalcular.UseVisualStyleBackColor = true;
             this.btnBloquearUsuYRecalcular.Click += new System.EventHandler(this.btnBloquearUsuYRecalcular_Click);
-            // 
-            // btnRestaurarBD
-            // 
             this.btnRestaurarBD.Location = new System.Drawing.Point(284, 71);
             this.btnRestaurarBD.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnRestaurarBD.Name = "btnRestaurarBD";
@@ -83,9 +60,6 @@
             this.btnRestaurarBD.Text = "Restaurar BD";
             this.btnRestaurarBD.UseVisualStyleBackColor = true;
             this.btnRestaurarBD.Click += new System.EventHandler(this.btnRestaurarBD_Click);
-            // 
-            // btnBackUp
-            // 
             this.btnBackUp.Location = new System.Drawing.Point(9, 71);
             this.btnBackUp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnBackUp.Name = "btnBackUp";
@@ -94,9 +68,6 @@
             this.btnBackUp.Text = "Generar Back Up";
             this.btnBackUp.UseVisualStyleBackColor = true;
             this.btnBackUp.Click += new System.EventHandler(this.btnBackUp_Click);
-            // 
-            // groupBox_Opciones
-            // 
             this.groupBox_Opciones.Controls.Add(this.btnBackUp);
             this.groupBox_Opciones.Controls.Add(this.btnBloquearUsuYRecalcular);
             this.groupBox_Opciones.Controls.Add(this.btnRestaurarBD);
@@ -106,9 +77,6 @@
             this.groupBox_Opciones.TabIndex = 8;
             this.groupBox_Opciones.TabStop = false;
             this.groupBox_Opciones.Text = "Opciones";
-            // 
-            // frmSeguridad
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 832);

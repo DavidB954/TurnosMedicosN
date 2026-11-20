@@ -22,7 +22,6 @@ namespace Vista
 
         }
 
-
         public override void AplicarIdioma()
         {
             AplicarIdiomaAutomatico();

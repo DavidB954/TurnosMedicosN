@@ -7,7 +7,6 @@ using System.Data.SqlClient;
 
 namespace BLL
 {
-    // Turnos del RF1: los registra, modifica y cancela el recepcionista (CU-01.1, CU-01.2, CU-01.3).
     public class BLL_Turno
     {
         DAL_Turno dal_turno = new DAL_Turno();
@@ -21,8 +20,6 @@ namespace BLL
             return Sesion.Instancia().UsuarioActual?.IdUsuario;
         }
 
-        // CU-01.1: valida RN1.2 (horario activo, fecha y hora futuras) y RN1.3 (un unico turno
-        // confirmado por horario y fecha) y registra el turno en estado Confirmado.
         public void RegistrarTurno(int idPaciente, int idHorario, DateTime fecha)
         {
             if (idPaciente <= 0)
@@ -48,7 +45,6 @@ namespace BLL
             }
             catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
             {
-                // Flujo alternativo A4: otro recepcionista registro ese horario al mismo tiempo.
                 throw new ArgumentException("Ese horario acaba de ser reservado por otro recepcionista. Elija otro horario.");
             }
 
@@ -56,8 +52,6 @@ namespace BLL
                 $"Turno registrado para el paciente {idPaciente} en el horario {idHorario} el {fecha:dd/MM/yyyy}.");
         }
 
-        // CU-01.2 (RN1.4 y RN1.5): registra el turno nuevo y recien despues cancela el anterior, para
-        // que el paciente no pierda su turno si el nuevo horario no es valido.
         public void ModificarTurno(int idTurno, int nuevoIdHorario, DateTime nuevaFecha, int idPaciente)
         {
             BE_Turno turnoActual = dal_turno.ObtenerPorId(idTurno);
@@ -78,7 +72,6 @@ namespace BLL
                 $"Turno {idTurno} del paciente {idPaciente} modificado: reemplazado por el horario {nuevoIdHorario} el {nuevaFecha:dd/MM/yyyy}.");
         }
 
-        // CU-01.3 (RN1.4 y RN1.6): el turno pasa a Cancelado y su horario queda disponible.
         public void CancelarTurno(int idTurno, int idUsuario)
         {
             BE_Turno turno = dal_turno.ObtenerPorId(idTurno);
@@ -93,8 +86,6 @@ namespace BLL
                 $"Turno {idTurno} del paciente {turno.IdPaciente} cancelado.");
         }
 
-        // CU-01.4 (punto de extension Turnos afectados): cancela los turnos alcanzados por la
-        // modificacion o inactivacion de un horario. El recepcionista ya los confirmo en pantalla.
         public void CancelarPorCambioDeHorario(List<BE_Turno> turnos, int idUsuario)
         {
             foreach (BE_Turno turno in turnos)
@@ -118,7 +109,6 @@ namespace BLL
             }
         }
 
-        // Turnos de cualquier paciente con filtros opcionales (Historial de cambios de turnos, T06b).
         public List<BE_Turno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string estado, string textoPaciente = null)
         {
             try

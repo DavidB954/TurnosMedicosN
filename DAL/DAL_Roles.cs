@@ -14,8 +14,6 @@ namespace DAL
     {
         DAL_Conexion conex = new DAL_Conexion();
 
-
-        //ROLES
         public int InsertarRol(string nombre, string descripcion)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -47,37 +45,30 @@ namespace DAL
             }
         }
 
-        //Eliminamos todos los Roles 
         public void EliminarRol(int id)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
             {
                 conexion.Open();
 
-                //Primero borramos de la tabla Rol_Rol
                 SqlCommand cmdBorrarRolRol = new SqlCommand("Delete from Rol_Rol Where IdRolPadre = @id OR IdRolHijo=@id", conexion);
 
                 cmdBorrarRolRol.Parameters.Add("@id", SqlDbType.Int).Value = id;
 
                 cmdBorrarRolRol.ExecuteNonQuery();
 
-                
-                //Borramos el Rol de Rol_Permiso
                 SqlCommand cmdBorrarRol_Permiso = new SqlCommand("Delete from Rol_Permiso Where IdRol=@id", conexion);
 
                 cmdBorrarRol_Permiso.Parameters.Add("@id", SqlDbType.Int).Value = id;
 
                 cmdBorrarRol_Permiso.ExecuteNonQuery();
 
-                //Eliminamos el Rol
                 SqlCommand cmdBorrarRol = new SqlCommand("Delete from Rol Where IdRol=@Id", conexion);
                 cmdBorrarRol.Parameters.Add("@id", SqlDbType.Int).Value = id;
                 cmdBorrarRol.ExecuteNonQuery();
 
             }
         }
-
-        //Obtenemos todos los roles.
 
         public DataTable ObtenerTodosLosRoles()
         {
@@ -113,8 +104,6 @@ namespace DAL
             }
         }
 
-        //Verificamos que no exista un nombre con el mismo rol
-
         public bool ExisteNombreRol(string nombre, int? idExcluir = null)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -134,8 +123,6 @@ namespace DAL
                 return (int)cmd.ExecuteScalar() > 0;
             }
         }
-
-        //-- PERMISO -------------------------------
 
         public int InsertarPermiso(string nombre)
         {
@@ -198,15 +185,11 @@ namespace DAL
             {
                 conexion.Open();
 
-                //Primero borramos de Rol_Permiso
-
                 SqlCommand cmdBorrarPermisoRolPermiso = new SqlCommand("Delete from Rol_Permiso Where IdPermisos =@id", conexion);
 
                 cmdBorrarPermisoRolPermiso.Parameters.Add("@id", SqlDbType.Int).Value = id;
 
                 cmdBorrarPermisoRolPermiso.ExecuteNonQuery();
-
-                //Borramos el permiso de la tabla Permisos
 
                 SqlCommand cmdBorrarPermisos = new SqlCommand("Delete from Permisos Where IdPermisos=@id", conexion);
 
@@ -215,9 +198,6 @@ namespace DAL
                 cmdBorrarPermisos.ExecuteNonQuery();
             }
         }
-
-
-        // Traemos todos los permisos
 
         public DataTable ObtenerTodosLosPermisos()
         {
@@ -232,8 +212,6 @@ namespace DAL
             }
         }
 
-
-        //Verificar que no exista el nombre del permiso
         public bool ExisteNombrePermiso(string nombre, int ? idExcluir =null)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -254,10 +232,6 @@ namespace DAL
             }
         }
 
-
-
-        ///Jerarquia ROL-ROL -- Padre - HIJO
-      
         public void AsignarRolHijo(int idPadre, int idHijo)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -309,12 +283,9 @@ namespace DAL
                     Lista.Add(lector.GetInt32(0));
                 }
 
-
                 return Lista;
             }
         }
-
-        // Rol_Permiso
 
         public void AsignarPermisoARol(int idRol, int idPermiso)
         {
@@ -324,7 +295,6 @@ namespace DAL
 
                 SqlCommand cmdAsignarP = new SqlCommand(@"IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE IdRol=@rol and IdPermisos=@permiso)
                                    INSERT INTO Rol_Permiso (IdRol, IdPermisos) VALUES (@rol, @permiso)", conexion);
-
 
                 cmdAsignarP.Parameters.Add("@rol", SqlDbType.Int).Value = idRol;
                 cmdAsignarP.Parameters.Add("@permiso", SqlDbType.Int).Value = idPermiso;
@@ -347,31 +317,6 @@ namespace DAL
                 cmdDesasignarP.ExecuteNonQuery();
             }
         }
-
-        //public List<int> ObtenerPermisosDe(int idRol)
-        //{
-        //    var Lista = new List<int>();
-
-        //    using (SqlConnection conexion = conex.ObtenerConexion())
-        //    {
-        //        conexion.Open();
-
-        //        SqlCommand cmdLista = new SqlCommand("Select IdPermisos from Rol_Permisos Where IdRol = @idRol", conexion);
-
-        //        cmdLista.Parameters.Add("@idRol", SqlDbType.Int).Value = idRol;
-
-        //        SqlDataReader Lector = cmdLista.ExecuteReader();
-
-        //        while (Lector.Read())
-        //        {
-        //            Lista.Add(Lector.GetInt32(0));
-        //        }
-
-        //        return Lista;
-        //    }
-        //}
-
-        // Carga completa del Arbol
 
         public (DataTable Roles, DataTable Permisos, DataTable RolRol, DataTable RolPermisos) CargarArbol()
         {
@@ -483,8 +428,6 @@ namespace DAL
             return lista;
         }
 
-        // Usuario_Permiso: patentes asignadas directamente a un usuario
-
         public DataTable ObtenerPermisosDirectosUsuario(int idUsuario)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -532,19 +475,6 @@ namespace DAL
                 cmd.ExecuteNonQuery();
             }
         }
-
-        //public void LimpiarTablas()
-        //{
-        //    using (SqlConnection conexion = conex.ObtenerConexion())
-        //    {
-        //        conexion.Open();
-        //        new SqlCommand("DELETE FROM Rol_Permiso", conexion).ExecuteNonQuery();
-        //        new SqlCommand("DELETE FROM Rol_Rol", conexion).ExecuteNonQuery();
-        //        new SqlCommand("DELETE FROM Permisos", conexion).ExecuteNonQuery();
-        //        new SqlCommand("DELETE FROM Rol", conexion).ExecuteNonQuery();
-        //    }
-        //}
-
 
     }
 }

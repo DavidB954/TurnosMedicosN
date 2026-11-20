@@ -12,7 +12,6 @@ using System.Windows.Forms;
 using static BE.BE_Traduccion;
 using Servicios;
 
-
 namespace Vista
 {
     public partial class frmABM : frmBase
@@ -98,7 +97,6 @@ namespace Vista
 
                 var idiomaGuardado = bll.ObtenerIdiomas().Find(i => i.Codigo == nuevoIdioma.Codigo);
 
-                // Copia las traducciones del idioma base (Id=1 Español) como texto por defecto
                 var traduccionesBase = bll.ObtenerPorIdioma(1);
 
                 foreach (var tBase in traduccionesBase)
@@ -242,9 +240,6 @@ namespace Vista
                 };
                 bll.Guardar(nueva);
 
-                // Se agrega a "existentes" al toque: si no, dos controles con el mismo nombre
-                // (ej. "lblEtiqueta" dentro de cada instancia de ucSelectorMedico/ucSelectorEspecialidad)
-                // generan la misma clave y, al no verse entre si en esta misma pasada, se duplican.
                 existentes.Add(nueva);
                 agregados++;
             }
@@ -259,11 +254,6 @@ namespace Vista
                     RegistrarClaveSiFalta($"{nombreForm}.{ctrl.Name}", ctrl.Text, idiomas, existentes, ref agregados);
                 }
 
-                // ucSelectorEspecialidad/ucSelectorMedico son UserControl reutilizados en varias
-                // pantallas (frmGestionMedicos los repite varias veces): se registran por el nombre
-                // de la instancia, no por sus controles internos (ej. "lblEtiqueta"), que se llaman
-                // igual en todas las instancias y generarian la misma clave repetida. Ver el mismo
-                // criterio en frmBase.AplicarIdiomaEnControles.
                 if (ctrl is ucSelectorEspecialidad || ctrl is ucSelectorMedico)
                 {
                     string etiqueta = ctrl is ucSelectorEspecialidad

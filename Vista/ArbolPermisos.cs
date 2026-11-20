@@ -8,16 +8,11 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // Maneja un TreeView con checkboxes que muestra el catálogo de permisos:
-    //   Formulario (familia)  -> tildado = acceso a la página completa
-    //     └─ Botón (patente)  -> tildado solo = acceso únicamente a ese botón
-    // Lo usan Gestión de Roles (permisos de un rol) y Asignación de Roles (permisos directos del usuario).
     public class ArbolPermisos
     {
         private readonly TreeView tree;
         private bool actualizando = false;
 
-        // En solo lectura se muestran las marcas pero no se pueden cambiar (ej. rol Administrador).
         public bool SoloLectura { get; set; }
 
         public ArbolPermisos(TreeView treeView)
@@ -46,7 +41,6 @@ namespace Vista
             tree.EndUpdate();
         }
 
-        // Vuelve a poner los textos en el idioma actual (al cambiar de idioma)
         public void RefrescarTextos()
         {
             foreach (TreeNode nodoFormulario in tree.Nodes)
@@ -57,11 +51,6 @@ namespace Vista
             }
         }
 
-        // Marca las familias completas y las patentes sueltas indicadas; desmarca el resto.
-        // permisosEfectivos (opcional): todo lo que el usuario puede hacer (roles + directos). Lo
-        // que tiene por ahi pero NO esta tildado aca (es decir, lo tiene por un rol y no por una
-        // asignacion directa) se pinta en gris, para no confundir "no esta tildado" con "no se
-        // autocompleto": ver groupBoxPermisosDirectos en frmUsuarioRoles.
         public void Marcar(IEnumerable<int> idsFormularios, IEnumerable<int> idsPermisos, RolComposite permisosEfectivos = null)
         {
             var formularios = new HashSet<int>(idsFormularios);
@@ -87,7 +76,6 @@ namespace Vista
                             ? Color.Gray : Color.Empty;
                     }
 
-                    // Se expanden solo los formularios con algún botón suelto, para que se vea cuál es
                     if (!completo && nodoFormulario.Nodes.Cast<TreeNode>().Any(n => n.Checked))
                         nodoFormulario.Expand();
                     else
@@ -100,8 +88,6 @@ namespace Vista
             }
         }
 
-        // Formulario tildado => familia completa (se ignoran sus botones).
-        // Formulario sin tildar => cada botón tildado es una patente suelta.
         public void ObtenerSeleccion(out List<int> idsFormularios, out List<int> idsPermisos)
         {
             idsFormularios = new List<int>();
@@ -144,14 +130,11 @@ namespace Vista
             {
                 if (e.Node.Parent == null)
                 {
-                    // Formulario: tildar/destildar la página completa arrastra todos sus botones
                     foreach (TreeNode hijo in e.Node.Nodes)
                         hijo.Checked = e.Node.Checked;
                 }
                 else
                 {
-                    // Botón: si se destilda uno, el formulario deja de ser "página completa";
-                    // si quedan todos tildados, pasa a ser la página completa.
                     TreeNode padre = e.Node.Parent;
                     padre.Checked = padre.Nodes.Cast<TreeNode>().All(n => n.Checked);
                 }

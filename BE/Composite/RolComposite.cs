@@ -18,8 +18,6 @@ namespace BE.Composite
             set;
         }
 
-        // Si tiene Formulario es una "familia de formulario" (agrupa todas las patentes
-        // de esa pantalla); si es null es un rol común.
         public string Formulario { get; set; }
         public bool EsFormulario => !string.IsNullOrEmpty(Formulario);
 

@@ -9,8 +9,6 @@ using System.Linq;
 
 namespace BLL
 {
-    // RF2 - Liquidacion de honorarios medicos: CU-02.2 Generar liquidacion de honorarios (incluye la
-    // consulta de turnos trabajados) y CU-02.3 Emitir recibo de liquidacion.
     public class BLL_Liquidacion
     {
         DAL_Liquidacion dal_liquidacion = new DAL_Liquidacion();
@@ -19,8 +17,6 @@ namespace BLL
 
         private const string Modulo = "HONORARIOS";
 
-        // CU-02.2 pasos 3 a 5: medicos del periodo con lo trabajado en cada especialidad y si ya tienen
-        // liquidacion. No se guarda: se calcula cada vez que se consulta.
         public List<BE_MedicoPeriodo> ObtenerMedicosDelPeriodo(int mes, int anio)
         {
             ValidarPeriodo(mes, anio);
@@ -48,16 +44,12 @@ namespace BLL
             }
         }
 
-        // CU-02.2 pasos 7 a 11: genera la liquidacion de UN medico, despues de que el contador reviso sus
-        // turnos y confirmo el importe.
         public BE_Liquidacion GenerarLiquidacion(int idMedico, int mes, int anio)
         {
             ValidarPeriodoFinalizado(mes, anio);
             if (dal_liquidacion.ExisteLiquidacion(idMedico, mes, anio))
-                throw new ArgumentException("El médico ya tiene liquidación de ese período.");   // RN2.3 (A6)
+                throw new ArgumentException("El médico ya tiene liquidación de ese período.");
 
-            // RN2.6: solo se liquidan los renglones con turnos atendidos o ausentes (los que tienen solo
-            // cancelados se muestran pero no se pagan).
             DateTime desde = new DateTime(anio, mes, 1);
             List<BE_TurnosTrabajados> turnos = dal_liquidacion.ObtenerTurnosTrabajados(desde, desde.AddMonths(1).AddDays(-1))
                 .Where(t => t.IdMedico == idMedico && t.TurnosAtendidos + t.TurnosAusentes > 0).ToList();
@@ -75,7 +67,6 @@ namespace BLL
             }
             catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
             {
-                // Otro usuario lo liquido al mismo tiempo: la restriccion unica lo frena (RN2.3).
                 throw new ArgumentException("El médico ya tiene liquidación de ese período.");
             }
 
@@ -98,8 +89,6 @@ namespace BLL
             }
         }
 
-        // CU-02.3 (RN2.7): el recibo se arma con los datos guardados de la liquidacion, asi que puede
-        // volver a emitirse y siempre muestra lo mismo.
         public void EmitirRecibo(int idLiquidacion, string ruta)
         {
             if (string.IsNullOrWhiteSpace(ruta))
@@ -115,7 +104,6 @@ namespace BLL
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
             {
-                // Flujo alternativo A2: no se registra la emision.
                 throw new ArgumentException("No se pudo guardar el recibo. Si el archivo está abierto, ciérrelo; si no, " +
                                             "elija otra ubicación. Detalle: " + ex.Message);
             }
@@ -124,7 +112,6 @@ namespace BLL
                 $"Recibo de la liquidación N° {liquidacion.NroLiquidacion} de {liquidacion.NombreMedico} ({liquidacion.PeriodoTexto}).");
         }
 
-        // RN2.1: solo se liquidan meses cerrados (flujo alternativo A4 de CU-02.2).
         private void ValidarPeriodoFinalizado(int mes, int anio)
         {
             ValidarPeriodo(mes, anio);
@@ -132,7 +119,6 @@ namespace BLL
                 throw new ArgumentException("Solo se liquidan meses cerrados: el período elegido todavía no finalizó.");
         }
 
-        // RN2.4: toda especialidad con turnos a liquidar debe tener valor del turno mayor que cero (A5).
         private void ValidarValoresTurno(List<BE_TurnosTrabajados> turnos)
         {
             List<string> sinValor = turnos.Where(t => t.ValorTurno <= 0)
@@ -145,8 +131,6 @@ namespace BLL
                                             string.Join(", ", sinValor) + " (opción Valor del turno).");
         }
 
-        // Detalle por especialidad con el valor del turno y el porcentaje por ausencia vigentes, que quedan
-        // guardados como aplicados (RN2.5), y los dias y turnos del periodo (RN2.7).
         private BE_Liquidacion ArmarLiquidacion(int idMedico, List<BE_TurnosTrabajados> turnos)
         {
             List<BE_TurnosTrabajados> delMedico = turnos.Where(t => t.IdMedico == idMedico).ToList();

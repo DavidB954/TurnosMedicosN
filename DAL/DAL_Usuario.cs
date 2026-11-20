@@ -10,8 +10,6 @@ namespace DAL
     {
         DAL_Conexion conex = new DAL_Conexion();
 
-
-        //Obtenemos el usuario por id
         public BE_Usuario ObtenerUsuarioPorId(int IdUsuario)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -37,9 +35,6 @@ namespace DAL
             }
         }
 
-
-        //Verificamos que existe el mail del Usuario y devolvemos un objeto Usuario con la contraseña hasheada para poder compararla luego.
-
         public BE_Usuario ObtenerUsuarioPorEmail(string email)
         {
 
@@ -52,7 +47,6 @@ namespace DAL
                 cmdUsuEmail.Parameters.Add("@email", SqlDbType.VarChar, 30).Value = email;
 
                 SqlDataReader Lector = cmdUsuEmail.ExecuteReader();
-
 
                 if (!Lector.Read())
                 {
@@ -73,7 +67,6 @@ namespace DAL
             }
         }
 
-        //Updateamos los intentos fallidos en caso de que el login sea incorrecto, y bloqueamos el usuario si supera los 3 intentos fallidos.
         public void ActualizarIntentosFallidos(int intentos, int IdUsuario, string DVH)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -155,7 +148,6 @@ namespace DAL
                 comando.Parameters.AddWithValue("@hash", Usuario.HashPassword);
                 comando.Parameters.AddWithValue("@dvh", Usuario.DVH);
 
-                // Se devuelve el Id generado para poder registrar el alta y los datos de paciente.
                 Usuario.IdUsuario = (int)comando.ExecuteScalar();
             }
 
@@ -185,14 +177,12 @@ namespace DAL
             using (SqlConnection conexion = conex.ObtenerConexion())
             {
                 conexion.Open();
-                //Primero borro todo lo de ese usuario en la bitacora
                 SqlCommand cmdBorrarUsuBitacora = new SqlCommand("Delete from Bitacora WHERE IdUsuario=@idUsuBorrado", conexion);
 
                 cmdBorrarUsuBitacora.Parameters.Add("@idUsuBorrado", SqlDbType.Int).Value = id;
 
                 cmdBorrarUsuBitacora.ExecuteNonQuery();
 
-                // Luego sus roles y permisos directos (tienen FK a Usuario)
                 SqlCommand cmdBorrarSeguridad = new SqlCommand(
                     "Delete from Usuario_Rol WHERE IdUsuario=@id; Delete from Usuario_Permiso WHERE IdUsuario=@id", conexion);
 

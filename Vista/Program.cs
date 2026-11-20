@@ -13,7 +13,6 @@ namespace Vista
         [STAThread]
         static void Main()
         {
-            // Red de seguridad: cualquier error que no atrape una pantalla se informa y el programa sigue.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += Application_ThreadException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -34,8 +33,6 @@ namespace Vista
             }
             catch (Exception ex)
             {
-                // Sin conexion con la base (por ejemplo, si la instalacion no pudo crearla) no tiene sentido hablar de
-                // integridad: se avisa que falta la base y como resolverlo.
                 Exception causa = ex;
                 while (causa != null && !(causa is System.Data.SqlClient.SqlException))
                     causa = causa.InnerException;
@@ -55,9 +52,6 @@ namespace Vista
             }
         }
 
-        // DVH/DVV de AtencionMedica (Ley 26.529: la Historia Clinica es inalterable). Si se detecta
-        // una alteracion se avisa y queda registrada en la Bitacora; la app sigue funcionando
-        // porque el DVV de Usuario (acceso al sistema) esta integro.
         private static void VerificarIntegridadHistoriaClinica()
         {
             try
@@ -90,7 +84,6 @@ namespace Vista
             MostrarError(e.ExceptionObject as Exception);
         }
 
-        // Errores que ninguna pantalla atrapo: se registran serializados (A03) y se informan; el sistema sigue.
         private static void MostrarError(Exception ex)
         {
             Servicios.RegistroErrores.Registrar(ex, "Error no controlado");

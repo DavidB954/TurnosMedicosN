@@ -8,8 +8,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // RF1 - Gestion de turnos (recepcionista): CU-01.1 Registrar turno (incluye registrar al
-    // paciente que concurre por primera vez), CU-01.2 Modificar turno y CU-01.3 Cancelar turno.
     public partial class frmGestionTurnos : frmBase
     {
         BLL_Paciente bll_paciente = new BLL_Paciente();
@@ -19,8 +17,6 @@ namespace Vista
         private BE_Paciente pacienteSeleccionado = null;
         private BE_Turno turnoSeleccionado = null;
 
-        // Dias (0=Domingo..6=Sabado, igual que DayOfWeek) en que atiende el medico en la
-        // especialidad elegida. Vacio = sin medico seleccionado (no se restringe el calendario).
         private List<int> diasAtencionMedico = new List<int>();
         private bool ajustandoFecha = false;
         private bool cargandoGrilla = false;
@@ -46,7 +42,6 @@ namespace Vista
             {
                 ConfigurarGrilla();
                 LimpiarPaciente();
-                // T06b: el recepcionista ve el historial del turno; restaurar es solo del administrador.
                 btnVerHistorial.Visible = Sesion.Instancia().TieneAccesoFormulario(nameof(frmHistorialTurnos));
                 ucEspecialidad.CargarEspecialidades();
                 ActualizarDiasDeAtencion();
@@ -56,8 +51,6 @@ namespace Vista
                 Errores.Mostrar(ex);
             }
         }
-
-        // ---------------------------------------------------------------- Paciente (CU-01.1 pasos 2 a 5)
 
         private void txtDNI_KeyDown(object sender, KeyEventArgs e)
         {
@@ -75,7 +68,6 @@ namespace Vista
             }
         }
 
-        // Si el recepcionista cambia el DNI despues de buscar, el paciente mostrado deja de valer.
         private void txtDNI_TextChanged(object sender, EventArgs e)
         {
             try
@@ -97,7 +89,6 @@ namespace Vista
 
                 if (paciente == null)
                 {
-                    // Flujo alternativo A1: el paciente concurre por primera vez.
                     LimpiarPaciente();
                     HabilitarCargaPaciente(true);
                     txtNombre.Focus();
@@ -183,8 +174,6 @@ namespace Vista
             finally { cargandoGrilla = false; }
         }
 
-        // Los datos del paciente solo se escriben al registrarlo; un paciente existente se muestra
-        // en modo lectura.
         private void HabilitarCargaPaciente(bool habilitar)
         {
             txtNombre.ReadOnly = !habilitar;
@@ -195,13 +184,10 @@ namespace Vista
             btnRegistrarPaciente.Enabled = habilitar;
         }
 
-        // ---------------------------------------------------------------- Nuevo turno (CU-01.1 pasos 6 a 10)
-
         private void ucEspecialidad_EspecialidadSeleccionada(object sender, EventArgs e)
         {
             try
             {
-                // Solo se listan los medicos que tienen asignada la especialidad elegida.
                 if (ucEspecialidad.IdEspecialidadSeleccionada == null)
                     ucMedico.Limpiar();
                 else
@@ -236,7 +222,6 @@ namespace Vista
 
             try
             {
-                // Si el dia elegido no es de atencion del medico, se avisa y se pasa al proximo dia valido.
                 if (diasAtencionMedico.Count > 0 && !diasAtencionMedico.Contains((int)dtpFecha.Value.DayOfWeek))
                 {
                     DateTime fechaValida = ProximaFechaDeAtencion(dtpFecha.Value.Date);
@@ -274,8 +259,6 @@ namespace Vista
             return desde;
         }
 
-        // Dias en que el medico atiende la especialidad elegida: si la fecha elegida no es uno de ellos,
-        // se pasa sin aviso al proximo dia de atencion (al elegir otra fecha a mano se avisa).
         private void ActualizarDiasDeAtencion()
         {
             if (ucMedico.IdMedicoSeleccionado == null || ucEspecialidad.IdEspecialidadSeleccionada == null)
@@ -299,7 +282,6 @@ namespace Vista
             }
         }
 
-        // CU-01.1 paso 8: horarios disponibles del medico en la fecha elegida.
         private void CargarHorariosDelMedico()
         {
             if (ucMedico.IdMedicoSeleccionado == null || ucEspecialidad.IdEspecialidadSeleccionada == null)
@@ -312,8 +294,6 @@ namespace Vista
                 dtpFecha.Value.Date, ucEspecialidad.IdEspecialidadSeleccionada);
             lstHorarios.DisplayMember = "RangoHorario";
 
-            // Al asignar DataSource el ListBox selecciona el primer horario: se limpia para que el
-            // recepcionista elija uno a proposito.
             lstHorarios.ClearSelected();
         }
 
@@ -351,8 +331,6 @@ namespace Vista
             }
         }
 
-        // ---------------------------------------------------------------- Turnos del paciente (CU-01.2 y CU-01.3)
-
         private void ConfigurarGrilla()
         {
             dgvTurnosPaciente.AutoGenerateColumns = false;
@@ -372,13 +350,10 @@ namespace Vista
             columna.HeaderText = TraduccionServicio.Instancia.TraducirODefecto($"{Name}.dgvTurnosPaciente.{nombre}", encabezado);
             columna.DataPropertyName = propiedad;
             columna.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            // Las fechas son texto "dd/MM/yyyy": el orden correcto ya viene armado.
             columna.SortMode = DataGridViewColumnSortMode.NotSortable;
             dgvTurnosPaciente.Columns.Add(columna);
         }
 
-        // Turnos del paciente: primero los confirmados (sobre los que se puede actuar) y despues el
-        // resto, del mas reciente al mas antiguo.
         private void CargarTurnosDelPaciente()
         {
             turnoSeleccionado = null;
@@ -407,8 +382,6 @@ namespace Vista
             }
         }
 
-        // Al elegir un turno se precargan su especialidad y su medico en "Nuevo turno", para elegir
-        // directamente el nuevo horario si se lo quiere modificar.
         private void dgvTurnosPaciente_SelectionChanged(object sender, EventArgs e)
         {
             if (cargandoGrilla)
@@ -471,8 +444,6 @@ namespace Vista
             }
         }
 
-        // T06b: abre el historial de cambios del turno seleccionado, para ver quién lo registró, modificó o
-        // canceló y cuándo.
         private void btnVerHistorial_Click(object sender, EventArgs e)
         {
             try

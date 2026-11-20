@@ -6,17 +6,14 @@ using System.Linq;
 
 namespace Servicios
 {
-    // CU-02.3 / A02: recibo de liquidacion de honorarios en PDF. Encapsula la libreria PDFsharp
-    // (de terceros, codigo abierto) para que ninguna otra capa dependa de ella.
     public class ReciboLiquidacionPdf
     {
         private const string Sanatorio = "Sanatorio Córdoba";
         private const string Sistema = "Sistema de Gestión de Turnos y Honorarios Médicos";
 
         private const double Margen = 50;
-        private const double AnchoUtil = 495;   // A4 (595 pt) menos los dos margenes
+        private const double AnchoUtil = 495;
 
-        // Columnas del detalle: especialidad, dias, atendidos, ausentes, valor del turno, % por ausencia y subtotal.
         private static readonly double[] ColAncho = { 118, 38, 60, 56, 82, 64, 77 };
         private static readonly double[] ColX = ColAncho.Select((a, i) => Margen + ColAncho.Take(i).Sum()).ToArray();
 
@@ -48,7 +45,6 @@ namespace Servicios
             }
         }
 
-        // Datos del sanatorio, de la liquidacion y del medico.
         private void DibujarEncabezado(XGraphics gfx, BE_Liquidacion liquidacion)
         {
             gfx.DrawString(Sanatorio, fuenteTitulo, XBrushes.Black, new XRect(Margen, 50, AnchoUtil, 22), XStringFormats.TopLeft);
@@ -64,8 +60,6 @@ namespace Servicios
             Dato(gfx, "Matrícula:", liquidacion.Matricula, y += 18);
         }
 
-        // Detalle por especialidad (dias trabajados, turnos atendidos y ausentes, valor del turno, porcentaje
-        // por ausencia y subtotal) y totales. Los dias no se suman: un dia puede tener turnos de dos especialidades.
         private void DibujarDetalle(XGraphics gfx, BE_Liquidacion liquidacion)
         {
             double y = 230;

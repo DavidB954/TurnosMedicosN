@@ -14,8 +14,6 @@ namespace DAL
     {
         DAL_Conexion conex = new DAL_Conexion();
 
-        //Registrar Eventos
-
         public void RegistrarEvento(BE_Bitacora Bitacora)
         {
             using (SqlConnection conexion = conex.ObtenerConexion())
@@ -23,9 +21,6 @@ namespace DAL
                 conexion.Open();
 
                 SqlCommand cmdBitacora = new SqlCommand("Insert into Bitacora (IdUsuario, FechaHora, Accion, Descripcion, DireccionIP, Modulo, NombreMaquina) VALUES (@idUsuario, @fechaHora, @accion, @descripcion, @ip, @modulo, @nombremaquina)", conexion);
-
-
-                //Se utiliza el ADD con el SqlDbType en vez de AddWithValue ya que AddWithValue lo que hace es adivinar el tipo de parametro previsto. Esto puede generar probelmas de rendimiento cuando se debe convertir el valor de la columna a un tipo de dato diferente. Al especificar el tipo de dato con SqlDbType, se evita esta conversión y se mejora el rendimiento de la consulta.
 
                 cmdBitacora.Parameters.Add("@idUsuario", SqlDbType.Int).Value = Bitacora.IdUsuario.HasValue ? (object)Bitacora.IdUsuario.Value : DBNull.Value;
                 cmdBitacora.Parameters.Add("@fechaHora", SqlDbType.DateTime).Value = Bitacora.FechaHora;

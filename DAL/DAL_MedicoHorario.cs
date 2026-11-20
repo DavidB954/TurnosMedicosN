@@ -10,7 +10,6 @@ namespace DAL
     {
         DAL_Conexion conex = new DAL_Conexion();
 
-       
         public void InsertarOReactivarHorario(BE_MedicoHorario horario)
         {
             try
@@ -42,7 +41,6 @@ namespace DAL
             }
         }
 
-      
         public void DesactivarHorariosPorMedicoYDia(int idMedico, int diaSemana, int? idEspecialidad)
         {
             try
@@ -97,7 +95,6 @@ namespace DAL
             }
         }
 
-       
         public List<BE_MedicoHorario> ListarDisponibles(int idMedico, int diaSemana, DateTime fecha, int? idEspecialidad)
         {
             try
@@ -147,8 +144,6 @@ namespace DAL
             }
         }
 
-        // CU-01.4: horarios activos del medico para el dia de la semana de la fecha, indicando si estan
-        // inactivos en esa fecha y que paciente tiene turno confirmado en cada uno.
         public List<BE_MedicoHorario> ListarPorMedicoYFecha(int idMedico, DateTime fecha)
         {
             try
@@ -197,7 +192,6 @@ namespace DAL
             }
         }
 
-        // CU-01.4: el horario deja de atenderse solo en esa fecha.
         public void InactivarEnFecha(int idHorario, DateTime fecha, int idUsuario)
         {
             try
@@ -220,7 +214,6 @@ namespace DAL
             }
         }
 
-        // CU-01.4: el horario vuelve a atenderse en esa fecha.
         public void ReactivarEnFecha(int idHorario, DateTime fecha)
         {
             try
@@ -240,7 +233,6 @@ namespace DAL
             }
         }
 
-        // RN1.2: un horario inactivo en una fecha no admite turnos en esa fecha.
         public bool EstaInactivoEnFecha(int idHorario, DateTime fecha)
         {
             try
@@ -320,7 +312,6 @@ namespace DAL
                         horario.IdEspecialidad = lector["IdEspecialidad"] == DBNull.Value ? (int?)null : Convert.ToInt32(lector["IdEspecialidad"]);
                         horario.NombreEspecialidad = lector["NombreEspecialidad"] == DBNull.Value ? null : lector["NombreEspecialidad"].ToString();
 
-                        // Con especialidad asignada se muestra solo esa; si no, todas las del medico.
                         horario.Especialidades = horario.NombreEspecialidad
                             ?? (especialidadesPorMedico.ContainsKey(idMedico)
                                 ? string.Join(", ", especialidadesPorMedico[idMedico])

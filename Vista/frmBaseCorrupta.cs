@@ -23,10 +23,8 @@ namespace Vista
         BLL_Usuario bll_Usu = new BLL_Usuario();
         BLL_Roles bll_roles = new BLL_Roles();
 
-
         private const string Email_Emergencia = "admin@sistema.com";
         private const string Password_Emergencia = "26D6A8AD97C75FFC548F6873E5E93CE475479E3E1A1097381E54221FB53EC1D2";
-
 
         private void frmBaseCorrupta_Load(object sender, EventArgs e)
         {
@@ -38,8 +36,6 @@ namespace Vista
             AplicarIdiomaAutomatico();
         }
 
-
-
         private void btnIngresar_Click(object sender, EventArgs e)
         {
             try
@@ -50,7 +46,6 @@ namespace Vista
                     AbrirSeguridad();
                     return;
                 }
-
 
                 BE_Usuario usuario = bll_Usu.ValidarCredencialesEmergencia(txtEmail.Text, txtContrasena.Text);
 
@@ -98,7 +93,6 @@ namespace Vista
 
             this.Hide();
         }
-
 
     }
 }

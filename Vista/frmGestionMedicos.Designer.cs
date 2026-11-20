@@ -17,6 +17,9 @@
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBoxEspecialidades = new System.Windows.Forms.GroupBox();
             this.lblNombreEspecialidad = new System.Windows.Forms.Label();
             this.txtNombreEspecialidad = new System.Windows.Forms.TextBox();
@@ -60,67 +63,61 @@
             this.groupBoxHorariosMedicos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMedicosDiasHorarios)).BeginInit();
             this.SuspendLayout();
-            // 
-            // groupBoxEspecialidades
-            // 
             this.groupBoxEspecialidades.Controls.Add(this.lblNombreEspecialidad);
             this.groupBoxEspecialidades.Controls.Add(this.txtNombreEspecialidad);
             this.groupBoxEspecialidades.Controls.Add(this.btnEspecialidadCrear);
             this.groupBoxEspecialidades.Controls.Add(this.ucEspecialidadCrud);
             this.groupBoxEspecialidades.Controls.Add(this.btnEspecialidadEliminar);
+            this.groupBoxEspecialidades.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
             this.groupBoxEspecialidades.Location = new System.Drawing.Point(15, 17);
             this.groupBoxEspecialidades.Name = "groupBoxEspecialidades";
             this.groupBoxEspecialidades.Size = new System.Drawing.Size(730, 75);
             this.groupBoxEspecialidades.TabIndex = 0;
             this.groupBoxEspecialidades.TabStop = false;
             this.groupBoxEspecialidades.Text = "Especialidades";
-            // 
-            // lblNombreEspecialidad
-            // 
             this.lblNombreEspecialidad.AutoSize = true;
+            this.lblNombreEspecialidad.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblNombreEspecialidad.Location = new System.Drawing.Point(15, 38);
             this.lblNombreEspecialidad.Name = "lblNombreEspecialidad";
+            this.lblNombreEspecialidad.Size = new System.Drawing.Size(47, 13);
             this.lblNombreEspecialidad.TabIndex = 1;
             this.lblNombreEspecialidad.Text = "Nombre:";
-            // 
-            // txtNombreEspecialidad
-            // 
+            this.txtNombreEspecialidad.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtNombreEspecialidad.Location = new System.Drawing.Point(80, 33);
-            this.txtNombreEspecialidad.Name = "txtNombreEspecialidad";
-            this.txtNombreEspecialidad.Size = new System.Drawing.Size(170, 22);
-            this.txtNombreEspecialidad.TabIndex = 2;
             this.txtNombreEspecialidad.MaxLength = 50;
-            // 
-            // btnEspecialidadCrear
-            // 
+            this.txtNombreEspecialidad.Name = "txtNombreEspecialidad";
+            this.txtNombreEspecialidad.Size = new System.Drawing.Size(170, 20);
+            this.txtNombreEspecialidad.TabIndex = 2;
+            this.btnEspecialidadCrear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnEspecialidadCrear.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEspecialidadCrear.FlatAppearance.BorderSize = 0;
+            this.btnEspecialidadCrear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEspecialidadCrear.ForeColor = System.Drawing.Color.White;
             this.btnEspecialidadCrear.Location = new System.Drawing.Point(260, 31);
             this.btnEspecialidadCrear.Name = "btnEspecialidadCrear";
             this.btnEspecialidadCrear.Size = new System.Drawing.Size(140, 26);
             this.btnEspecialidadCrear.TabIndex = 3;
             this.btnEspecialidadCrear.Text = "Crear especialidad";
-            this.btnEspecialidadCrear.UseVisualStyleBackColor = true;
+            this.btnEspecialidadCrear.UseVisualStyleBackColor = false;
             this.btnEspecialidadCrear.Click += new System.EventHandler(this.btnEspecialidadCrear_Click);
-            // 
-            // ucEspecialidadCrud
-            // 
+            this.ucEspecialidadCrud.Etiqueta = "";
+            this.ucEspecialidadCrud.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ucEspecialidadCrud.Location = new System.Drawing.Point(420, 33);
             this.ucEspecialidadCrud.Name = "ucEspecialidadCrud";
             this.ucEspecialidadCrud.Size = new System.Drawing.Size(160, 22);
             this.ucEspecialidadCrud.TabIndex = 4;
-            this.ucEspecialidadCrud.Etiqueta = "";
-            // 
-            // btnEspecialidadEliminar
-            // 
+            this.btnEspecialidadEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
+            this.btnEspecialidadEliminar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEspecialidadEliminar.FlatAppearance.BorderSize = 0;
+            this.btnEspecialidadEliminar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEspecialidadEliminar.ForeColor = System.Drawing.Color.White;
             this.btnEspecialidadEliminar.Location = new System.Drawing.Point(590, 31);
             this.btnEspecialidadEliminar.Name = "btnEspecialidadEliminar";
             this.btnEspecialidadEliminar.Size = new System.Drawing.Size(120, 26);
             this.btnEspecialidadEliminar.TabIndex = 5;
             this.btnEspecialidadEliminar.Text = "Eliminar";
-            this.btnEspecialidadEliminar.UseVisualStyleBackColor = true;
+            this.btnEspecialidadEliminar.UseVisualStyleBackColor = false;
             this.btnEspecialidadEliminar.Click += new System.EventHandler(this.btnEspecialidadEliminar_Click);
-            // 
-            // groupBoxAsignacionEspecialidades
-            // 
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.lblMedicoAsignar);
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.ucMedicoAsignar);
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.lblMatricula);
@@ -130,93 +127,88 @@
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.ucEspecialidadAsignar);
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.btnAsignarEspecialidad);
             this.groupBoxAsignacionEspecialidades.Controls.Add(this.btnQuitarEspecialidad);
+            this.groupBoxAsignacionEspecialidades.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
             this.groupBoxAsignacionEspecialidades.Location = new System.Drawing.Point(15, 102);
             this.groupBoxAsignacionEspecialidades.Name = "groupBoxAsignacionEspecialidades";
             this.groupBoxAsignacionEspecialidades.Size = new System.Drawing.Size(730, 110);
             this.groupBoxAsignacionEspecialidades.TabIndex = 6;
             this.groupBoxAsignacionEspecialidades.TabStop = false;
             this.groupBoxAsignacionEspecialidades.Text = "Médicos y especialidades";
-            // 
-            // lblMedicoAsignar
-            // 
             this.lblMedicoAsignar.AutoSize = true;
+            this.lblMedicoAsignar.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblMedicoAsignar.Location = new System.Drawing.Point(15, 38);
             this.lblMedicoAsignar.Name = "lblMedicoAsignar";
+            this.lblMedicoAsignar.Size = new System.Drawing.Size(45, 13);
             this.lblMedicoAsignar.TabIndex = 7;
             this.lblMedicoAsignar.Text = "Médico:";
-            // 
-            // ucMedicoAsignar
-            // 
+            this.ucMedicoAsignar.Etiqueta = "";
+            this.ucMedicoAsignar.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ucMedicoAsignar.Location = new System.Drawing.Point(80, 33);
             this.ucMedicoAsignar.Name = "ucMedicoAsignar";
             this.ucMedicoAsignar.Size = new System.Drawing.Size(200, 22);
             this.ucMedicoAsignar.TabIndex = 8;
-            this.ucMedicoAsignar.Etiqueta = "";
-            // 
-            // lblMatricula
-            // 
             this.lblMatricula.AutoSize = true;
+            this.lblMatricula.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblMatricula.Location = new System.Drawing.Point(300, 38);
             this.lblMatricula.Name = "lblMatricula";
+            this.lblMatricula.Size = new System.Drawing.Size(55, 13);
             this.lblMatricula.TabIndex = 9;
             this.lblMatricula.Text = "Matrícula:";
-            // 
-            // txtMatricula
-            // 
+            this.txtMatricula.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtMatricula.Location = new System.Drawing.Point(370, 33);
-            this.txtMatricula.Name = "txtMatricula";
-            this.txtMatricula.Size = new System.Drawing.Size(120, 22);
-            this.txtMatricula.TabIndex = 10;
             this.txtMatricula.MaxLength = 30;
-            // 
-            // btnGuardarMatricula
-            // 
+            this.txtMatricula.Name = "txtMatricula";
+            this.txtMatricula.Size = new System.Drawing.Size(120, 20);
+            this.txtMatricula.TabIndex = 10;
+            this.btnGuardarMatricula.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnGuardarMatricula.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnGuardarMatricula.FlatAppearance.BorderSize = 0;
+            this.btnGuardarMatricula.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGuardarMatricula.ForeColor = System.Drawing.Color.White;
             this.btnGuardarMatricula.Location = new System.Drawing.Point(570, 31);
             this.btnGuardarMatricula.Name = "btnGuardarMatricula";
             this.btnGuardarMatricula.Size = new System.Drawing.Size(140, 26);
             this.btnGuardarMatricula.TabIndex = 11;
             this.btnGuardarMatricula.Text = "Guardar matrícula";
-            this.btnGuardarMatricula.UseVisualStyleBackColor = true;
+            this.btnGuardarMatricula.UseVisualStyleBackColor = false;
             this.btnGuardarMatricula.Click += new System.EventHandler(this.btnGuardarMatricula_Click);
-            // 
-            // lblEspecialidadAsignar
-            // 
             this.lblEspecialidadAsignar.AutoSize = true;
+            this.lblEspecialidadAsignar.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblEspecialidadAsignar.Location = new System.Drawing.Point(15, 75);
             this.lblEspecialidadAsignar.Name = "lblEspecialidadAsignar";
+            this.lblEspecialidadAsignar.Size = new System.Drawing.Size(70, 13);
             this.lblEspecialidadAsignar.TabIndex = 12;
             this.lblEspecialidadAsignar.Text = "Especialidad:";
-            // 
-            // ucEspecialidadAsignar
-            // 
+            this.ucEspecialidadAsignar.Etiqueta = "";
+            this.ucEspecialidadAsignar.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ucEspecialidadAsignar.Location = new System.Drawing.Point(105, 70);
             this.ucEspecialidadAsignar.Name = "ucEspecialidadAsignar";
             this.ucEspecialidadAsignar.Size = new System.Drawing.Size(175, 22);
             this.ucEspecialidadAsignar.TabIndex = 13;
-            this.ucEspecialidadAsignar.Etiqueta = "";
-            // 
-            // btnAsignarEspecialidad
-            // 
+            this.btnAsignarEspecialidad.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnAsignarEspecialidad.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAsignarEspecialidad.FlatAppearance.BorderSize = 0;
+            this.btnAsignarEspecialidad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAsignarEspecialidad.ForeColor = System.Drawing.Color.White;
             this.btnAsignarEspecialidad.Location = new System.Drawing.Point(300, 68);
             this.btnAsignarEspecialidad.Name = "btnAsignarEspecialidad";
             this.btnAsignarEspecialidad.Size = new System.Drawing.Size(145, 26);
             this.btnAsignarEspecialidad.TabIndex = 14;
             this.btnAsignarEspecialidad.Text = "Asignar especialidad";
-            this.btnAsignarEspecialidad.UseVisualStyleBackColor = true;
+            this.btnAsignarEspecialidad.UseVisualStyleBackColor = false;
             this.btnAsignarEspecialidad.Click += new System.EventHandler(this.btnAsignarEspecialidad_Click);
-            // 
-            // btnQuitarEspecialidad
-            // 
+            this.btnQuitarEspecialidad.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
+            this.btnQuitarEspecialidad.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnQuitarEspecialidad.FlatAppearance.BorderSize = 0;
+            this.btnQuitarEspecialidad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuitarEspecialidad.ForeColor = System.Drawing.Color.White;
             this.btnQuitarEspecialidad.Location = new System.Drawing.Point(455, 68);
             this.btnQuitarEspecialidad.Name = "btnQuitarEspecialidad";
             this.btnQuitarEspecialidad.Size = new System.Drawing.Size(140, 26);
             this.btnQuitarEspecialidad.TabIndex = 15;
             this.btnQuitarEspecialidad.Text = "Quitar especialidad";
-            this.btnQuitarEspecialidad.UseVisualStyleBackColor = true;
+            this.btnQuitarEspecialidad.UseVisualStyleBackColor = false;
             this.btnQuitarEspecialidad.Click += new System.EventHandler(this.btnQuitarEspecialidad_Click);
-            // 
-            // groupBoxHorariosMedicos
-            // 
             this.groupBoxHorariosMedicos.Controls.Add(this.lblMedicoHorario);
             this.groupBoxHorariosMedicos.Controls.Add(this.ucMedicoHorario);
             this.groupBoxHorariosMedicos.Controls.Add(this.lblEspecialidadHorario);
@@ -238,179 +230,157 @@
             this.groupBoxHorariosMedicos.Controls.Add(this.btnEditarFranjas);
             this.groupBoxHorariosMedicos.Controls.Add(this.checkBoxMostrarInactivos);
             this.groupBoxHorariosMedicos.Controls.Add(this.dataGridViewMedicosDiasHorarios);
+            this.groupBoxHorariosMedicos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
             this.groupBoxHorariosMedicos.Location = new System.Drawing.Point(15, 222);
             this.groupBoxHorariosMedicos.Name = "groupBoxHorariosMedicos";
             this.groupBoxHorariosMedicos.Size = new System.Drawing.Size(730, 345);
             this.groupBoxHorariosMedicos.TabIndex = 16;
             this.groupBoxHorariosMedicos.TabStop = false;
             this.groupBoxHorariosMedicos.Text = "Días y horarios de atención";
-            // 
-            // lblMedicoHorario
-            // 
             this.lblMedicoHorario.AutoSize = true;
+            this.lblMedicoHorario.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblMedicoHorario.Location = new System.Drawing.Point(15, 38);
             this.lblMedicoHorario.Name = "lblMedicoHorario";
+            this.lblMedicoHorario.Size = new System.Drawing.Size(45, 13);
             this.lblMedicoHorario.TabIndex = 17;
             this.lblMedicoHorario.Text = "Médico:";
-            // 
-            // ucMedicoHorario
-            // 
+            this.ucMedicoHorario.Etiqueta = "";
+            this.ucMedicoHorario.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ucMedicoHorario.Location = new System.Drawing.Point(80, 33);
             this.ucMedicoHorario.Name = "ucMedicoHorario";
             this.ucMedicoHorario.Size = new System.Drawing.Size(200, 22);
             this.ucMedicoHorario.TabIndex = 18;
-            this.ucMedicoHorario.Etiqueta = "";
-            // 
-            // lblEspecialidadHorario
-            // 
             this.lblEspecialidadHorario.AutoSize = true;
+            this.lblEspecialidadHorario.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblEspecialidadHorario.Location = new System.Drawing.Point(300, 38);
             this.lblEspecialidadHorario.Name = "lblEspecialidadHorario";
+            this.lblEspecialidadHorario.Size = new System.Drawing.Size(70, 13);
             this.lblEspecialidadHorario.TabIndex = 19;
             this.lblEspecialidadHorario.Text = "Especialidad:";
-            // 
-            // ucEspecialidadHorario
-            // 
+            this.ucEspecialidadHorario.Etiqueta = "";
+            this.ucEspecialidadHorario.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ucEspecialidadHorario.Location = new System.Drawing.Point(390, 33);
             this.ucEspecialidadHorario.Name = "ucEspecialidadHorario";
             this.ucEspecialidadHorario.Size = new System.Drawing.Size(175, 22);
             this.ucEspecialidadHorario.TabIndex = 20;
-            this.ucEspecialidadHorario.Etiqueta = "";
-            // 
-            // checkBoxLunes
-            // 
+            this.checkBoxLunes.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxLunes.Location = new System.Drawing.Point(15, 70);
             this.checkBoxLunes.Name = "checkBoxLunes";
             this.checkBoxLunes.Size = new System.Drawing.Size(100, 20);
             this.checkBoxLunes.TabIndex = 21;
             this.checkBoxLunes.Text = "Lunes";
             this.checkBoxLunes.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxMartes
-            // 
+            this.checkBoxMartes.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxMartes.Location = new System.Drawing.Point(120, 70);
             this.checkBoxMartes.Name = "checkBoxMartes";
             this.checkBoxMartes.Size = new System.Drawing.Size(100, 20);
             this.checkBoxMartes.TabIndex = 22;
             this.checkBoxMartes.Text = "Martes";
             this.checkBoxMartes.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxMiercoles
-            // 
+            this.checkBoxMiercoles.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxMiercoles.Location = new System.Drawing.Point(225, 70);
             this.checkBoxMiercoles.Name = "checkBoxMiercoles";
             this.checkBoxMiercoles.Size = new System.Drawing.Size(100, 20);
             this.checkBoxMiercoles.TabIndex = 23;
             this.checkBoxMiercoles.Text = "Miércoles";
             this.checkBoxMiercoles.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxJueves
-            // 
+            this.checkBoxJueves.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxJueves.Location = new System.Drawing.Point(330, 70);
             this.checkBoxJueves.Name = "checkBoxJueves";
             this.checkBoxJueves.Size = new System.Drawing.Size(100, 20);
             this.checkBoxJueves.TabIndex = 24;
             this.checkBoxJueves.Text = "Jueves";
             this.checkBoxJueves.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxViernes
-            // 
+            this.checkBoxViernes.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxViernes.Location = new System.Drawing.Point(435, 70);
             this.checkBoxViernes.Name = "checkBoxViernes";
             this.checkBoxViernes.Size = new System.Drawing.Size(100, 20);
             this.checkBoxViernes.TabIndex = 25;
             this.checkBoxViernes.Text = "Viernes";
             this.checkBoxViernes.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxSabado
-            // 
+            this.checkBoxSabado.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxSabado.Location = new System.Drawing.Point(540, 70);
             this.checkBoxSabado.Name = "checkBoxSabado";
             this.checkBoxSabado.Size = new System.Drawing.Size(100, 20);
             this.checkBoxSabado.TabIndex = 26;
             this.checkBoxSabado.Text = "Sábado";
             this.checkBoxSabado.UseVisualStyleBackColor = true;
-            // 
-            // lblDesde
-            // 
             this.lblDesde.AutoSize = true;
+            this.lblDesde.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblDesde.Location = new System.Drawing.Point(15, 110);
             this.lblDesde.Name = "lblDesde";
+            this.lblDesde.Size = new System.Drawing.Size(41, 13);
             this.lblDesde.TabIndex = 27;
             this.lblDesde.Text = "Desde:";
-            // 
-            // txtDesde
-            // 
+            this.txtDesde.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtDesde.Location = new System.Drawing.Point(65, 105);
-            this.txtDesde.Name = "txtDesde";
-            this.txtDesde.Size = new System.Drawing.Size(70, 22);
-            this.txtDesde.TabIndex = 28;
             this.txtDesde.MaxLength = 5;
-            // 
-            // lblHasta
-            // 
+            this.txtDesde.Name = "txtDesde";
+            this.txtDesde.Size = new System.Drawing.Size(70, 20);
+            this.txtDesde.TabIndex = 28;
             this.lblHasta.AutoSize = true;
+            this.lblHasta.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblHasta.Location = new System.Drawing.Point(155, 110);
             this.lblHasta.Name = "lblHasta";
+            this.lblHasta.Size = new System.Drawing.Size(38, 13);
             this.lblHasta.TabIndex = 29;
             this.lblHasta.Text = "Hasta:";
-            // 
-            // txtHasta
-            // 
+            this.txtHasta.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtHasta.Location = new System.Drawing.Point(205, 105);
-            this.txtHasta.Name = "txtHasta";
-            this.txtHasta.Size = new System.Drawing.Size(70, 22);
-            this.txtHasta.TabIndex = 30;
             this.txtHasta.MaxLength = 5;
-            // 
-            // lblTurnosCadaXMin
-            // 
+            this.txtHasta.Name = "txtHasta";
+            this.txtHasta.Size = new System.Drawing.Size(70, 20);
+            this.txtHasta.TabIndex = 30;
             this.lblTurnosCadaXMin.AutoSize = true;
+            this.lblTurnosCadaXMin.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblTurnosCadaXMin.Location = new System.Drawing.Point(295, 110);
             this.lblTurnosCadaXMin.Name = "lblTurnosCadaXMin";
+            this.lblTurnosCadaXMin.Size = new System.Drawing.Size(122, 13);
             this.lblTurnosCadaXMin.TabIndex = 31;
             this.lblTurnosCadaXMin.Text = "Duración de cada turno:";
-            // 
-            // txtTurnosCada
-            // 
+            this.txtTurnosCada.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtTurnosCada.Location = new System.Drawing.Point(450, 105);
-            this.txtTurnosCada.Name = "txtTurnosCada";
-            this.txtTurnosCada.Size = new System.Drawing.Size(60, 22);
-            this.txtTurnosCada.TabIndex = 32;
             this.txtTurnosCada.MaxLength = 3;
-            // 
-            // btnAsignarDiaYHorario
-            // 
+            this.txtTurnosCada.Name = "txtTurnosCada";
+            this.txtTurnosCada.Size = new System.Drawing.Size(60, 20);
+            this.txtTurnosCada.TabIndex = 32;
+            this.btnAsignarDiaYHorario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnAsignarDiaYHorario.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAsignarDiaYHorario.FlatAppearance.BorderSize = 0;
+            this.btnAsignarDiaYHorario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAsignarDiaYHorario.ForeColor = System.Drawing.Color.White;
             this.btnAsignarDiaYHorario.Location = new System.Drawing.Point(15, 142);
             this.btnAsignarDiaYHorario.Name = "btnAsignarDiaYHorario";
             this.btnAsignarDiaYHorario.Size = new System.Drawing.Size(170, 26);
             this.btnAsignarDiaYHorario.TabIndex = 33;
             this.btnAsignarDiaYHorario.Text = "Asignar días y horarios";
-            this.btnAsignarDiaYHorario.UseVisualStyleBackColor = true;
+            this.btnAsignarDiaYHorario.UseVisualStyleBackColor = false;
             this.btnAsignarDiaYHorario.Click += new System.EventHandler(this.btnAsignarDiaYHorario_Click);
-            // 
-            // btnModificarDiasYHorarios
-            // 
+            this.btnModificarDiasYHorarios.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnModificarDiasYHorarios.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnModificarDiasYHorarios.FlatAppearance.BorderSize = 0;
+            this.btnModificarDiasYHorarios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnModificarDiasYHorarios.ForeColor = System.Drawing.Color.White;
             this.btnModificarDiasYHorarios.Location = new System.Drawing.Point(195, 142);
             this.btnModificarDiasYHorarios.Name = "btnModificarDiasYHorarios";
             this.btnModificarDiasYHorarios.Size = new System.Drawing.Size(175, 26);
             this.btnModificarDiasYHorarios.TabIndex = 34;
             this.btnModificarDiasYHorarios.Text = "Modificar días y horarios";
-            this.btnModificarDiasYHorarios.UseVisualStyleBackColor = true;
+            this.btnModificarDiasYHorarios.UseVisualStyleBackColor = false;
             this.btnModificarDiasYHorarios.Click += new System.EventHandler(this.btnModificarDiasYHorarios_Click);
-            // 
-            // btnEditarFranjas
-            // 
+            this.btnEditarFranjas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            this.btnEditarFranjas.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEditarFranjas.FlatAppearance.BorderSize = 0;
+            this.btnEditarFranjas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEditarFranjas.ForeColor = System.Drawing.Color.White;
             this.btnEditarFranjas.Location = new System.Drawing.Point(380, 142);
             this.btnEditarFranjas.Name = "btnEditarFranjas";
             this.btnEditarFranjas.Size = new System.Drawing.Size(130, 26);
             this.btnEditarFranjas.TabIndex = 35;
             this.btnEditarFranjas.Text = "Editar horarios";
-            this.btnEditarFranjas.UseVisualStyleBackColor = true;
+            this.btnEditarFranjas.UseVisualStyleBackColor = false;
             this.btnEditarFranjas.Click += new System.EventHandler(this.btnEditarFranjas_Click);
-            // 
-            // checkBoxMostrarInactivos
-            // 
+            this.checkBoxMostrarInactivos.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxMostrarInactivos.Location = new System.Drawing.Point(565, 145);
             this.checkBoxMostrarInactivos.Name = "checkBoxMostrarInactivos";
             this.checkBoxMostrarInactivos.Size = new System.Drawing.Size(145, 20);
@@ -418,27 +388,43 @@
             this.checkBoxMostrarInactivos.Text = "Mostrar inactivos";
             this.checkBoxMostrarInactivos.UseVisualStyleBackColor = true;
             this.checkBoxMostrarInactivos.CheckedChanged += new System.EventHandler(this.checkBoxMostrarInactivos_CheckedChanged);
-            // 
-            // dataGridViewMedicosDiasHorarios
-            // 
             this.dataGridViewMedicosDiasHorarios.AllowUserToAddRows = false;
             this.dataGridViewMedicosDiasHorarios.AllowUserToDeleteRows = false;
             this.dataGridViewMedicosDiasHorarios.AllowUserToResizeRows = false;
-            this.dataGridViewMedicosDiasHorarios.BackgroundColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(241)))), ((int)(((byte)(246)))));
+            this.dataGridViewMedicosDiasHorarios.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGridViewMedicosDiasHorarios.BackgroundColor = System.Drawing.Color.White;
+            this.dataGridViewMedicosDiasHorarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(58)))), ((int)(((byte)(95)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewMedicosDiasHorarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewMedicosDiasHorarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(135)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewMedicosDiasHorarios.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewMedicosDiasHorarios.EnableHeadersVisualStyles = false;
+            this.dataGridViewMedicosDiasHorarios.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(206)))), ((int)(((byte)(217)))), ((int)(((byte)(228)))));
+            this.dataGridViewMedicosDiasHorarios.Location = new System.Drawing.Point(15, 180);
             this.dataGridViewMedicosDiasHorarios.MultiSelect = false;
+            this.dataGridViewMedicosDiasHorarios.Name = "dataGridViewMedicosDiasHorarios";
             this.dataGridViewMedicosDiasHorarios.ReadOnly = true;
             this.dataGridViewMedicosDiasHorarios.RowHeadersVisible = false;
             this.dataGridViewMedicosDiasHorarios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewMedicosDiasHorarios.Location = new System.Drawing.Point(15, 180);
-            this.dataGridViewMedicosDiasHorarios.Name = "dataGridViewMedicosDiasHorarios";
             this.dataGridViewMedicosDiasHorarios.Size = new System.Drawing.Size(700, 150);
             this.dataGridViewMedicosDiasHorarios.TabIndex = 37;
-            // 
-            // frmGestionMedicos
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(760, 582);
             this.Controls.Add(this.groupBoxHorariosMedicos);
             this.Controls.Add(this.groupBoxAsignacionEspecialidades);
@@ -454,7 +440,7 @@
             this.groupBoxHorariosMedicos.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMedicosDiasHorarios)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
+
         }
 
         #endregion

@@ -24,8 +24,6 @@ namespace BE
 
         public string NombreMaquina { get; set;}
 
-        // Nombre y apellido del usuario (o "SISTEMA" si el evento ocurrió sin sesión, ej. arranque de la app).
-        // Se resuelve en la consulta (JOIN con Usuario), no se persiste en la tabla Bitacora.
         public string NombreUsuario { get; set;}
     }
 }

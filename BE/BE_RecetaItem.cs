@@ -1,6 +1,5 @@
 namespace BE
 {
-    // Un medicamento de la receta con su posologia.
     public class BE_RecetaItem
     {
         public int IdRecetaItem { get; set; }

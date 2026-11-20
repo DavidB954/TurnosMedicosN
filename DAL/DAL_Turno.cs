@@ -142,7 +142,6 @@ namespace DAL
                         turno.HoraInicio = (TimeSpan)lector["HoraInicio"];
                         turno.HoraFin = (TimeSpan)lector["HoraFin"];
                         turno.NombreApellidoMedico = lector["Nombre"].ToString() + " " + lector["Apellido"].ToString();
-                        // Con especialidad asignada en la franja se muestra solo esa.
                         turno.Especialidades = lector["NombreEspecialidad"] != DBNull.Value
                             ? lector["NombreEspecialidad"].ToString()
                             : (especialidadesPorMedico.ContainsKey(idMedico)
@@ -161,7 +160,6 @@ namespace DAL
             }
         }
 
-        // Turnos Confirmados de hoy en adelante de un horario puntual (una franja).
         public List<BE_Turno> ListarConfirmadosPorHorarioDesde(int idHorario, DateTime desde)
         {
             try
@@ -207,8 +205,6 @@ namespace DAL
             }
         }
 
-        // Turnos Confirmados de hoy en adelante para un medico en un dia de la semana puntual,
-        // usado para detectar conflictos antes de modificar el horario de ese medico.
         public List<BE_Turno> ListarActivosPorMedicoYDiaDesde(int idMedico, int diaSemana, DateTime desde, int? idEspecialidad)
         {
             try
@@ -257,8 +253,6 @@ namespace DAL
             }
         }
 
-        // Turnos de cualquier paciente, con filtros opcionales (Historial de cambios de turnos, T06b).
-        // El texto del paciente busca por nombre y apellido, DNI o numero de Historia Clinica.
         public List<BE_Turno> Filtrar(int? idTurno, DateTime? desde, DateTime? hasta, string estado, string textoPaciente = null)
         {
             try
@@ -320,7 +314,6 @@ namespace DAL
                         turno.NombreApellidoMedico = lector["NombreMedico"].ToString() + " " + lector["ApellidoMedico"].ToString();
                         turno.NombreApellidoPaciente = lector["NombrePaciente"].ToString() + " " + lector["ApellidoPaciente"].ToString();
                         turno.DNIPaciente = lector["DNI"].ToString();
-                        // Con especialidad asignada en la franja se muestra solo esa.
                         turno.Especialidades = lector["NombreEspecialidad"] != DBNull.Value
                             ? lector["NombreEspecialidad"].ToString()
                             : (especialidadesPorMedico.ContainsKey(idMedico)
@@ -339,8 +332,6 @@ namespace DAL
             }
         }
 
-        // T06b: vuelve el turno a una version anterior (horario, fecha y estado). Es un UPDATE, asi que el
-        // trigger TR_Turno_Historial registra la restauracion como una version nueva con el usuario.
         public void Restaurar(int idTurno, int idHorario, DateTime fecha, string estado, int idUsuarioCambio)
         {
             try

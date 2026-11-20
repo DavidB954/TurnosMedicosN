@@ -7,10 +7,6 @@ using System.Windows.Forms;
 
 namespace Vista
 {
-    // Gestión de Roles:
-    //   - ABM de roles (nombre; la descripción de cada rol se muestra de solo lectura)
-    //   - A cada rol se le asignan formularios completos (familia) y/o botones sueltos (patente)
-    //     tildándolos en el árbol del catálogo de permisos.
     public partial class frmRolesPermisos : frmBase
     {
         public frmRolesPermisos()
@@ -33,7 +29,6 @@ namespace Vista
         {
             try
             {
-                // La descripcion es la del rol seleccionado: se muestra pero no se edita.
                 txtDescripcion.ReadOnly = true;
                 txtDescripcion.TabStop = false;
                 arbolPermisos.Cargar(bll_roles.ObtenerCatalogo());
@@ -51,7 +46,6 @@ namespace Vista
             return lstRoles.SelectedItem as RolComposite;
         }
 
-        // Recarga la lista de roles y deja seleccionado el indicado (o el primero).
         private void CargarRoles(int? idSeleccionar)
         {
             List<RolComposite> roles = bll_roles.ObtenerRoles();
@@ -79,7 +73,6 @@ namespace Vista
                 rol?.Hijos().OfType<RolComposite>().Where(r => r.EsFormulario).Select(r => r.Id) ?? Enumerable.Empty<int>(),
                 rol?.Hijos().OfType<Permiso>().Select(p => p.Id) ?? Enumerable.Empty<int>());
 
-            // El Administrador siempre tiene todo: se muestra pero no se puede editar
             bool esAdmin = BLL_Roles.EsAdministrador(rol);
             arbolPermisos.SoloLectura = rol == null || esAdmin;
             btnGuardarPermisos.Enabled = rol != null && !esAdmin;
